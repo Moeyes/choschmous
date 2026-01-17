@@ -35,39 +35,4 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
----
-
-## Supabase persistence (Registrations)
-
-This project can persist registrations using Supabase instead of writing to the local mock JSON files.
-
-Environment variables (add these in Vercel or locally):
-
-- SUPABASE_URL - your Supabase project URL
-- SUPABASE_SERVICE_ROLE_KEY - service role key (server-side writes)
-- SUPABASE_ANON_KEY - optional (public client)
-- SUPABASE_BUCKET - storage bucket name for photos (e.g., `uploads`)
-
-How it works:
-
-- When Supabase env vars are present, `/api/registrations` will write registrations to the `registrations` table and upload photos to Supabase storage.
-- For team registrations, a `teams` row is created and member rows are added to `registrations`.
-- A convenience script is available to export registrations from the DB to the local mock JSON file:
-
-```bash
-npm run export-registrations
-```
-
-This will write `lib/data/mock/registrations.json` with the current registrations from Supabase.
-
-If Supabase is not configured, the API falls back to using the local `lib/data/mock/*.json` files (current behavior).
-
-### Quick local test steps
-
-1. Copy `.env.example` -> `.env.local` and set `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` (and `SUPABASE_BUCKET` if using storage).
-2. npm install && npm run dev
-3. From the UI or using curl/postman, submit a registration via `/register` (or POST to `/api/registrations`).
-4. Verify registration rows in Supabase table `registrations` and photos in the specified bucket.
-5. Optionally run `npm run export-registrations` to write `lib/data/mock/registrations.json` locally.
-
 
