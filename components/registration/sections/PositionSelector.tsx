@@ -1,8 +1,6 @@
 import { User, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
 import { SelectField } from "@/components/registration/SelectField";
 import type { PositionInfo } from "@/types/participation";
 

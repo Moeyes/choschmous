@@ -1,6 +1,7 @@
-// import type { Event } from "@/types";
 import type { Event } from "../../../types/event";
+import type { SportRecord } from "../../../types/sport";
 import type { FormErrors } from '@/types/registration'
+import { SelectableCard } from '@/components/ui/selectTableCard'
 
 interface SportSelectionProps {
   event?: Event;
@@ -9,23 +10,15 @@ interface SportSelectionProps {
   errors?: Partial<FormErrors>;
 }
 
-const SPORTS: { id: string; name: string; categories: string[] }[] = [
-  { id: "athletics", name: "Athletics", categories: [] },
-  { id: "football", name: "Football", categories: [] },
-  { id: "boxing", name: "Boxing", categories: [] },
-  { id: "swimming", name: "Swimming", categories: [] },
-  { id: "badminton", name: "Badminton", categories: [] },
-  { id: "volleyball", name: "Volleyball", categories: [] },
-  { id: "taekwondo", name: "Taekwondo", categories: [] },
-];
-
 export function SportSelection({ event, selectedSport, onSelect, errors }: SportSelectionProps) {
-  const raw = event?.sports ?? SPORTS;
-  const sports = raw.map((s: any) =>
+  type NormalizedSport = { id: string; name: string; categories: string[] };
+  const normalize = (s: string | SportRecord): NormalizedSport =>
     typeof s === "string"
       ? { id: s, name: s, categories: [] }
-      : { id: s.id ?? s.name, name: s.name ?? String(s), categories: s.categories ?? s.category ?? [] }
-  );
+      : { id: s.id ?? s.name, name: s.name ?? String(s), categories: s.categories ?? s.category ?? [] };
+
+  const raw = event?.sports ?? [];
+  const sports = raw.map(normalize);
 
   return (
     <div className="space-y-6">
@@ -36,19 +29,16 @@ export function SportSelection({ event, selectedSport, onSelect, errors }: Sport
         </p>
         {errors?.sport && <p className="text-sm text-red-600 mt-1">{errors.sport}</p>}
       </div>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         {sports.map((sport) => (
-          <button
+          <SelectableCard
             key={sport.id}
-            onClick={() => onSelect(sport.name)}
-            className={`flex flex-col items-center justify-center rounded-2xl border-2 p-6 transition-all hover:border-primary hover:bg-primary/5 ${
-              selectedSport === sport.name
-                ? "border-primary bg-primary/5"
-                : "border-border bg-card"
-            }`}
-          >
-            <span className="font-semibold">{sport.name}</span>
-          </button>
+            title={sport.name}
+            as="button"
+            selected={selectedSport === sport.name}
+            onSelect={() => onSelect(sport.name)}
+            className="items-center justify-center p-6 text-center"
+          />
         ))}
       </div>
     </div>

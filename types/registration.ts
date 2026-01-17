@@ -67,7 +67,6 @@ export interface FormErrors {
   // Team-related errors
   teamName?: string;
   teamMembers?: string;
-  // member_{index} => per-member error string
 }
 
 export type OnFieldChange = <K extends keyof FormData>(

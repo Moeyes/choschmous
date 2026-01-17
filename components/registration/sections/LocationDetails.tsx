@@ -1,9 +1,8 @@
-import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { SelectField } from "@/components/registration/SelectField";
 import type { OrganizationInfo } from "@/types/participation";
 
 import type { FormErrors } from "@/types/registration";
+import { SelectableCard } from '@/components/ui/selectTableCard';
 
 interface LocationDetailsProps {
   selectedOrganization?: OrganizationInfo;
@@ -78,10 +77,13 @@ export function LocationDetails({
     } else {
       setTempOrg({ type: 'province', province: sel.name, id: sel.id, name: sel.name } as any);
     }
-  }; 
+  };
 
-  const handleContinue = () => {
-    const sel = organizations.find((o) => o.id === selectedId);
+  const handleSelect = (id: string) => {
+    // select locally
+    handleChange(id);
+    // then advance by notifying parent
+    const sel = organizations.find((o) => o.id === id);
     if (!sel) return;
 
     if (String(sel.type).toLowerCase() === 'province') {
@@ -95,64 +97,34 @@ export function LocationDetails({
   const orgs = organizations.filter((o) => String(o.type).toLowerCase() === 'province');
 
   return (
-    <div className="space-y-6 max-w-md mx-auto">
+    <div className="space-y-6">
       <h2 className="text-3xl font-bold text-center">តំណាង</h2>
-      <SelectField
-        value={selectedId}
-        onChange={handleChange}
-        placeholder="ជ្រើសរើសខេត្ត ឬ ក្រសួង"
-        className="h-14 rounded-xl"
-        options={[
-          {
-            value: '__heading_ministries',
-            label: (
-              <div className="px-2 py-1 text-xs text-muted-foreground">ក្រសួង</div>
-            ),
-            disabled: true,
-          },
-          ...ministries.map((m) => ({ value: m.id, label: m.name })),
-          {
-            value: '__heading_organizations',
-            label: (
-              <div className="px-2 py-1 text-xs text-muted-foreground border-t mt-2">
-                ខេត្ត
-              </div>
-            ),
-            disabled: true,
-          },
-          ...(loading
-            ? [
-                {
-                  value: "__loading",
-                  label: "កំពុងផ្ទុកខេត្ត...",
-                  disabled: true,
-                },
-              ]
-            : []),
-          ...(error ? [{ value: '__error', label: error, disabled: true }] : []),
-          ...(!loading && !error
-            ? orgs.map((p) => ({
-                value: p.id,
-                label: (
-                  <div className="flex justify-between items-center">
-                    {/* <span>{p.name}</span> */}
-                    <span className="text-xs text-muted-foreground">{p.khmerName ?? ''}</span>
-                  </div>
-                ),
-              }))
-            : []),
-        ]}
-      />
+      <div className="space-y-4">
+        <div>
+          <div className="text-center text-xl text-muted-foreground">សូមជ្រើសរើសក្រសួង ឬ ខេត្តរបស់អ្នក</div>
+          {loading ? (
+            <div className="text-sm text-muted-foreground">កំពុងផ្ទុកទិន្នន័យ...</div>
+          ) : error ? (
+            <div className="text-sm text-red-600">{error}</div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-2">
+              {[...ministries, ...orgs].map((p) => (
+                <SelectableCard
+                  key={p.id}
+                  title={p.khmerName ?? p.name}
+                  subtitle={<span className="text-xs text-muted-foreground">{p.name}</span>}
+                  selected={selectedId === p.id}
+                  onSelect={() => handleSelect(p.id)}
+                  className="items-center justify-center p-6 text-center"
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
       {(errors?.province || (errors as any)?.organization) && (
         <p className="text-sm text-red-600 mt-1">{errors?.province ?? (errors as any)?.organization}</p>
       )}
-      <Button
-        className="w-full h-12 rounded-full"
-        onClick={handleContinue}
-        disabled={!selectedId}
-      >
-        បន្ត
-      </Button>
     </div>
   );
 }
