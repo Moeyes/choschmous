@@ -158,21 +158,21 @@ export default function RegistrationWizard() {
 
             {step === 4 && (
               <Card className="p-6 text-center">
-                <h2 className="text-2xl font-bold mb-4">Register as</h2>
+                <h2 className="text-2xl font-bold mb-4">ចុះឈ្មោះជា</h2>
                 <div className="flex justify-center gap-4">
                   <Button
                     onClick={() =>
                       attemptAdvance({ registrationType: "individual" }, 4)
                     }
                   >
-                    Individual
+                    បុគ្គល
                   </Button>
                   <Button
                     onClick={() =>
                       attemptAdvance({ registrationType: "team" }, 4)
                     }
                   >
-                    Team
+                    ក្រុម
                   </Button>
                 </div>
               </Card>
@@ -201,7 +201,7 @@ export default function RegistrationWizard() {
             {step === 7 && formData.registrationType === "team" && (
               <Card className="p-6 text-center">
                 <Button onClick={() => attemptAdvance(undefined, 7)}>
-                  Continue
+                  បន្ត
                 </Button>
               </Card>
             )}
