@@ -106,6 +106,15 @@ export function validateForm(data: FormData): FormErrors {
     errors.sport = 'សូមជ្រើសរើសកីឡា។';
   }
 
+  // Position validation (required at the position selection step)
+  if (!(data.position && data.position.role)) {
+    errors.position = 'សូមជ្រើសរើសតួនាទី។';
+  } else if (data.position.role === 'Athlete' && !(data.position as any).athleteCategory) {
+    errors.position = 'សូមជ្រើសប្រភេទកីឡាករ។';
+  } else if (data.position.role === 'Leader' && !(data.position as any).leaderRole) {
+    errors.position = 'សូមជ្រើសតួនាទីសម្រាប់អ្នកដឹកនាំ។';
+  }
+
   // Note: `category` is optional for some events; when present it is stored as `sportCategory` on the server.
   // If you want `category` to be required for specific events, add event-aware validation where needed.
 

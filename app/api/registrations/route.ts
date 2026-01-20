@@ -50,7 +50,7 @@ export async function createTeamAndMemberRegistrations(body: any) {
     const memberCreated = {
       id: String(Date.now()) + String(Math.floor(Math.random() * 1000)),
       registeredAt: now,
-      photoUrl: null,
+      photoUrl: m.photoUrl ?? null,
       ...normMember,
     } as any
     regsArr.push(memberCreated)
@@ -77,16 +77,19 @@ export async function POST(request: Request) {
         }
       }
 
-      const file = fd.get('photo') as any
-      if (file && typeof file.arrayBuffer === 'function') {
-        // basic server-side checks and save to /public/uploads
-        const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
-        await fs.mkdir(uploadsDir, { recursive: true })
-        const buffer = Buffer.from(await file.arrayBuffer())
+      // Save top-level photo (if present) and member photos (keys like memberPhoto_<id|index>)
+      const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
+      await fs.mkdir(uploadsDir, { recursive: true })
+      const maxSize = 2 * 1024 * 1024 // 2MB
 
-        // basic mime/type check (if available) and size limit
+      const memberPhotoMap: Record<string, string> = {}
+
+      for (const [key, val] of (fd as any).entries()) {
+        // val might be string or File-like
+        if (!val || typeof val !== 'object' || typeof val.arrayBuffer !== 'function') continue
+        const file = val as any
         const mime = file.type || ''
-        const maxSize = 2 * 1024 * 1024 // 2MB
+        const buffer = Buffer.from(await file.arrayBuffer())
         if (mime && !mime.startsWith('image/')) {
           return new Response(JSON.stringify({ message: 'Uploaded file must be an image.' }), { status: 400, headers: { 'Content-Type': 'application/json' } })
         }
@@ -97,7 +100,24 @@ export async function POST(request: Request) {
         const filename = `${Date.now()}-${(file.name ?? 'upload.jpg').replace(/[^a-zA-Z0-9.-]/g, '_')}`
         const filepath = path.join(uploadsDir, filename)
         await fs.writeFile(filepath, buffer)
-        photoUrl = `/uploads/${filename}`
+        const url = `/uploads/${filename}`
+
+        if (key === 'photo') {
+          photoUrl = url
+        } else if (key.startsWith('memberPhoto_')) {
+          const idKey = key.replace('memberPhoto_', '')
+          memberPhotoMap[idKey] = url
+        }
+      }
+
+      // attach member photoUrls back to body.teamMembers where possible
+      if (Array.isArray((body as any).teamMembers)) {
+        (body as any).teamMembers = (body as any).teamMembers.map((m: any, idx: number) => {
+          const idKey = m.id ?? String(idx)
+          const url = memberPhotoMap[idKey] ?? memberPhotoMap[String(idx)]
+          if (url) m.photoUrl = url
+          return m
+        })
       }
     } else {
       body = (await request.json()) as Partial<FormData>

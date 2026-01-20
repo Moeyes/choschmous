@@ -9,11 +9,8 @@ import { Card } from "@/components/ui/card";
 
 import { SportSelection } from "./sections/SportSelection";
 import { SportCategory } from "./sections/SportCategory";
-import { PositionSelector } from "./sections/PositionSelector";
 import { LocationDetails } from "./sections/LocationDetails";
 import { PersonalInfo } from "./sections/PersonalInfo";
-import { TeamDetails } from "./sections/TeamDetails";
-import { TeamMembers } from "./sections/TeamMembers";
 import { RegistrationAction } from "./RegistrationAction";
 
 import { EventCard } from "@/components/events/EventCard";
@@ -23,7 +20,7 @@ import { validateForm } from "@/lib/validation/validators";
 
 import type { FormData as RegistrationFormData, FormErrors } from "@/types/registration";
 
-const TOTAL_STEPS = 8;
+const TOTAL_STEPS = 7;
 
 export default function RegistrationWizard() {
   const { eventId } = useParams();
@@ -56,14 +53,14 @@ export default function RegistrationWizard() {
     const stepFieldMap: Record<number, string[]> = {
       2: ["sport"],
       3: ["category"],
-      4: ["registrationType"],
-      5: future.registrationType === "team" ? ["teamName"] : ["position"],
-      6: ["organization"],
-      7:
+      4: ["organization"],
+      5: ["registrationType"],
+      6:
         future.registrationType === "team"
-          ? ["teamMembers"]
-          : ["firstName", "lastName", "dateOfBirth", "nationalID", "gender", "phone", "photoUpload"],
-    };
+          ? ["teamName", "teamMembers", "firstName", "lastName", "dateOfBirth", "nationalID", "gender", "phone", "photoUpload", "position"]
+          : ["firstName", "lastName", "dateOfBirth", "nationalID", "gender", "phone", "photoUpload", "position"],
+      7: [],
+    }; 
 
     const keys = stepFieldMap[stepToCheck] ?? [];
     const filteredErrors: Partial<FormErrors> = {};
@@ -157,19 +154,31 @@ export default function RegistrationWizard() {
             )}
 
             {step === 4 && (
+              <Card className="p-6">
+                <LocationDetails
+                  selectedOrganization={formData.organization as any}
+                  onSelect={(organization) =>
+                    attemptAdvance({ organization }, 4)
+                  }
+                  errors={errors}
+                />
+              </Card>
+            )}
+
+            {step === 5 && (
               <Card className="p-6 text-center">
-                <h2 className="text-2xl font-bold mb-4">ចុះឈ្មោះជា</h2>
+                <h2 className="text-2xl font-bold">ចុះឈ្មោះជា</h2>
                 <div className="flex justify-center gap-4">
                   <Button
                     onClick={() =>
-                      attemptAdvance({ registrationType: "individual" }, 4)
+                      attemptAdvance({ registrationType: "individual" }, 5)
                     }
                   >
                     បុគ្គល
                   </Button>
                   <Button
                     onClick={() =>
-                      attemptAdvance({ registrationType: "team" }, 4)
+                      attemptAdvance({ registrationType: "team" }, 5)
                     }
                   >
                     ក្រុម
@@ -178,71 +187,24 @@ export default function RegistrationWizard() {
               </Card>
             )}
 
-            {step === 5 && formData.registrationType === "team" && (
-              <Card className="p-6">
-                <TeamDetails
-                  teamName={formData.teamName ?? null}
-                  onChange={setField}
-                  errors={errors}
-                />
-              </Card>
-            )}
-
-            {step === 6 && formData.registrationType === "team" && (
-              <Card className="p-6">
-                <TeamMembers
-                  members={formData.teamMembers ?? []}
-                  onChange={(teamMembers) => setField({ teamMembers })}
-                  errors={errors}
-                />
-              </Card>
-            )}
-
-            {step === 7 && formData.registrationType === "team" && (
-              <Card className="p-6 text-center">
-                <Button onClick={() => attemptAdvance(undefined, 7)}>
-                  បន្ត
-                </Button>
-              </Card>
-            )}
-
-            {step === 5 && formData.registrationType !== "team" && (
-              <Card className="p-6">
-                <PositionSelector
-                  formData={{ position: formData.position as any }}
-                  updateFormData={(d) => setField(d)}
-                  onNext={() => attemptAdvance(undefined, 5)}
-                />
-              </Card>
-            )}
-
-            {step === 6 && formData.registrationType !== "team" && (
-              <Card className="p-6">
-                <LocationDetails
-                  selectedOrganization={formData.organization as any}
-                  onSelect={(organization) =>
-                    attemptAdvance({ organization }, 6)
-                  }
-                  errors={errors}
-                />
-              </Card>
-            )}
-
-            {step === 7 && formData.registrationType !== "team" && (
+            {step === 6 && (
               <Card className="p-6">
                 <PersonalInfo
                   formData={formData}
                   updateFormData={setField}
-                  onNext={() => attemptAdvance(undefined, 7)}
+                  onNext={() => attemptAdvance(undefined, 6)}
                   errors={errors}
+                  isTeam={formData.registrationType === "team"}
+                  teamMembers={formData.teamMembers ?? []}
+                  onTeamMembersChange={(teamMembers) => setField({ teamMembers })}
                 />
               </Card>
-            )}
+            )} 
 
-            {step === 8 && (
+            {step === 7 && (
               <Card className="p-6">
                 <RegistrationAction
-                  formData={formData as RegistrationFormData}
+                  formData={formData as RegistrationFormData} 
                   eventId={selectedEvent?.id ?? eventId ?? ""}
                 />
               </Card>

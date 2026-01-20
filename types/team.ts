@@ -1,3 +1,5 @@
+import type { PositionInfo } from './participation'
+
 export interface TeamMember {
   id?: string;
   firstName: string;
@@ -8,11 +10,12 @@ export interface TeamMember {
   dateOfBirth?: string | null;
   gender?: 'Male' | 'Female' | null;
   phone?: string | null;
-  position?: string | null;
+  position?: PositionInfo | null;
   organization?: any | null;
   photoUrl?: string | null;
+  photoUpload?: File | null;
   isLeader?: boolean;
-}
+} 
 
 export interface Team {
   id: string;

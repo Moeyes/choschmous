@@ -38,6 +38,7 @@ export function normalizePosition(pos: any) {
 export function normalizeTeam(body: any) {
   const membersRaw = Array.isArray(body.teamMembers) ? body.teamMembers : []
   const members = membersRaw.map((m: any) => ({
+    id: m.id ?? null,
     firstName: m.firstName ?? null,
     lastName: m.lastName ?? null,
     firstNameKh: m.firstNameKh ?? null,

@@ -23,12 +23,24 @@ async function writeTeams(data: any[]) {
 
 export async function GET(request: Request) {
   const teams = await readTeams()
-  // support ?eventId= query
+  // support ?eventId= query and member filters
   const url = new URL(request.url)
   const eventId = url.searchParams.get('eventId')
-  const filtered = eventId ? teams.filter(t => t.eventId === eventId) : teams
+  const memberId = url.searchParams.get('memberId')
+  const memberNationalID = url.searchParams.get('memberNationalID')
+
+  let filtered = eventId ? teams.filter(t => t.eventId === eventId) : teams
+
+  if (memberId) {
+    filtered = filtered.filter(t => (t.members || []).some((m: any) => String(m.id) === memberId || String(m.nationalID) === memberId))
+  }
+
+  if (memberNationalID) {
+    filtered = filtered.filter(t => (t.members || []).some((m: any) => (m.nationalID ?? '') === memberNationalID))
+  }
+
   return NextResponse.json(filtered)
-}
+} 
 
 export async function POST(request: Request) {
   try {

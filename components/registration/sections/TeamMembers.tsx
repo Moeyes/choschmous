@@ -1,6 +1,9 @@
 import React, { useMemo, useRef, useState } from 'react'
 import type { TeamMember } from '@/types/team'
 import { isWithinLength } from '@/lib/validation/validators'
+import { Input } from '@/components/ui/input'
+import { SelectField } from '@/components/registration/SelectField'
+import { PhotoUpload } from '@/components/registration/PhotoUpload' 
 
 interface TeamMembersProps {
   members: TeamMember[];
@@ -11,11 +14,15 @@ interface TeamMembersProps {
 type PreviewRow = {
   firstName: string;
   lastName: string;
+  firstNameKh?: string;
+  lastNameKh?: string;
   nationalID?: string;
   phone?: string;
+  dateOfBirth?: string;
+  gender?: string;
   isLeader?: boolean;
-  errors: string[];
-}
+  errors: string[]
+} 
 
 export function TeamMembers({ members = [], onChange, errors = {} }: TeamMembersProps) {
   const [previewRows, setPreviewRows] = useState<PreviewRow[]>([])
@@ -28,8 +35,8 @@ export function TeamMembers({ members = [], onChange, errors = {} }: TeamMembers
   }
 
   const addMember = () => {
-    onChange([...(members ?? []), { firstName: '', lastName: '', nationalID: '', isLeader: false } as TeamMember])
-  }
+    onChange([...(members ?? []), { id: String(Date.now()), firstName: '', lastName: '', firstNameKh: '', lastNameKh: '', nationalID: '', dateOfBirth: '', gender: null, phone: '', position: null, organization: null, photoUrl: null, photoUpload: null, isLeader: false } as TeamMember])
+  } 
 
   const removeMember = (index: number) => {
     const copy = members.slice()
@@ -37,7 +44,6 @@ export function TeamMembers({ members = [], onChange, errors = {} }: TeamMembers
     onChange(copy)
   }
 
-  // Local validation: per-member checks and duplicate nationalID detection
   const localErrors = useMemo(() => {
     const map: Record<number, string[]> = {}
     const idCount: Record<string, number> = {}
@@ -75,8 +81,12 @@ export function TeamMembers({ members = [], onChange, errors = {} }: TeamMembers
       const row: PreviewRow = {
         firstName: obj.firstname || obj.first_name || obj['first name'] || obj['first'] || '',
         lastName: obj.lastname || obj.last_name || obj['last name'] || obj['last'] || '',
+        firstNameKh: obj.firstnamekh || obj['first name kh'] || obj['first_name_kh'] || '',
+        lastNameKh: obj.lastNameKh || obj.lastnamekh || obj['last name kh'] || obj['last_name_kh'] || '',
         nationalID: obj.nationalid || obj['national id'] || obj.national_id || obj.nationalID || '',
         phone: obj.phone || obj.telephone || obj.contact || '',
+        dateOfBirth: obj.dob || obj.dateofbirth || obj['date of birth'] || '',
+        gender: obj.gender || '',
         isLeader: String(obj.isleader || obj.is_leader || obj.leader || '').toLowerCase() === 'true' || String(obj.isleader || obj.is_leader || obj.leader || '').trim() === '1',
         errors: [],
       }
@@ -95,8 +105,10 @@ export function TeamMembers({ members = [], onChange, errors = {} }: TeamMembers
 
     return rows.map((r) => {
       const errs: string[] = []
-      if (!r.firstName.trim()) errs.push('First name missing')
-      if (!r.lastName.trim()) errs.push('Last name missing')
+      if (!r.firstName.trim() && !r.firstNameKh?.trim()) errs.push('First name missing')
+      if (!r.lastName.trim() && !r.lastNameKh?.trim()) errs.push('Last name missing')
+      if (!r.dateOfBirth?.trim()) errs.push('Date of birth missing')
+      if (!r.gender?.trim()) errs.push('Gender missing')
       if (r.nationalID) {
         const id = String(r.nationalID).trim()
         if (!isWithinLength(id, 6, 20)) errs.push('National ID must be between 6 and 20 characters')
@@ -116,13 +128,13 @@ export function TeamMembers({ members = [], onChange, errors = {} }: TeamMembers
   }
 
   const importValidRows = () => {
-    const valid = previewRows.filter((r) => r.errors.length === 0).map((r) => ({ firstName: r.firstName, lastName: r.lastName, nationalID: r.nationalID ?? '', phone: r.phone ?? '', isLeader: r.isLeader ?? false } as TeamMember))
+    const valid = previewRows.filter((r) => r.errors.length === 0).map((r) => ({ id: String(Date.now()) + Math.random().toString(36).slice(2,6), firstName: r.firstName, lastName: r.lastName, firstNameKh: r.firstNameKh ?? '', lastNameKh: r.lastNameKh ?? '', nationalID: r.nationalID ?? '', phone: r.phone ?? '', dateOfBirth: r.dateOfBirth ?? '', gender: (r.gender as any) ?? null, isLeader: r.isLeader ?? false } as TeamMember))
     if (valid.length > 0) {
       onChange([...(members ?? []), ...valid])
     }
     setPreviewRows([])
     if (fileRef.current) fileRef.current.value = ''
-  }
+  } 
 
   const cancelImport = () => {
     setPreviewRows([])
@@ -134,26 +146,75 @@ export function TeamMembers({ members = [], onChange, errors = {} }: TeamMembers
       <h2 className="text-3xl font-bold text-center">Team Members</h2>
       <div className="space-y-4">
         {(members || []).map((m, i) => (
-          <div key={i} className="p-4 rounded-lg border flex gap-3 items-start">
-            <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-2">
-              <input value={m.firstName ?? ''} onChange={(e) => updateMember(i, { firstName: e.target.value })} placeholder="First name" className="px-2 py-1 rounded-md border" />
-              <input value={m.lastName ?? ''} onChange={(e) => updateMember(i, { lastName: e.target.value })} placeholder="Last name" className="px-2 py-1 rounded-md border" />
-              <input value={m.nationalID ?? ''} onChange={(e) => updateMember(i, { nationalID: e.target.value })} placeholder="National ID" className="px-2 py-1 rounded-md border" />
-              <input value={m.phone ?? ''} onChange={(e) => updateMember(i, { phone: e.target.value })} placeholder="Phone (optional)" className="px-2 py-1 rounded-md border col-span-2" />
-              <label className="flex items-center gap-2">
-                <input type="checkbox" checked={!!m.isLeader} onChange={(e) => updateMember(i, { isLeader: e.target.checked })} />
-                <span className="text-sm">Leader</span>
-              </label>
+          <div key={m.id ?? i} className="p-4 rounded-lg border relative">
+            <div className="absolute top-3 right-3">
+              <button className="text-sm text-red-600" onClick={() => removeMember(i)}>លុប</button>
             </div>
-            <div className="flex flex-col gap-2">
-              <button className="text-sm text-red-600" onClick={() => removeMember(i)}>Remove</button>
-              {errors && (errors as any)[`member_${i}`] && <div className="text-sm text-red-600">{(errors as any)[`member_${i}`]}</div>}
-              {localErrors[i] && localErrors[i].length > 0 && (
-                <div className="text-sm text-red-600">
-                  {localErrors[i].map((s) => <div key={s}>{s}</div>)}
-                </div>
-              )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input placeholder="គោត្តនាម" value={m.firstNameKh ?? ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateMember(i, { firstNameKh: e.target.value })} />
+              <Input placeholder="នាម" value={m.lastNameKh ?? ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateMember(i, { lastNameKh: e.target.value })} />
+
+              <Input placeholder="គោត្តនាម (អក្សរឡាតាំង)" value={m.firstName ?? ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateMember(i, { firstName: e.target.value })} />
+              <Input placeholder="នាម (អក្សរឡាតាំង)" value={m.lastName ?? ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateMember(i, { lastName: e.target.value })} />
+
+              <Input type="date" placeholder="ថ្ងៃខែឆ្នាំកំណើត" value={m.dateOfBirth ?? ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateMember(i, { dateOfBirth: e.target.value })} />
+              <Input placeholder="លេខអត្តសញ្ញាណជាតិ" value={m.nationalID ?? ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateMember(i, { nationalID: e.target.value })} />
+
+              <Input placeholder="ទូរស័ព្ទ" value={m.phone ?? ''} onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateMember(i, { phone: e.target.value })} />
+              <SelectField value={m.gender ?? undefined} onChange={(val: string) => updateMember(i, { gender: val as any })} placeholder="ភេទ" options={[{ value: 'Male', label: 'ប្រុស' }, { value: 'Female', label: 'ស្រី' }]} />
+
+              <div>
+                <SelectField
+                  value={(m.position as any)?.role ?? undefined}
+                  onChange={(val: string) => updateMember(i, { position: { ...(m.position as any), role: val as any } })}
+                  placeholder="តួនាទី"
+                  options={[
+                    { value: "Athlete", label: "កីឡាករ/កីឡាការិនី" },
+                    { value: "Leader", label: "អ្នកដឹកនាំ" },
+                  ]}
+                />
+
+                {(m.position as any)?.role === "Athlete" && (
+                  <SelectField
+                    value={(m.position as any)?.athleteCategory ?? undefined}
+                    onChange={(val: string) => updateMember(i, { position: { ...(m.position as any), athleteCategory: val as any } })}
+                    placeholder="ប្រភេទកីឡាករ"
+                    options={[{ value: "Male", label: "កីឡាករ" }, { value: "Female", label: "កីឡាការិនី" }]}
+                  />
+                )}
+
+                {(m.position as any)?.role === "Leader" && (
+                  <SelectField
+                    value={(m.position as any)?.leaderRole ?? undefined}
+                    onChange={(val: string) => updateMember(i, { position: { ...(m.position as any), leaderRole: val } })}
+                    placeholder="ជ្រើសតួនាទី"
+                    options={[
+                      { value: "coach", label: "ថ្នាក់ដឹកនាំ" },
+                      { value: "manager", label: "គណកម្មការបច្ចេកទេស" },
+                      { value: "delegate", label: "ប្រតិភូ" },
+                      { value: "team_lead", label: "អ្នកដឹកនាំក្រុម" },
+                      { value: "coach_trainer", label: "គ្រូបង្វឹក" },
+                    ]}
+                  />
+                )}
+              </div>
+
+              <div className="flex items-center gap-4">
+                <PhotoUpload file={(m.photoUpload as File) ?? null} onChange={(f: File | null) => updateMember(i, { photoUpload: f ?? null })} />
+                {m.photoUrl && (
+                  <div className="text-sm text-muted-foreground">បានផ្ទុកឡើង</div>
+                )}
+              </div>
             </div>
+
+
+
+            {errors && (errors as any)[`member_${i}`] && <div className="text-sm text-red-600 mt-2">{(errors as any)[`member_${i}`]}</div>}
+            {localErrors[i] && localErrors[i].length > 0 && (
+              <div className="text-sm text-red-600 mt-2">
+                {localErrors[i].map((s) => <div key={s}>{s}</div>)}
+              </div>
+            )}
           </div>
         ))}
 

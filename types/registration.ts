@@ -6,7 +6,6 @@ export interface FormData {
   selectedSport?: string | string[] | null;
   id?: string;
   registeredAt?: string | number | Date;
-  // name?: string;
 
   firstName?: string;
   lastName?: string;
@@ -23,11 +22,8 @@ export interface FormData {
   position?: PositionInfo | null;
   organization?: OrganizationInfo | null;
 
-  // selected sport category (e.g., "Men", "Women", etc.)
   category?: string;
-  // normalized id for the primary sport (slug)
   sportId?: string;
-  // canonical sport category name (stored on server as `sportCategory`)
   sportCategory?: string;
 
   sport: string;
@@ -40,8 +36,6 @@ export interface FormData {
   teamName?: string | null;
   teamMembers?: import('./team').TeamMember[];
   isTeamLeader?: boolean;
-
-
 }
 
 export interface FormErrors {

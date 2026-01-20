@@ -2,15 +2,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SelectField } from "@/components/registration/SelectField";
 import { PhotoUpload } from "@/components/registration/PhotoUpload";
+import { TeamMembers } from "./TeamMembers";
+import type { TeamMember } from "@/types/team";
 import type { FormData as RegistrationFormData } from "@/types/registration";
 
-import type { FormErrors } from '@/types/registration'
+import type { FormErrors } from "@/types/registration";
 
 interface PersonalInfoProps {
-  formData: Partial<RegistrationFormData>;
-  updateFormData: (data: Partial<RegistrationFormData>) => void;
-  onNext: () => void;
+  formData: any;
+  updateFormData: (data: any) => void;
+  onNext?: () => void;
   errors?: Partial<FormErrors>;
+  hideContinue?: boolean;
+  isTeam?: boolean;
+  teamMembers?: TeamMember[];
+  onTeamMembersChange?: (members: TeamMember[]) => void;
 }
 
 export function PersonalInfo({
@@ -18,7 +24,21 @@ export function PersonalInfo({
   updateFormData,
   onNext,
   errors,
+  hideContinue = false,
+  isTeam = false,
+  teamMembers = [],
+  onTeamMembersChange,
 }: PersonalInfoProps) {
+  const hasName = !!(
+    formData.firstName ||
+    formData.lastName ||
+    formData.firstNameKh ||
+    formData.lastNameKh
+  );
+  const continueDisabled =
+    !hasName ||
+    (isTeam && (!formData.teamName || (teamMembers?.length ?? 0) === 0));
+
   return (
     <div className="space-y-6 max-w-md mx-auto">
       <h2 className="text-3xl font-bold text-center">ព័ត៌មានផ្ទាល់ខ្លួន</h2>
@@ -34,22 +54,24 @@ export function PersonalInfo({
           value={formData.lastNameKh ?? ""}
           onChange={(e) => updateFormData({ lastNameKh: e.target.value })}
         />
-        <div>
-          <Input
-            placeholder="គោត្តនាម​​​ (អក្សរឡាតាំង)"
-            value={formData.firstName ?? ""}
-            onChange={(e) => updateFormData({ firstName: e.target.value })}
-          />
-          {errors?.firstName && <p className="text-sm text-red-600 mt-1">{errors.firstName}</p>}
-        </div>
-        <div>
-          <Input
-            placeholder="នាម​ (អក្សរឡាតាំង)"
-            value={formData.lastName ?? ""}
-            onChange={(e) => updateFormData({ lastName: e.target.value })}
-          />
-          {errors?.lastName && <p className="text-sm text-red-600 mt-1">{errors.lastName}</p>}
-        </div>
+      </div>
+      <div  className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Input
+          placeholder="គោត្តនាម​​​ (អក្សរឡាតាំង)"
+          value={formData.firstName ?? ""}
+          onChange={(e) => updateFormData({ firstName: e.target.value })}
+        />
+        {errors?.firstName && (
+          <p className="text-sm text-red-600 mt-1">{errors.firstName}</p>
+        )}
+        <Input
+          placeholder="នាម​ (អក្សរឡាតាំង)"
+          value={formData.lastName ?? ""}
+          onChange={(e) => updateFormData({ lastName: e.target.value })}
+        />
+        {errors?.lastName && (
+          <p className="text-sm text-red-600 mt-1">{errors.lastName}</p>
+        )}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -65,7 +87,9 @@ export function PersonalInfo({
 
         <SelectField
           value={formData.nationality ?? undefined}
-          onChange={(val: string) => updateFormData({ nationality: val as any })}
+          onChange={(val: string) =>
+            updateFormData({ nationality: val as any })
+          }
           placeholder="ប្រភេទឯកសារជាតិសញ្ជាតិ"
           options={[
             { value: "IDCard", label: "អត្តសញ្ញាណប័ណ្ណ" },
@@ -82,7 +106,9 @@ export function PersonalInfo({
             value={formData.dateOfBirth ?? ""}
             onChange={(e) => updateFormData({ dateOfBirth: e.target.value })}
           />
-          {errors?.dateOfBirth && <p className="text-sm text-red-600 mt-1">{errors.dateOfBirth}</p>}
+          {errors?.dateOfBirth && (
+            <p className="text-sm text-red-600 mt-1">{errors.dateOfBirth}</p>
+          )}
         </div>
         <div>
           <Input
@@ -90,7 +116,9 @@ export function PersonalInfo({
             value={formData.nationalID ?? ""}
             onChange={(e) => updateFormData({ nationalID: e.target.value })}
           />
-          {errors?.nationalID && <p className="text-sm text-red-600 mt-1">{errors.nationalID}</p>}
+          {errors?.nationalID && (
+            <p className="text-sm text-red-600 mt-1">{errors.nationalID}</p>
+          )}
         </div>
       </div>
 
@@ -100,7 +128,71 @@ export function PersonalInfo({
           value={formData.phone ?? ""}
           onChange={(e) => updateFormData({ phone: e.target.value })}
         />
-        {errors?.phone && <p className="text-sm text-red-600 mt-1">{errors.phone}</p>}
+        {errors?.phone && (
+          <p className="text-sm text-red-600 mt-1">{errors.phone}</p>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <SelectField
+            value={(formData.position as any)?.role ?? undefined}
+            onChange={(val: string) =>
+              updateFormData({
+                position: { ...(formData.position as any), role: val as any },
+              })
+            }
+            placeholder="តួនាទី"
+            options={[
+              { value: "Athlete", label: "កីឡាករ/កីឡាការិនី" },
+              { value: "Leader", label: "អ្នកដឹកនាំ" },
+            ]}
+          />
+        </div>
+
+        <div>
+          {(formData.position as any)?.role === "Athlete" && (
+            <SelectField
+              value={(formData.position as any)?.athleteCategory ?? undefined}
+              onChange={(val: string) =>
+                updateFormData({
+                  position: {
+                    ...(formData.position as any),
+                    athleteCategory: val as any,
+                  },
+                })
+              }
+              placeholder="ប្រភេទកីឡាករ"
+              options={[
+                { value: "Male", label: "កីឡាករ" },
+                { value: "Female", label: "កីឡាការិនី" },
+              ]}
+            />
+          )}
+
+          {(formData.position as any)?.role === "Leader" && (
+            <SelectField
+              value={(formData.position as any)?.leaderRole ?? undefined}
+              onChange={(val: string) =>
+                updateFormData({
+                  position: { ...(formData.position as any), leaderRole: val },
+                })
+              }
+              placeholder="ជ្រើសតួនាទី"
+              options={[
+                { value: "coach", label: "ថ្នាក់ដឹកនាំ" },
+                { value: "manager", label: "គណកម្មការបច្ចេកទេស" },
+                { value: "delegate", label: "ប្រតិភូ" },
+                { value: "team_lead", label: "អ្នកដឹកនាំក្រុម" },
+                { value: "coach_trainer", label: "គ្រូបង្វឹក" },
+              ]}
+            />
+          )}
+
+          {errors?.position && (
+            <p className="text-sm text-red-600 mt-1">{errors.position}</p>
+          )}
+        </div>
       </div>
 
       <div className="flex items-center gap-4">
@@ -112,15 +204,44 @@ export function PersonalInfo({
           <div className="text-sm text-muted-foreground">បានផ្ទុកឡើង</div>
         )}
       </div>
-      {errors?.photoUpload && <p className="text-sm text-red-600 mt-1">{errors.photoUpload}</p>}
+      {errors?.photoUpload && (
+        <p className="text-sm text-red-600 mt-1">{errors.photoUpload}</p>
+      )}
 
-      <Button
-        className="w-full h-12 rounded-full"
-        onClick={onNext}
-        disabled={!(formData.firstName || formData.lastName || formData.firstNameKh || formData.lastNameKh)}
-      >
-        បន្ត
-      </Button>
+      {isTeam && (
+        <div className="mt-6 space-y-4">
+          <label className="flex flex-col">
+            <span className="text-sm font-medium">Team Name</span>
+            <Input
+              value={formData.teamName ?? ""}
+              onChange={(e) => updateFormData({ teamName: e.target.value })}
+              placeholder="Team name"
+              className="mt-1"
+            />
+            {errors?.teamName && (
+              <p className="text-sm text-red-600 mt-1">{errors.teamName}</p>
+            )}
+          </label>
+
+          <div>
+            <TeamMembers
+              members={teamMembers}
+              onChange={(m) => onTeamMembersChange?.(m)}
+              errors={errors}
+            />
+          </div>
+        </div>
+      )}
+
+      {!hideContinue && (
+        <Button
+          className="w-full h-12 rounded-full"
+          onClick={onNext}
+          disabled={continueDisabled}
+        >
+          បន្ត
+        </Button>
+      )}
     </div>
   );
 }
