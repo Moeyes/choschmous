@@ -100,13 +100,11 @@ export function validateForm(data: FormData): FormErrors {
     errors.nationalID = 'លេខអត្តសញ្ញាណត្រូវមានចន្លោះពី 6 ទៅ 20 តួអក្សរ។';
   }
 
-  // Sport selection validation (accept `sport` or legacy `selectedSport`)
   if (!data.sport && !data.selectedSport) {
     errors.selectedSport = 'សូមជ្រើសរើសកីឡា។';
     errors.sport = 'សូមជ្រើសរើសកីឡា។';
   }
 
-  // Position validation (required at the position selection step)
   if (!(data.position && data.position.role)) {
     errors.position = 'សូមជ្រើសរើសតួនាទី។';
   } else if (data.position.role === 'Athlete' && !(data.position as any).athleteCategory) {
@@ -115,50 +113,6 @@ export function validateForm(data: FormData): FormErrors {
     errors.position = 'សូមជ្រើសតួនាទីសម្រាប់អ្នកដឹកនាំ។';
   }
 
-  // Note: `category` is optional for some events; when present it is stored as `sportCategory` on the server.
-  // If you want `category` to be required for specific events, add event-aware validation where needed.
-
-  // Team registration validations
-  if ((data as any).registrationType === 'team') {
-    if (!data.teamName || !(data.teamName as string).trim()) {
-      (errors as any).teamName = 'សូមបញ្ចូលឈ្មោះក្រុម.'
-    }
-
-    const members = (data as any).teamMembers ?? []
-    const sport = (data as any).sport ?? ''
-
-    // basic sport-specific minimums
-    const SPORT_MIN_MEMBERS: Record<string, number> = {
-      football: 11,
-      basketball: 5,
-      volleyball: 6,
-      default: 1,
-    }
-    const min = SPORT_MIN_MEMBERS[sport?.toLowerCase?.()] ?? SPORT_MIN_MEMBERS.default
-
-    if (!Array.isArray(members) || members.length < min) {
-      (errors as any).teamMembers = `ក្រុមត្រូវតែមានអ្នកចូលរួមយ៉ាងតិច ${min} នាក់`;
-    }
-
-    // unique nationalID check
-    const ids = members.map((m: any) => (m.nationalID || '').trim()).filter(Boolean)
-    const dup = ids.find((id: string, idx: number) => ids.indexOf(id) !== idx)
-    if (dup) {
-      (errors as any).teamMembers = (errors as any).teamMembers ? (errors as any).teamMembers + ' លេខអត្តសញ្ញាណជាតិក្នុងក្រុមមិនត្រូវមានចម្លង។' : 'លេខអត្តសញ្ញាណជាតិក្នុងក្រុមមិនត្រូវមានចម្លង។'
-    }
-
-    // per-member required fields
-    members.forEach((m: any, i: number) => {
-      if (!m.firstName || !m.lastName) {
-        (errors as any)[`member_${i}`] = 'សូមបញ្ចូលឈ្មោះ និងនាមសម្រាប់សមាជិកទាំងអស់។'
-      }
-      if (!m.nationalID) {
-        (errors as any)[`member_${i}`] = ((errors as any)[`member_${i}`] || '') + ' សូមបញ្ចូលលេខអត្តសញ្ញាណ.'
-      }
-    })
-  }
-
-  // Photo upload validation (optional but if present, must be valid)
   if (data.photoUpload) {
     const file = data.photoUpload;
     const maxSize = 2 * 1024 * 1024; // 2MB

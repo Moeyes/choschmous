@@ -6,4 +6,3 @@ export * from "./event";
 export * from "./medal";
 export * from "./registration";
 export * from "./sport";
-export * from "./team";

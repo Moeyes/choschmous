@@ -2,10 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SelectField } from "@/components/registration/SelectField";
 import { PhotoUpload } from "@/components/registration/PhotoUpload";
-import { TeamMembers } from "./TeamMembers";
-import type { TeamMember } from "@/types/team";
-import type { FormData as RegistrationFormData } from "@/types/registration";
-
 import type { FormErrors } from "@/types/registration";
 
 interface PersonalInfoProps {
@@ -14,9 +10,6 @@ interface PersonalInfoProps {
   onNext?: () => void;
   errors?: Partial<FormErrors>;
   hideContinue?: boolean;
-  isTeam?: boolean;
-  teamMembers?: TeamMember[];
-  onTeamMembersChange?: (members: TeamMember[]) => void;
 }
 
 export function PersonalInfo({
@@ -25,9 +18,6 @@ export function PersonalInfo({
   onNext,
   errors,
   hideContinue = false,
-  isTeam = false,
-  teamMembers = [],
-  onTeamMembersChange,
 }: PersonalInfoProps) {
   const hasName = !!(
     formData.firstName ||
@@ -35,9 +25,7 @@ export function PersonalInfo({
     formData.firstNameKh ||
     formData.lastNameKh
   );
-  const continueDisabled =
-    !hasName ||
-    (isTeam && (!formData.teamName || (teamMembers?.length ?? 0) === 0));
+  const continueDisabled = !hasName;
 
   return (
     <div className="space-y-6 max-w-md mx-auto">
@@ -151,6 +139,10 @@ export function PersonalInfo({
         </div>
 
         <div>
+          
+        </div>
+
+        {/* <div>
           {(formData.position as any)?.role === "Athlete" && (
             <SelectField
               value={(formData.position as any)?.athleteCategory ?? undefined}
@@ -192,7 +184,7 @@ export function PersonalInfo({
           {errors?.position && (
             <p className="text-sm text-red-600 mt-1">{errors.position}</p>
           )}
-        </div>
+        </div> */}
       </div>
 
       <div className="flex items-center gap-4">
@@ -206,31 +198,6 @@ export function PersonalInfo({
       </div>
       {errors?.photoUpload && (
         <p className="text-sm text-red-600 mt-1">{errors.photoUpload}</p>
-      )}
-
-      {isTeam && (
-        <div className="mt-6 space-y-4">
-          <label className="flex flex-col">
-            <span className="text-sm font-medium">Team Name</span>
-            <Input
-              value={formData.teamName ?? ""}
-              onChange={(e) => updateFormData({ teamName: e.target.value })}
-              placeholder="Team name"
-              className="mt-1"
-            />
-            {errors?.teamName && (
-              <p className="text-sm text-red-600 mt-1">{errors.teamName}</p>
-            )}
-          </label>
-
-          <div>
-            <TeamMembers
-              members={teamMembers}
-              onChange={(m) => onTeamMembersChange?.(m)}
-              errors={errors}
-            />
-          </div>
-        </div>
       )}
 
       {!hideContinue && (

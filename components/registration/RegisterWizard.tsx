@@ -20,7 +20,7 @@ import { validateForm } from "@/lib/validation/validators";
 
 import type { FormData as RegistrationFormData, FormErrors } from "@/types/registration";
 
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 6;
 
 export default function RegistrationWizard() {
   const { eventId } = useParams();
@@ -54,13 +54,9 @@ export default function RegistrationWizard() {
       2: ["sport"],
       3: ["category"],
       4: ["organization"],
-      5: ["registrationType"],
-      6:
-        future.registrationType === "team"
-          ? ["teamName", "teamMembers", "firstName", "lastName", "dateOfBirth", "nationalID", "gender", "phone", "photoUpload", "position"]
-          : ["firstName", "lastName", "dateOfBirth", "nationalID", "gender", "phone", "photoUpload", "position"],
-      7: [],
-    }; 
+      5: [ "firstNameKh", "lastNameKh","firstName", "lastName", "dateOfBirth", "nationalID", "gender", "phone", "photoUpload", "position"],
+      6: []
+    };
 
     const keys = stepFieldMap[stepToCheck] ?? [];
     const filteredErrors: Partial<FormErrors> = {};
@@ -164,44 +160,18 @@ export default function RegistrationWizard() {
                 />
               </Card>
             )}
-
             {step === 5 && (
-              <Card className="p-6 text-center">
-                <h2 className="text-2xl font-bold">ចុះឈ្មោះជា</h2>
-                <div className="flex justify-center gap-4">
-                  <Button
-                    onClick={() =>
-                      attemptAdvance({ registrationType: "individual" }, 5)
-                    }
-                  >
-                    បុគ្គល
-                  </Button>
-                  <Button
-                    onClick={() =>
-                      attemptAdvance({ registrationType: "team" }, 5)
-                    }
-                  >
-                    ក្រុម
-                  </Button>
-                </div>
-              </Card>
-            )}
-
-            {step === 6 && (
               <Card className="p-6">
                 <PersonalInfo
                   formData={formData}
                   updateFormData={setField}
                   onNext={() => attemptAdvance(undefined, 6)}
                   errors={errors}
-                  isTeam={formData.registrationType === "team"}
-                  teamMembers={formData.teamMembers ?? []}
-                  onTeamMembersChange={(teamMembers) => setField({ teamMembers })}
                 />
               </Card>
-            )} 
+            )}  
 
-            {step === 7 && (
+            {step === 6 && (
               <Card className="p-6">
                 <RegistrationAction
                   formData={formData as RegistrationFormData} 

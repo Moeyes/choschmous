@@ -27,37 +27,7 @@ export async function GET() {
   return NextResponse.json(regs)
 }
 
-// helper extracted for tests and reuse
-export async function createTeamAndMemberRegistrations(body: any) {
-  const { normalizeTeam, normalizeRegistration } = await import('@/lib/data/normalizers/registrationNormalizer')
-  const teamsFile = path.join(process.cwd(), '/lib/data/mock/teams.json')
-  const teamsRaw = await fs.readFile(teamsFile, 'utf-8')
-  const teamsArr = JSON.parse(teamsRaw || '[]')
 
-  const teamData = normalizeTeam(body)
-  const teamId = String(Date.now())
-  const teamRecord = { id: teamId, ...teamData }
-  teamsArr.push(teamRecord)
-  await fs.writeFile(teamsFile, JSON.stringify(teamsArr, null, 2), 'utf-8')
-
-  // create registration entries for each team member
-  const members = body.teamMembers ?? []
-  const regsArr = await readRegistrations()
-  const now = new Date().toISOString()
-  for (const m of members) {
-    const memberPayload = { ...body, ...m, registrationType: 'team', teamId, teamName: teamRecord.name }
-    const normMember = normalizeRegistration(memberPayload as Partial<FormData>)
-    const memberCreated = {
-      id: String(Date.now()) + String(Math.floor(Math.random() * 1000)),
-      registeredAt: now,
-      photoUrl: m.photoUrl ?? null,
-      ...normMember,
-    } as any
-    regsArr.push(memberCreated)
-  }
-  await writeRegistrations(regsArr)
-  return teamRecord
-}
 
 export async function POST(request: Request) {
   try {
@@ -85,40 +55,24 @@ export async function POST(request: Request) {
       const memberPhotoMap: Record<string, string> = {}
 
       for (const [key, val] of (fd as any).entries()) {
-        // val might be string or File-like
-        if (!val || typeof val !== 'object' || typeof val.arrayBuffer !== 'function') continue
-        const file = val as any
-        const mime = file.type || ''
-        const buffer = Buffer.from(await file.arrayBuffer())
+        if (key !== 'photo') continue;
+        if (!val || typeof val !== 'object' || typeof val.arrayBuffer !== 'function') continue;
+        const file = val as any;
+        const mime = file.type || '';
+        const buffer = Buffer.from(await file.arrayBuffer());
         if (mime && !mime.startsWith('image/')) {
-          return new Response(JSON.stringify({ message: 'Uploaded file must be an image.' }), { status: 400, headers: { 'Content-Type': 'application/json' } })
+          return new Response(JSON.stringify({ message: 'Uploaded file must be an image.' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
         }
         if (buffer.length > maxSize) {
-          return new Response(JSON.stringify({ message: 'Image size must be 2MB or smaller.' }), { status: 400, headers: { 'Content-Type': 'application/json' } })
+          return new Response(JSON.stringify({ message: 'Image size must be 2MB or smaller.' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
         }
-
-        const filename = `${Date.now()}-${(file.name ?? 'upload.jpg').replace(/[^a-zA-Z0-9.-]/g, '_')}`
-        const filepath = path.join(uploadsDir, filename)
-        await fs.writeFile(filepath, buffer)
-        const url = `/uploads/${filename}`
-
-        if (key === 'photo') {
-          photoUrl = url
-        } else if (key.startsWith('memberPhoto_')) {
-          const idKey = key.replace('memberPhoto_', '')
-          memberPhotoMap[idKey] = url
-        }
+        const filename = `${Date.now()}-${(file.name ?? 'upload.jpg').replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+        const filepath = path.join(uploadsDir, filename);
+        await fs.writeFile(filepath, buffer);
+        photoUrl = `/uploads/${filename}`;
       }
 
-      // attach member photoUrls back to body.teamMembers where possible
-      if (Array.isArray((body as any).teamMembers)) {
-        (body as any).teamMembers = (body as any).teamMembers.map((m: any, idx: number) => {
-          const idKey = m.id ?? String(idx)
-          const url = memberPhotoMap[idKey] ?? memberPhotoMap[String(idx)]
-          if (url) m.photoUrl = url
-          return m
-        })
-      }
+
     } else {
       body = (await request.json()) as Partial<FormData>
     }
@@ -142,16 +96,7 @@ export async function POST(request: Request) {
       }
     }
 
-    // If this is a team registration, create a team record and member registrations
-    if ((body as any).registrationType === 'team') {
-      try {
-        const team = await createTeamAndMemberRegistrations(body)
-        return new Response(JSON.stringify(team), { status: 201, headers: { "Content-Type": "application/json" } })
-      } catch (err) {
-        console.error('Failed to create team and member registrations', err)
-        return new Response(JSON.stringify({ message: 'Failed to create team' }), { status: 500, headers: { 'Content-Type': 'application/json' } })
-      }
-    }
+
 
     const created = {
       id,

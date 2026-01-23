@@ -8,11 +8,7 @@ export interface Athlete extends Participation {
 
   sportCategory: string;
 
-  // Team support (optional)
-  registrationType?: 'individual' | 'team';
-  teamId?: string | null;
-  teamName?: string | null;
-  isTeamLeader?: boolean;
+
 
   medals?: {
     gold: number;

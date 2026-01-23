@@ -33,36 +33,15 @@ export function RegistrationAction({
       }
 
       const payload = { ...formData, eventId } as any;
-
-      // Clone payload and remove File objects so JSON.stringify will succeed
       const payloadToSend: any = { ...payload };
       delete payloadToSend.photoUpload;
-      if (Array.isArray(payloadToSend.teamMembers)) {
-        payloadToSend.teamMembers = payloadToSend.teamMembers.map((m: any) => {
-          const { photoUpload, ...rest } = m || {};
-          return rest;
-        });
-      }
 
       let res: Response;
 
-      const teamMembers = Array.isArray(formData.teamMembers) ? formData.teamMembers : [];
-      const hasMemberFiles = teamMembers.some((m: any) => !!m?.photoUpload);
-
-      if (formData.photoUpload || hasMemberFiles) {
+      if (formData.photoUpload) {
         const fd = new FormData();
         fd.append('payload', JSON.stringify(payloadToSend));
-        if (formData.photoUpload) fd.append('photo', formData.photoUpload as File);
-
-        // Append member photos using member id when available, otherwise index
-        teamMembers.forEach((m: any, idx: number) => {
-          const file = m?.photoUpload as File | null | undefined;
-          if (file) {
-            const idKey = m?.id ?? String(idx);
-            fd.append(`memberPhoto_${idKey}`, file);
-          }
-        });
-
+        fd.append('photo', formData.photoUpload as File);
         res = await fetch('/api/registrations', { method: 'POST', body: fd });
       } else {
         res = await fetch('/api/registrations', {

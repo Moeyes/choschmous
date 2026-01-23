@@ -30,12 +30,7 @@ export interface FormData {
   sports: string[];
   eventId?: string | null;
 
-  // Team fields (for team registrations)
-  registrationType?: 'individual' | 'team';
-  teamId?: string | null;
-  teamName?: string | null;
-  teamMembers?: import('./team').TeamMember[];
-  isTeamLeader?: boolean;
+
 }
 
 export interface FormErrors {
@@ -58,9 +53,7 @@ export interface FormErrors {
   sports?: string;
   organization?: string;
 
-  // Team-related errors
-  teamName?: string;
-  teamMembers?: string;
+
 }
 
 export type OnFieldChange = <K extends keyof FormData>(
