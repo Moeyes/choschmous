@@ -12,7 +12,7 @@ import { validateForm, hasErrors } from "@/src/lib/validation/validators";
 import { useUserSession } from "@/src/hooks/useUserSession";
 import type { FormData as RegistrationFormData } from "@/src/types/registration";
 import type { PositionInfo, OrganizationInfo } from "@/src/types/participation";
-import { formatDateToDDMMYYYYKhmer, toKhmerDigits } from "@/src/lib/khmer";
+import { formatDateToKhmerLabeled, formatDateToDDMMYYYYKhmer, toKhmerDigits } from "@/src/lib/khmer";
 
 interface RegistrationConfirmationProps {
   formData: RegistrationFormData;
@@ -193,7 +193,7 @@ export function RegistrationConfirmation({
             onEdit={onEdit}
           />
           <InfoRow label="ភេទ" value={getGenderDisplay()} editStep={5} onEdit={onEdit} />
-          <InfoRow label="ថ្ងៃខែឆ្នាំកំណើត" value={formatDateToDDMMYYYYKhmer(formData.dateOfBirth)} editStep={5} onEdit={onEdit} />
+          <InfoRow label="ថ្ងៃខែឆ្នាំកំណើត" value={formatDateToKhmerLabeled(formData.dateOfBirth)} editStep={5} onEdit={onEdit} />
           <InfoRow label="លេខអត្តសញ្ញាណជាតិ" value={toKhmerDigits(formData.nationalID)} editStep={5} onEdit={onEdit} />
           <InfoRow label="ប្រភេទឯកសារ" value={getNationalityDisplay()} editStep={5} onEdit={onEdit} />
           <InfoRow label="ទូរស័ព្ទ" value={toKhmerDigits(formData.phone)} editStep={5} onEdit={onEdit} />

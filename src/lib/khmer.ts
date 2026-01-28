@@ -14,3 +14,17 @@ export function formatDateToDDMMYYYYKhmer(dateInput?: string | Date | null): str
   const yyyy = String(d.getFullYear())
   return toKhmerDigits(`${dd}/${mm}/${yyyy}`)
 }
+
+/**
+ * Format a date into Khmer-labeled form: "ថ្ងៃ {dd} ខែ {mm} ឆ្នាំ {yyyy}" (digits converted to Khmer)
+ */
+export function formatDateToKhmerLabeled(dateInput?: string | Date | null): string | null {
+  if (!dateInput) return null
+  const d = typeof dateInput === 'string' ? new Date(dateInput) : dateInput
+  if (Number.isNaN(d.getTime())) return null
+  const dd = String(d.getDate()).padStart(2, '0')
+  const mm = String(d.getMonth() + 1).padStart(2, '0')
+  const yyyy = String(d.getFullYear())
+  const labeled = `ថ្ងៃ ${dd} ខែ ${mm} ឆ្នាំ ${yyyy}`
+  return toKhmerDigits(labeled)
+}

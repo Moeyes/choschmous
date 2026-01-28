@@ -3,7 +3,8 @@ import { redirect } from "next/navigation"
 // import { DashboardContent } from "@/components/dashboard-content"
 
 export default async function Page({ searchParams }: { searchParams?: Promise<{ view?: string; event?: string }> | { view?: string; event?: string } }) {
-  const sp = await searchParams
+  // Await searchParams for Next.js 15+ async params
+  await searchParams;
   // const view = sp?.view
   // const event = sp?.event
 

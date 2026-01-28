@@ -23,9 +23,18 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"],
+      "@/components/*": ["./src/components/*"],
+      "@/ui/*": ["./src/components/ui/*"],
+      "@/features/*": ["./src/components/features/*"],
+      "@/forms/*": ["./src/components/forms/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/services/*": ["./src/services/*"],
+      "@/types/*": ["./src/types/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/lib/generated/*": ["./lib/generated/*"],
+      "@/config/*": ["./src/config/*"],
+      "@/data/*": ["./src/data/*"]
     }
   },
   "include": [
@@ -37,7 +46,7 @@
     "**/*.mts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "_prisma-pending/**"
   ]
-  // "exclude": ["node_modules", "components/registration/sections/TeamDetails.tsx"]
 }

@@ -11,7 +11,7 @@ import { useLocation } from "wouter";
 import { SectionTitle } from "@/src/components/ui/formElements";
 import { useUserSession } from "@/src/hooks/useUserSession";
 import type { FormData as RegistrationFormData } from "@/src/types/registration";
-import { toKhmerDigits, formatDateToDDMMYYYYKhmer } from "@/src/lib/khmer";
+import { toKhmerDigits, formatDateToKhmerLabeled } from "@/src/lib/khmer";
 
 interface RegisteredParticipant {
   id: string;
@@ -174,7 +174,7 @@ export function RegistrationAction({
                     </div>
                     {participant.registeredAt && (
                       <div className="text-xs text-muted-foreground ml-4">
-                        {formatDateToDDMMYYYYKhmer(participant.registeredAt)}
+                        {formatDateToKhmerLabeled(participant.registeredAt)}
                       </div>
                     )}
                     {onEditParticipant && (

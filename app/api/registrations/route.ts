@@ -1,116 +1,180 @@
-import { NextResponse } from "next/server"
-import path from "path"
-import { promises as fs } from "fs"
-import type { FormData } from "@/types/registration"
+import { NextResponse } from "next/server";
+import path from "path";
+import { promises as fs } from "fs";
+import type { FormData } from "@/src/types/registration";
+import { UPLOAD_LIMITS } from "@/src/config/constants";
 
-const FILE = path.join(process.cwd(), "/lib/data/mock/registrations.json")
+const FILE = path.join(process.cwd(), "src/data/mock/registrations.json");
 
-async function readRegistrations(): Promise<any[]> {
+interface RegistrationRecord {
+  id: string;
+  registeredAt: string;
+  photoUrl: string | null;
+  [key: string]: unknown;
+}
+
+interface UserRegistrations {
+  userId: number;
+  accessTime: string;
+  registrations: RegistrationRecord[];
+}
+
+async function readUserRegistrations(): Promise<UserRegistrations[]> {
   try {
-    const raw = await fs.readFile(FILE, "utf-8")
-    const parsed = JSON.parse(raw || "[]")
-    if (Array.isArray(parsed)) return parsed
-    // If file contains a single object, normalize to an array
-    if (parsed && typeof parsed === 'object') return [parsed]
-    return []
-  } catch (e) {
-    return []
+    const raw = await fs.readFile(FILE, "utf-8");
+    const parsed = JSON.parse(raw || "[]");
+    if (Array.isArray(parsed)) return parsed;
+    return [];
+  } catch {
+    return [];
   }
 }
 
-async function writeRegistrations(data: any[]) {
-  await fs.writeFile(FILE, JSON.stringify(data, null, 2), "utf-8")
+async function writeUserRegistrations(data: UserRegistrations[]): Promise<void> {
+  await fs.writeFile(FILE, JSON.stringify(data, null, 2), "utf-8");
 }
 
-export async function GET() {
-  const regs = await readRegistrations()
-  return NextResponse.json(regs)
+// GET: Fetch registrations for a specific user
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const userId = searchParams.get("userId");
+  
+  const allUsers = await readUserRegistrations();
+  
+  if (userId) {
+    const userIdNum = parseInt(userId, 10);
+    const userRecord = allUsers.find(u => u.userId === userIdNum);
+    
+    if (userRecord) {
+      return NextResponse.json({
+        userId: userRecord.userId,
+        accessTime: userRecord.accessTime,
+        registrations: userRecord.registrations,
+      });
+    }
+    
+    // Return empty registrations for new user
+    return NextResponse.json({
+      userId: userIdNum,
+      accessTime: new Date().toISOString(),
+      registrations: [],
+    });
+  }
+  
+  // Return all registrations (admin view)
+  return NextResponse.json(allUsers);
 }
-
-
 
 export async function POST(request: Request) {
   try {
-    const contentType = request.headers.get('content-type') || ''
-    let body: Partial<FormData> = {}
-    let photoUrl: string | null = null
+    const contentType = request.headers.get("content-type") || "";
+    let body: Partial<FormData> & { userId?: number } = {};
+    let photoUrl: string | null = null;
 
-    if (contentType.includes('multipart/form-data')) {
-      const fd = await request.formData()
-      const payload = fd.get('payload') as string | null
+    if (contentType.includes("multipart/form-data")) {
+      const fd = await request.formData();
+      const payload = fd.get("payload") as string | null;
       if (payload) {
         try {
-          body = JSON.parse(payload)
-        } catch (e) {
-          console.warn('Failed to parse payload JSON', e)
-          body = {}
+          body = JSON.parse(payload);
+        } catch {
+          console.warn("Failed to parse payload JSON");
+          body = {};
         }
       }
 
-      // Save top-level photo (if present) and member photos (keys like memberPhoto_<id|index>)
-      const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
-      await fs.mkdir(uploadsDir, { recursive: true })
-      const maxSize = 2 * 1024 * 1024 // 2MB
+      // Save uploaded photo
+      const uploadsDir = path.join(process.cwd(), "public", "uploads");
+      await fs.mkdir(uploadsDir, { recursive: true });
 
-      const memberPhotoMap: Record<string, string> = {}
-
-      for (const [key, val] of (fd as any).entries()) {
-        if (key !== 'photo') continue;
-        if (!val || typeof val !== 'object' || typeof val.arrayBuffer !== 'function') continue;
-        const file = val as any;
-        const mime = file.type || '';
+      for (const [key, val] of fd.entries()) {
+        if (key !== "photo") continue;
+        if (!val || typeof val !== "object" || !("arrayBuffer" in val)) continue;
+        
+        const file = val as File;
+        const mime = file.type || "";
         const buffer = Buffer.from(await file.arrayBuffer());
-        if (mime && !mime.startsWith('image/')) {
-          return new Response(JSON.stringify({ message: 'Uploaded file must be an image.' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+        
+        if (mime && !mime.startsWith("image/")) {
+          return NextResponse.json(
+            { message: "Uploaded file must be an image." },
+            { status: 400 }
+          );
         }
-        if (buffer.length > maxSize) {
-          return new Response(JSON.stringify({ message: 'Image size must be 2MB or smaller.' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+        if (buffer.length > UPLOAD_LIMITS.maxImageSize) {
+          return NextResponse.json(
+            { message: "Image size must be 2MB or smaller." },
+            { status: 400 }
+          );
         }
-        const filename = `${Date.now()}-${(file.name ?? 'upload.jpg').replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+        
+        const filename = `${Date.now()}-${(file.name ?? "upload.jpg").replace(/[^a-zA-Z0-9.-]/g, "_")}`;
         const filepath = path.join(uploadsDir, filename);
         await fs.writeFile(filepath, buffer);
         photoUrl = `/uploads/${filename}`;
       }
-
-
     } else {
-      body = (await request.json()) as Partial<FormData>
+      body = (await request.json()) as Partial<FormData> & { userId?: number };
     }
 
-    const regsRaw = await readRegistrations()
-    const regs = Array.isArray(regsRaw) ? regsRaw : []
-    const id = String(Date.now())
-    const now = new Date().toISOString()
-
-    // Normalize the incoming payload so the stored data is consistent and easy to consume
-    // Import normalization helper to keep mapping logic centralized
-    const { normalizeRegistration } = await import('@/lib/data/normalizers/registrationNormalizer')
-    const normalized = normalizeRegistration(body as Partial<FormData>)
-
-    // Helpful debug output in dev to inspect normalized payload (safe-guarded)
-    if (process.env.NODE_ENV !== 'production') {
-      try {
-        console.debug('normalized registration:', JSON.stringify(normalized))
-      } catch (_e) {
-        // ignore serialization errors in debug
-      }
+    // Extract userId from body
+    const userId = body.userId;
+    if (!userId) {
+      return NextResponse.json(
+        { message: "userId is required" },
+        { status: 400 }
+      );
     }
 
+    const allUsers = await readUserRegistrations();
+    const id = String(Date.now());
+    const now = new Date().toISOString();
 
+    // Normalize the incoming payload
+    const { normalizeRegistration } = await import("@/src/data/normalizers/registrationNormalizer");
+    const normalized = normalizeRegistration(body);
 
-    const created = {
+    if (process.env.NODE_ENV !== "production") {
+      console.debug("normalized registration:", JSON.stringify(normalized));
+    }
+
+    const created: RegistrationRecord = {
+      ...normalized,
       id,
       registeredAt: now,
-      photoUrl: photoUrl ?? (body.photoUrl ?? null),
-      ...normalized,
-      ...((body as any).extra ? (body as any).extra : {}),
-    } as any
+      // Override photoUrl with uploaded photo if available
+      photoUrl: photoUrl ?? normalized.photoUrl ?? null,
+    };
 
-    regs.push(created)
-    await writeRegistrations(regs)
-    return new Response(JSON.stringify(created), { status: 201, headers: { "Content-Type": "application/json" } })
+    // Find or create user record
+    let userRecord = allUsers.find(u => u.userId === userId);
+    
+    if (userRecord) {
+      // Update access time and add registration
+      userRecord.accessTime = now;
+      userRecord.registrations.push(created);
+    } else {
+      // Create new user record
+      userRecord = {
+        userId,
+        accessTime: now,
+        registrations: [created],
+      };
+      allUsers.push(userRecord);
+    }
+
+    await writeUserRegistrations(allUsers);
+    
+    // Return the newly created registration along with user's full list
+    return NextResponse.json({
+      registration: created,
+      userRegistrations: userRecord.registrations,
+    }, { status: 201 });
   } catch (err) {
-    console.error("Failed to save registration", err)
-    return new Response(JSON.stringify({ message: "Failed to save registration" }), { status: 500, headers: { "Content-Type": "application/json" } })
+    console.error("Failed to save registration", err);
+    return NextResponse.json(
+      { message: "Failed to save registration" },
+      { status: 500 }
+    );
   }
 }

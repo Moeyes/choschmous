@@ -1,0 +1,200 @@
+[
+  {
+    "userId": 1769578286879,
+    "accessTime": "2026-01-28T05:31:26.879Z",
+    "registrations": [
+      {
+        "id": "1769578286879",
+        "registeredAt": "2026-01-28T05:31:26.879Z",
+        "photoUrl": null,
+        "firstName": "Sokha",
+        "lastName": "Chan",
+        "firstNameKh": "សុខា",
+        "lastNameKh": "ចាន់",
+        "dateOfBirth": "1998-05-15",
+        "gender": "Male",
+        "nationality": "IDCard",
+        "nationalID": "123456789012",
+        "phone": "012345678",
+        "position": {
+          "role": "Athlete",
+          "coach": null,
+          "assistant": null,
+          "leaderRole": null,
+          "athleteCategory": "Male"
+        },
+        "organization": {
+          "type": "province",
+          "id": "phnom-penh",
+          "name": "រាជធានីភ្នំពេញ",
+          "province": "រាជធានីភ្នំពេញ",
+          "department": null
+        },
+        "eventId": "evt-1",
+        "sport": "អត្តពលកម្ម",
+        "sports": [
+          "អត្តពលកម្ម"
+        ],
+        "sportId": "athletics",
+        "sportCategory": "រត់ប្រណាំង ១០០ ម៉ែត្រ",
+        "status": "pending"
+      }
+    ]
+  },
+  {
+    "userId": 1769615416955,
+    "accessTime": "2026-01-28T15:51:54.745Z",
+    "registrations": [
+      {
+        "firstName": "asdf",
+        "lastName": "asdfa",
+        "firstNameKh": "sdaf",
+        "lastNameKh": "asdf",
+        "dateOfBirth": "2025-12-31",
+        "gender": "Male",
+        "nationality": "IDCard",
+        "nationalID": "1231231123",
+        "phone": "131141122",
+        "position": {
+          "role": "Leader",
+          "coach": null,
+          "assistant": null,
+          "leaderRole": "coach",
+          "athleteCategory": null
+        },
+        "organization": {
+          "type": "ministry",
+          "id": "m-1",
+          "name": "Ministry of Interior",
+          "province": null,
+          "department": "Ministry of Interior"
+        },
+        "eventId": "evt-1",
+        "sport": "អត្តពលកម្ម",
+        "sports": [
+          "អត្តពលកម្ម"
+        ],
+        "sportId": "",
+        "sportCategory": "រត់ប្រណាំង ១០០ ម៉ែត្រ",
+        "photoUrl": "/uploads/1769615438397-1769615412247-photo.jpg",
+        "status": "pending",
+        "id": "1769615438401",
+        "registeredAt": "2026-01-28T15:50:38.401Z"
+      },
+      {
+        "firstName": "Sat",
+        "lastName": "Panha",
+        "firstNameKh": "សាត​",
+        "lastNameKh": "បញ្ញា",
+        "dateOfBirth": "2026-01-21",
+        "gender": "Male",
+        "nationality": "IDCard",
+        "nationalID": "1300058",
+        "phone": "0964461381",
+        "position": {
+          "role": "Athlete",
+          "coach": null,
+          "assistant": null,
+          "leaderRole": null,
+          "athleteCategory": "Male"
+        },
+        "organization": {
+          "type": "ministry",
+          "id": "m-1",
+          "name": "Ministry of Interior",
+          "province": null,
+          "department": "Ministry of Interior"
+        },
+        "eventId": "evt-1",
+        "sport": "អត្តពលកម្ម",
+        "sports": [
+          "អត្តពលកម្ម"
+        ],
+        "sportId": "",
+        "sportCategory": "រត់ប្រណាំង ១០០ ម៉ែត្រ",
+        "photoUrl": "/uploads/1769615514742-1769615502016-photo.jpg",
+        "status": "pending",
+        "id": "1769615514745",
+        "registeredAt": "2026-01-28T15:51:54.745Z"
+      }
+    ]
+  },
+  {
+    "userId": 1769616170140,
+    "accessTime": "2026-01-28T16:03:18.630Z",
+    "registrations": [
+      {
+        "firstName": "sadf",
+        "lastName": "asdf",
+        "firstNameKh": "asdf",
+        "lastNameKh": "asdf",
+        "dateOfBirth": "2023-02-01",
+        "gender": "Female",
+        "nationality": "BirthCertificate",
+        "nationalID": "1123123132123123123",
+        "phone": "0123456789",
+        "position": {
+          "role": "Leader",
+          "coach": null,
+          "assistant": null,
+          "leaderRole": "delegate",
+          "athleteCategory": null
+        },
+        "organization": {
+          "type": "province",
+          "id": "4",
+          "name": "Battambang",
+          "province": "Battambang",
+          "department": null
+        },
+        "eventId": "evt-1",
+        "sport": "បាល់ទាត់",
+        "sports": [
+          "បាល់ទាត់"
+        ],
+        "sportId": "",
+        "sportCategory": "បាល់ទាត់ ១១ នាក់ នារី",
+        "photoUrl": "/uploads/1769616178037-1769616168648-photo.jpg",
+        "status": "pending",
+        "id": "1769616178040",
+        "registeredAt": "2026-01-28T16:02:58.040Z"
+      },
+      {
+        "firstName": "sadf",
+        "lastName": "asdf",
+        "firstNameKh": "asdf",
+        "lastNameKh": "asdf",
+        "dateOfBirth": "2023-02-01",
+        "gender": "Female",
+        "nationality": "BirthCertificate",
+        "nationalID": "1123123132123123123",
+        "phone": "0123456789",
+        "position": {
+          "role": "Leader",
+          "coach": null,
+          "assistant": null,
+          "leaderRole": "delegate",
+          "athleteCategory": null
+        },
+        "organization": {
+          "type": "province",
+          "id": "4",
+          "name": "Battambang",
+          "province": "Battambang",
+          "department": null
+        },
+        "eventId": "evt-1",
+        "sport": "បាល់ទាត់",
+        "sports": [
+          "បាល់ទាត់"
+        ],
+        "sportId": "",
+        "sportCategory": "បាល់ទាត់ ១១ នាក់ នារី",
+        "photoUrl": "/uploads/1769616198621-1769616168648-photo.jpg",
+        "status": "pending",
+        "id": "1769616198630",
+        "registeredAt": "2026-01-28T16:03:18.630Z"
+      }
+    ]
+  }
+]
