@@ -34,12 +34,31 @@ async function writeUserRegistrations(data: UserRegistrations[]): Promise<void> 
   await fs.writeFile(FILE, JSON.stringify(data, null, 2), "utf-8");
 }
 
-// GET: Fetch registrations for a specific user
+// GET: Fetch registrations for a specific user or all registrations
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const userId = searchParams.get("userId");
+  const getAll = searchParams.get("all") === "true";
   
   const allUsers = await readUserRegistrations();
+  
+  // If 'all' param is true, return all registrations from all users
+  if (getAll) {
+    const allRegistrations: any[] = [];
+    allUsers.forEach(userRecord => {
+      userRecord.registrations.forEach(reg => {
+        allRegistrations.push({
+          ...reg,
+          userId: userRecord.userId,
+          userAccessTime: userRecord.accessTime,
+        });
+      });
+    });
+    return NextResponse.json({
+      registrations: allRegistrations,
+      total: allRegistrations.length,
+    });
+  }
   
   if (userId) {
     const userIdNum = parseInt(userId, 10);

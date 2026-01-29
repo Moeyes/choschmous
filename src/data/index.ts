@@ -8,3 +8,6 @@ export * from './normalizers/registrationNormalizer';
 
 // Writers
 export * from './writer/dataWriter';
+
+// Dashboard Data
+export * from './dashboard';

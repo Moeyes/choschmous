@@ -7,6 +7,7 @@ export { useSelectedEvent } from './useSelectedEvent';
 export { useRegister } from './useRegister';
 export { useRegistrationForm } from './useRegistrationForm';
 export { useUserSession } from './useUserSession';
+export { useDashboardData } from './useDashboardData';
 
 // Re-export types
 export type { EventRecommendation, SportRecommendation } from './useRecommendations';

@@ -1,0 +1,22 @@
+// Dashboard Components - Consolidated Export
+export { DashboardBanner } from "./components/Banner"
+export { default as StatsGrid } from "./components/StatsGrid"
+export { EventsSection } from "./components/EventsSection"
+export { QuickActions } from "./components/QuickActions"
+export { AthletesSection } from "./components/AthletesSection"
+export { SportsSection } from "./components/SportsSection"
+export { ProvincesSection } from "./components/ProvincesSection"
+export { default as SectionHeader } from "./components/SectionHeader"
+export { Sidebar } from "./components/Sidebar"
+export { DashboardContent } from "./DashboardContent"
+export { DashboardLayout } from "./DashboardLayout"
+
+// Pages
+export { DashboardPage } from "./pages/DashboardPage"
+export { AthletesPage } from "./pages/AthletesPage"
+export { EventsPage } from "./pages/EventsPage"
+export { MedalsPage } from "./pages/MedalsPage"
+export { ProvincesPage } from "./pages/ProvincesPage"
+export { SportsPage } from "./pages/SportsPage"
+export { RegisterEnrollPage } from "./pages/RegisterEnrollPage"
+export { EventDetailPage } from "./pages/EventDetailPage"

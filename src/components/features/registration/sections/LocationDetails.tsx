@@ -86,10 +86,10 @@ export function LocationDetails({
 
     setSelectedId(id);
 
-    // Create properly typed organization info
+    // Create properly typed organization info with khmerName for display
     const orgInfo: OrganizationInfo = String(sel.type).toLowerCase() === 'province'
-      ? { type: 'province', province: sel.name, id: sel.id, name: sel.name }
-      : { type: 'ministry', department: sel.name, id: sel.id, name: sel.name };
+      ? { type: 'province', province: sel.khmerName ?? sel.name, id: sel.id, name: sel.khmerName ?? sel.name }
+      : { type: 'ministry', department: sel.khmerName ?? sel.name, id: sel.id, name: sel.khmerName ?? sel.name };
     
     onSelect(orgInfo);
   }, [organizations, onSelect]);
@@ -117,7 +117,6 @@ export function LocationDetails({
                 <SelectableCard
                   key={p.id}
                   title={p.khmerName ?? p.name}
-                  subtitle={<span className="text-xs text-muted-foreground">{p.name}</span>}
                   selected={selectedId === p.id}
                   onSelect={() => handleSelect(p.id)}
                   className="items-center justify-center p-6 text-center"
