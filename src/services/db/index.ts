@@ -1,20 +1,13 @@
 /**
  * Database Module Exports
+ * @deprecated Use feature-specific exports instead
  * 
- * Note: Database services (eventService, sportService, etc.) are prepared
- * for future integration but require a complete Prisma schema.
- * Currently the app uses JSON mock files for data storage.
+ * Note: This module is kept for backward compatibility
+ * New code should import from feature modules directly
  */
 
 export { prisma, default } from './prisma';
 
-// Export hooks that are currently used
-export { useRegister } from '@/src/hooks/useRegister';
-export { useRegistrationForm } from '@/src/hooks/useRegistrationForm';
-export * from '@/src/services/eventBus';
-
-// TODO: Enable these once Prisma schema is complete
-// export * from './services/organizationService';
-// export * from './services/eventService';
-// export * from './services/sportService';
-// export * from './services/registrationService';
+// Re-export from new structure
+export * from '@/src/features/registration/hooks';
+export * from '@/src/core/events';

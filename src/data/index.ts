@@ -1,13 +1,12 @@
 /**
  * Data Layer Index
- * Re-exports all data-related utilities
+ * @deprecated Import from feature modules instead
+ * 
+ * This file is kept for backward compatibility
  */
 
-// Normalizers
-export * from './normalizers/registrationNormalizer';
+// Mock data is still centralized
+export * from './mock/';
 
-// Writers
-export * from './writer/dataWriter';
-
-// Dashboard Data
-export * from './dashboard';
+// Re-export from new structure
+// Note: Normalizers and data loaders are now in their respective feature modules

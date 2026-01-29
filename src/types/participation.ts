@@ -29,20 +29,14 @@ export interface OrganizationInfo {
   type: ParticipationOrganization;
   id?: string;
   name?: string;
-  /** @deprecated Use id/name instead */
-  province?: string;
-  /** @deprecated Use id/name instead */
-  department?: string;
 }
 
 /** Base participant data structure */
 export interface Participation {
   id: string;
   registeredAt: string | number | Date;
-  firstName: string;
-  lastName: string;
-  firstNameKh: string;
-  lastNameKh: string;
+  fullNameKhmer: string;
+  fullNameEnglish: string;
   gender: ParticipationGender;
   dateOfBirth: string;
   nationality: ParticipationNationality;

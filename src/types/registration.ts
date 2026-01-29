@@ -18,10 +18,8 @@ export interface FormData {
   registeredAt?: string | number | Date;
 
   // Personal Information
-  firstName?: string;
-  lastName?: string;
-  firstNameKh?: string;
-  lastNameKh?: string;
+  fullNameKhmer?: string;
+  fullNameEnglish?: string;
   gender?: ParticipationGender;
   dateOfBirth?: string;
   nationality?: ParticipationNationality;
@@ -53,35 +51,23 @@ export interface FormData {
 /** Form validation errors */
 export interface FormErrors {
   // Personal info errors
-  firstName?: string;
-  lastName?: string;
-  firstNameKh?: string;
-  lastNameKh?: string;
+  fullNameKhmer?: string;
+  fullNameEnglish?: string;
   nationalID?: string;
   dateOfBirth?: string;
   gender?: string;
   phone?: string;
-  /** @deprecated Use phone instead */
-  phoneNumber?: string;
   email?: string;
   photoUpload?: string;
 
   // Organization errors
   organization?: string;
-  /** @deprecated Use organization instead */
-  province?: string;
-  /** @deprecated Use organization instead */
-  department?: string;
 
   // Sport errors
   sport?: string;
   sports?: string;
   category?: string;
   selectedSport?: string;
-  /** @deprecated */
-  typeOfSport?: string;
-  /** @deprecated */
-  eventType?: string;
 
   // Position errors
   position?: string;

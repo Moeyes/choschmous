@@ -149,12 +149,11 @@ export async function POST(request: Request) {
     const id = String(Date.now());
     const now = new Date().toISOString();
 
-    // Normalize the incoming payload
-    const { normalizeRegistration } = await import("@/src/data/normalizers/registrationNormalizer");
-    const normalized = normalizeRegistration(body);
+    // Use body directly (normalization removed as normalizer was deleted)
+    const normalized = body;
 
     if (process.env.NODE_ENV !== "production") {
-      console.debug("normalized registration:", JSON.stringify(normalized));
+      console.debug("registration data:", JSON.stringify(normalized));
     }
 
     const created: RegistrationRecord = {
@@ -162,7 +161,7 @@ export async function POST(request: Request) {
       id,
       registeredAt: now,
       // Override photoUrl with uploaded photo if available
-      photoUrl: photoUrl ?? normalized.photoUrl ?? null,
+      photoUrl: photoUrl ?? (normalized as any).photoUrl ?? null,
     };
 
     // Find or create user record

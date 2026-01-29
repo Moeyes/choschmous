@@ -34,10 +34,13 @@ export const API_ENDPOINTS = {
   events: '/api/events',
   organizations: '/api/organizations',
   registrations: '/api/registrations',
-  recommendations: {
-    events: '/api/recommendations/events',
-    trending: '/api/recommendations/trending',
-  },
+} as const;
+
+/** Default values */
+export const DEFAULTS = {
+  photoUrl: '/avatars/default.jpg',
+  status: 'pending' as const,
+  gender: 'Male' as const,
 } as const;
 
 /** Registration wizard steps */

@@ -49,13 +49,10 @@ export function isWithinLength(value: string, min: number, max: number): boolean
 export function validateForm(data: FormData): FormErrors {
   const errors: FormErrors = {};
 
-  // Required text fields
-  if (!data.firstName?.trim()) {
-    errors.firstName = 'សូមបញ្ចូលគោត្តនាម។';
-  }
-
-  if (!data.lastName?.trim()) {
-    errors.lastName = 'សូមបញ្ចូលនាម។';
+  // Required text fields - at least one full name is required
+  if (!data.fullNameKhmer?.trim() && !data.fullNameEnglish?.trim()) {
+    errors.fullNameKhmer = 'សូមបញ្ចូលឈ្មោះពេញជាភាសាខ្មែរ។';
+    errors.fullNameEnglish = 'សូមបញ្ចូលឈ្មោះពេញជាភាសាអង់គ្លេស។';
   }
 
   // Phone validation
@@ -74,14 +71,11 @@ export function validateForm(data: FormData): FormErrors {
   }
 
   // Organization validation (province/ministry unified)
-  // Accept both the new unified organization (id) or legacy province/department fields
+  // Accept both the new unified organization (id) or legacy fields
   const orgType = String(data.organization?.type ?? '').toLowerCase();
-  const hasOrg = !!(data.organization?.id || data.organization?.province || data.organization?.department || data.organization?.name);
+  const hasOrg = !!(data.organization?.id || data.organization?.id || data.organization?.type || data.organization?.name);
   if (orgType === 'province' && !hasOrg) {
-    const msg = 'សូមជ្រើសរើសអង្គភាព។';
-    errors.organization = msg;
-    // keep old key for compatibility
-    errors.province = msg;
+    errors.organization = 'សូមជ្រើសរើសអង្គភាព។';
   }
 
   // National ID validation

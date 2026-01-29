@@ -1,13 +1,9 @@
-// Re-export all hooks
+// Re-export all hooks from their new locations
 export { useAltFocus } from './useAltFocus';
-export { useEvents } from './useEvents';
+export { useEvents } from '../features/events/hooks/useEvents';
 export { useIsMobile } from './useMobile';
-export { useRecommendedEvents, useTrendingEvents, useRecommendationScore } from './useRecommendations';
-export { useSelectedEvent } from './useSelectedEvent';
-export { useRegister } from './useRegister';
-export { useRegistrationForm } from './useRegistrationForm';
+export { useSelectedEvent } from '../features/events/hooks/useSelectedEvent';
+export { useRegister } from '../features/registration/hooks/useRegister';
+export { useRegistrationForm } from '../features/registration/hooks/useRegistrationForm';
 export { useUserSession } from './useUserSession';
-export { useDashboardData } from './useDashboardData';
-
-// Re-export types
-export type { EventRecommendation, SportRecommendation } from './useRecommendations';
+export { useDashboardData } from '../features/dashboard/hooks/useDashboardData';

@@ -1,21 +1,9 @@
 /**
  * Services Index
- * Re-exports all services for cleaner imports
+ * Legacy re-exports - Use @/core for new code
+ * @deprecated Import from @/core instead
  */
 
-// Recommendation services
-export {
-  recommendEvents,
-  getTrendingEvents,
-  type RecommendationScore,
-  type EventRecommendation,
-  type SportRecommendation,
-} from './recommendation/recommendationEngine';
-
-// Event bus for real-time updates
-export {
-  DASHBOARD_REFRESH_EVENT,
-  emitDashboardRefresh,
-  subscribeToDashboardRefresh,
-  onDashboardRefresh,
-} from './eventBus';
+// Re-export from core modules for backward compatibility
+export * from '@/src/core/events';
+export * from '@/src/core/session';

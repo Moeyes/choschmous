@@ -1,6 +1,6 @@
 "use client"
 
-import RegisterWizard from "@/src/components/features/registration/RegisterWizard"
+import RegisterWizard from "@/src/features/registration/components/RegisterWizard"
 
 export default function RegisterPage() {
   return (
