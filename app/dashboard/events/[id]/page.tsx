@@ -6,9 +6,9 @@ import { Card } from "@/src/components/ui/card";
 import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
 import { Calendar, MapPin, Users, ArrowLeft } from "lucide-react";
-import { default as StatsGrid } from "@/src/features/dashboard/components/StatsGrid";
+import { default as StatsGrid } from "@/src/features/dashboard/components/overview/StatsGrid";
 import { DataTable } from "@/src/shared/components/DataTable";
-import { ParticipantTableRow } from "@/src/features/dashboard/components/ParticipantTableRow";
+import { ParticipantTableRow } from "@/src/features/dashboard/components/participants/ParticipantTableRow";
 import type {
   DashboardEvent,
   DashboardParticipant,

@@ -10,7 +10,7 @@ export function DashboardBanner() {
   })
 
   return (
-    <div className="bg-[#1a4cd8] rounded-[2rem] p-10 text-white relative overflow-hidden shadow-2xl shadow-blue-200">
+    <div className="bg-[#1a4cd8] rounded-4xl p-10 text-white relative overflow-hidden shadow-2xl shadow-blue-200">
       <div className="relative z-10">
         <h2 className="text-4xl font-bold mb-3">Dashboard Overview</h2>
         <p className="text-white/80 text-lg">Welcome back! Here's what's happening with your sport events.</p>

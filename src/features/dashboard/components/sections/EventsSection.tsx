@@ -1,23 +1,27 @@
-"use client"
+"use client";
 
-import type { DashboardEvent } from "./types"
-import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Calendar, MapPin, Trophy, Plus } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
+import type { DashboardEvent } from "../types";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Calendar, MapPin, Trophy, Plus } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 type EventCardProps = {
-  event: DashboardEvent
-  onClick?: () => void
-  index?: number
-}
+  event: DashboardEvent;
+  onClick?: () => void;
+  index?: number;
+};
 
 function EventCard({ event, onClick, index = 0 }: EventCardProps) {
   const formatDate = (dateStr?: string) => {
-    if (!dateStr) return "TBD"
-    const date = new Date(dateStr)
-    return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
-  }
+    if (!dateStr) return "TBD";
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
 
   return (
     <Card
@@ -39,12 +43,21 @@ function EventCard({ event, onClick, index = 0 }: EventCardProps) {
         </div>
         <div className="flex gap-2 flex-wrap">
           {event.sports?.slice(0, 3).map((sport, i) => (
-            <Badge key={i} variant="secondary" className="bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-lg">
-              {typeof sport === "string" ? sport : (sport as any)?.name ?? "Sport"}
+            <Badge
+              key={i}
+              variant="secondary"
+              className="bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-lg"
+            >
+              {typeof sport === "string"
+                ? sport
+                : ((sport as any)?.name ?? "Sport")}
             </Badge>
           ))}
           {event.sports && event.sports.length > 3 && (
-            <Badge variant="secondary" className="bg-slate-100 text-slate-600 rounded-lg">
+            <Badge
+              variant="secondary"
+              className="bg-slate-100 text-slate-600 rounded-lg"
+            >
               +{event.sports.length - 3}
             </Badge>
           )}
@@ -52,12 +65,12 @@ function EventCard({ event, onClick, index = 0 }: EventCardProps) {
       </div>
       <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-full -mr-8 -mt-8 opacity-50 group-hover:scale-110 transition-transform" />
     </Card>
-  )
+  );
 }
 
 type CreateEventDialogProps = {
-  onCreate: (event: DashboardEvent) => void
-}
+  onCreate: (event: DashboardEvent) => void;
+};
 
 function CreateEventDialog({ onCreate }: CreateEventDialogProps) {
   // Simple button for now - can be expanded to a full dialog
@@ -66,7 +79,7 @@ function CreateEventDialog({ onCreate }: CreateEventDialogProps) {
       <Plus className="h-4 w-4" />
       <span>Create Event</span>
     </Button>
-  )
+  );
 }
 
 export function EventsSection({
@@ -74,9 +87,9 @@ export function EventsSection({
   onCreate,
   onSelect,
 }: {
-  events: DashboardEvent[]
-  onCreate: (e: DashboardEvent) => void
-  onSelect: (id: string | null) => void
+  events: DashboardEvent[];
+  onCreate: (e: DashboardEvent) => void;
+  onSelect: (id: string | null) => void;
 }) {
   return (
     <div className="space-y-6">
@@ -96,7 +109,7 @@ export function EventsSection({
         ))}
       </div>
     </div>
-  )
+  );
 }
 
-export default EventsSection
+export default EventsSection;

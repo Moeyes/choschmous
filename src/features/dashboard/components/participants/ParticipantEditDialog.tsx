@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Save, X, Upload, User } from "lucide-react"
-import { useDashboardData } from "../hooks/useDashboardData"
-import type { DashboardAthlete } from "./types"
-import { EditableInputField, EditableSelectField } from "./EditableField"
+import { useDashboardData } from "../../hooks/useDashboardData"
+import type { DashboardAthlete } from "./../types";
+import { EditableInputField, EditableSelectField } from "./../shared/EditableField";
 import { formatDateToDDMMYYYYKhmer, toKhmerDigits } from "@/src/lib/khmer"
 
 interface ParticipantEditDialogProps {

@@ -30,7 +30,7 @@ export function QuickActions({ actions = defaultActions }: { actions?: QuickActi
         <Card
           key={index}
           onClick={action.onClick}
-          className={`${action.color} border-none shadow-lg ${action.shadowColor} rounded-[1.5rem] p-6 text-white overflow-hidden relative group cursor-pointer`}
+          className={`${action.color} border-none shadow-lg ${action.shadowColor} rounded-3xl p-6 text-white overflow-hidden relative group cursor-pointer`}
         >
           <div className="relative z-10 flex flex-col gap-1">
             <p className="text-lg font-bold">{action.title}</p>

@@ -7,7 +7,7 @@ import { ParticipantAvatar, StatusBadge } from "@/src/shared/components"
 import { Grid } from "@/src/shared/utils/patterns"
 import { formatDateToDDMMYYYYKhmer } from "@/src/lib/khmer"
 import { getGenderDisplay, getRoleDisplay } from "@/src/lib/display"
-import type { DashboardAthlete } from "./types"
+import type { DashboardAthlete } from "./../types"
 import type { ReactNode } from "react"
 
 interface ParticipantDetailDialogProps {
