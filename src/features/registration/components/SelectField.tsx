@@ -1,21 +1,29 @@
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/src/components/ui/select"
-import { cn } from '@/src/lib/utils'
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/src/components/ui/select";
+import { cn } from "@/src/lib/utils";
 
 interface Option {
-  value: string
-  label: React.ReactNode
-  disabled?: boolean
+  value: string;
+  label: React.ReactNode;
+  disabled?: boolean;
 }
 
 interface SelectFieldProps {
-  value?: string
-  onChange: (val: string) => void
-  placeholder?: string
-  options: Option[]
-  className?: string
+  value?: string;
+  onChange: (val: string) => void;
+  placeholder?: string;
+  options: Option[];
+  className?: string;
+  disabled?: boolean;
 }
 
-const defaultClassName = "h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm shadow-xs"
+const defaultClassName =
+  "h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm shadow-xs";
 
 export function SelectField({
   value,
@@ -23,9 +31,10 @@ export function SelectField({
   placeholder = "Select...",
   options,
   className,
+  disabled = false,
 }: SelectFieldProps) {
   return (
-    <Select value={value} onValueChange={onChange}>
+    <Select value={value} onValueChange={onChange} disabled={disabled}>
       <SelectTrigger className={cn(defaultClassName, className)}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
@@ -37,5 +46,5 @@ export function SelectField({
         ))}
       </SelectContent>
     </Select>
-  )
+  );
 }

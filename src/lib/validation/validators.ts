@@ -90,12 +90,14 @@ export function validateForm(data: FormData): FormErrors {
     errors.sport = 'សូមជ្រើសរើសកីឡា។';
   }
 
-  if (!(data.position && data.position.role)) {
-    errors.position = 'សូមជ្រើសរើសតួនាទី។';
-  } else if (data.position.role === 'Athlete' && !data.position.athleteCategory) {
-    errors.position = 'សូមជ្រើសប្រភេទកីឡាករ។';
-  } else if (data.position.role === 'Leader' && !data.position.leaderRole) {
-    errors.position = 'សូមជ្រើសតួនាទីសម្រាប់អ្នកដឹកនាំ។';
+  // Position validation - position is optional initially, but if provided must be valid
+  if (data.position && data.position.role) {
+    const role = data.position.role;
+    if (role === 'Athlete' && !data.position.athleteCategory) {
+      errors.position = 'សូមជ្រើសប្រភេទកីឡាករ។';
+    } else if (role === 'Leader' && !data.position.leaderRole) {
+      errors.position = 'សូមជ្រើសតួនាទីសម្រាប់អ្នកដឹកនាំ។';
+    }
   }
 
   if (data.photoUpload) {

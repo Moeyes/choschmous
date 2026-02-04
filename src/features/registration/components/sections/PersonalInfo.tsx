@@ -1,10 +1,15 @@
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
+import { Checkbox } from "@/src/components/ui/checkbox";
 import { SelectField } from "../SelectField";
 import { PhotoUpload } from "../PhotoUpload";
 import { FormError, SectionTitle } from "@/src/components/ui/formElements";
 import type { FormData, FormErrors } from "@/src/types/registration";
-import type { ParticipationGender, ParticipationNationality, PositionInfo } from "@/src/types/participation";
+import type {
+  ParticipationGender,
+  ParticipationNationality,
+  PositionInfo,
+} from "@/src/types/participation";
 
 interface PersonalInfoProps {
   formData: Partial<FormData>;
@@ -21,10 +26,7 @@ export function PersonalInfo({
   errors,
   hideContinue = false,
 }: PersonalInfoProps) {
-  const hasName = !!(
-    formData.fullNameKhmer ||
-    formData.fullNameEnglish
-  );
+  const hasName = !!(formData.fullNameKhmer || formData.fullNameEnglish);
   const continueDisabled = !hasName;
 
   const position = formData.position as PositionInfo | null | undefined;
@@ -32,7 +34,6 @@ export function PersonalInfo({
   return (
     <div className="space-y-6 max-w-md mx-auto">
       <SectionTitle>ព័ត៌មានផ្ទាល់ខ្លួន</SectionTitle>
-
       <div>
         <Input
           placeholder="ឈ្មោះពេញ"
@@ -51,7 +52,21 @@ export function PersonalInfo({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <SelectField
           value={formData.gender ?? undefined}
-          onChange={(val: string) => updateFormData({ gender: val as ParticipationGender })}
+          onChange={(val: string) => {
+            const newGender = val as ParticipationGender;
+            // Update gender and athleteCategory if user is an athlete
+            if (position?.role === "Athlete") {
+              updateFormData({
+                gender: newGender,
+                position: {
+                  ...position,
+                  athleteCategory: newGender,
+                },
+              });
+            } else {
+              updateFormData({ gender: newGender });
+            }
+          }}
           placeholder="ភេទ"
           options={[
             { value: "Male", label: "ប្រុស" },
@@ -67,7 +82,7 @@ export function PersonalInfo({
           placeholder="ប្រភេទឯកសារជាតិសញ្ជាតិ"
           options={[
             { value: "IDCard", label: "អត្តសញ្ញាណប័ណ្ណ" },
-            { value: "BirthCertificate", label: "វិញ្ញាបនបត្រកំណើត" },
+            { value: "BirthCertificate", label: "សំបុត្របញ្ជាក់កំណើត" },
           ]}
         />
       </div>
@@ -101,68 +116,57 @@ export function PersonalInfo({
         <FormError message={errors?.phone} />
       </div>
       <div className="flex-row">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
           <div>
             <SelectField
-              value={position?.role ?? undefined}
+              value={
+                position?.role === "Leader" ? position.leaderRole : undefined
+              }
               onChange={(val: string) =>
                 updateFormData({
-                  position: { ...position, role: val } as PositionInfo,
+                  position: {
+                    role: "Leader",
+                    leaderRole: val,
+                    athleteCategory: undefined,
+                  },
                 })
               }
-              placeholder="តួនាទី"
+              placeholder="ជ្រើសតួនាទី (សម្រាប់អ្នកដឹកនាំ)"
               options={[
-                { value: "Athlete", label: "កីឡាករ/កីឡាការិនី" },
-                { value: "Leader", label: "អ្នកដឹកនាំ" },
+                { value: "coach", label: "ថ្នាក់ដឹកនាំ" },
+                { value: "manager", label: "គណកម្មការបច្ចេកទេស" },
+                { value: "delegate", label: "ប្រតិភូ" },
+                { value: "team_lead", label: "អ្នកដឹកនាំក្រុម" },
+                { value: "coach_trainer", label: "គ្រូបង្វឹក" },
               ]}
+              disabled={position?.role === "Athlete"}
             />
           </div>
 
-          <div>
-            {position?.role === "Athlete" && (
-              <SelectField
-                value={position?.athleteCategory ?? undefined}
-                onChange={(val: string) =>
+          <div className="flex items-center justify-end gap-2">
+            <Checkbox
+              checked={position?.role === "Athlete"}
+              onCheckedChange={(checked: boolean) => {
+                if (checked) {
                   updateFormData({
                     position: {
-                      ...position,
-                      athleteCategory: val as ParticipationGender,
+                      role: "Athlete",
+                      athleteCategory: formData.gender,
+                      leaderRole: undefined,
                     },
-                  })
-                }
-                placeholder="ប្រភេទកីឡាករ"
-                options={[
-                  { value: "Male", label: "កីឡាករ" },
-                  { value: "Female", label: "កីឡាការិនី" },
-                ]}
-              />
-            )}
-
-            {position?.role === "Leader" && (
-              <SelectField
-                value={position?.leaderRole ?? undefined}
-                onChange={(val: string) =>
+                  });
+                } else {
                   updateFormData({
-                    position: {
-                      ...position,
-                      leaderRole: val,
-                    },
-                  })
+                    position: undefined,
+                  });
                 }
-                placeholder="ជ្រើសតួនាទី"
-                options={[
-                  { value: "coach", label: "ថ្នាក់ដឹកនាំ" },
-                  { value: "manager", label: "គណកម្មការបច្ចេកទេស" },
-                  { value: "delegate", label: "ប្រតិភូ" },
-                  { value: "team_lead", label: "អ្នកដឹកនាំក្រុម" },
-                  { value: "coach_trainer", label: "គ្រូបង្វឹក" },
-                ]}
-              />
-            )}
-
-            <FormError message={errors?.position} />
+              }}
+            />
+            <span className="text-sm font-medium">ជាកីឡាករ ឬ កីឡាការិនី</span>
           </div>
         </div>
+
+        <FormError message={errors?.position} />
       </div>
 
       <div className="flex items-center gap-4">
