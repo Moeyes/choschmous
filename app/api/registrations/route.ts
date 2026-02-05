@@ -228,25 +228,26 @@ export async function PUT(request: Request) {
 
       for (const [key, val] of fd.entries()) {
         if (key !== "photo") continue;
-        if (!val || typeof val !== "object" || !("arrayBuffer" in val)) continue;
-        
+        if (!val || typeof val !== "object" || !("arrayBuffer" in val))
+          continue;
+
         const file = val as File;
         const mime = file.type || "";
         const buffer = Buffer.from(await file.arrayBuffer());
-        
+
         if (mime && !mime.startsWith("image/")) {
           return NextResponse.json(
             { message: "Uploaded file must be an image." },
-            { status: 400 }
+            { status: 400 },
           );
         }
         if (buffer.length > UPLOAD_LIMITS.maxImageSize) {
           return NextResponse.json(
             { message: "Image size must be 2MB or smaller." },
-            { status: 400 }
+            { status: 400 },
           );
         }
-        
+
         const filename = `${Date.now()}-${(file.name ?? "upload.jpg").replace(/[^a-zA-Z0-9.-]/g, "_")}`;
         const filepath = path.join(uploadsDir, filename);
         await fs.writeFile(filepath, buffer);
@@ -280,7 +281,10 @@ export async function PUT(request: Request) {
           id: userRecord.registrations[index].id, // Preserve original ID
           registeredAt: userRecord.registrations[index].registeredAt, // Preserve original registration date
           // Override photoUrl with uploaded photo if available
-          photoUrl: photoUrl ?? (body as any).photoUrl ?? userRecord.registrations[index].photoUrl,
+          photoUrl:
+            photoUrl ??
+            (body as any).photoUrl ??
+            userRecord.registrations[index].photoUrl,
         };
         updatedRegistration = userRecord.registrations[index];
         updated = true;

@@ -14,7 +14,7 @@ import eventsData from "@/data/mock/events.json";
 
 const REGISTRATIONS_FILE = path.join(
   process.cwd(),
-  "src/data/mock/registrations.json"
+  "src/data/mock/registrations.json",
 );
 
 /**
@@ -50,7 +50,7 @@ async function loadDashboardParticipants(): Promise<DashboardParticipant[]> {
         sport: reg.sport || "",
         sports: reg.sports || [reg.sport || ""],
         sportId: reg.sportId,
-        sportCategory: reg.sportCategory,
+        sportCategory: reg.sportCategory || reg.category,
         status: reg.status || "pending",
         gender: reg.gender,
         dateOfBirth: reg.dateOfBirth,
@@ -89,7 +89,7 @@ async function loadDashboardParticipants(): Promise<DashboardParticipant[]> {
  * Load dashboard participants filtered by event
  */
 async function loadDashboardParticipantsByEvent(
-  eventId: string
+  eventId: string,
 ): Promise<DashboardParticipant[]> {
   const participants = await loadDashboardParticipants();
   return participants.filter((p) => p.eventId === eventId);
@@ -109,7 +109,7 @@ function loadDashboardEvents(): DashboardEvent[] {
     description: event.description,
     sports:
       event.sports?.map((sport: any) =>
-        typeof sport === "string" ? sport : sport.name
+        typeof sport === "string" ? sport : sport.name,
       ) || [],
   }));
 }
@@ -131,7 +131,7 @@ async function loadDashboardSports(): Promise<DashboardSport[]> {
         if (sportId && !sportsMap.has(sportId)) {
           const count = participants.filter(
             (p: DashboardParticipant) =>
-              p.sportId === sportId || p.sport === sportName
+              p.sportId === sportId || p.sport === sportName,
           ).length;
 
           sportsMap.set(sportId, {
@@ -154,7 +154,7 @@ async function loadDashboardSports(): Promise<DashboardSport[]> {
  * Calculate province statistics from participants data
  */
 function loadDashboardProvinces(
-  participants: DashboardParticipant[]
+  participants: DashboardParticipant[],
 ): DashboardProvince[] {
   const provincesMap: Record<string, DashboardProvince> = {};
 
@@ -178,7 +178,9 @@ function loadDashboardProvinces(
   });
 
   // Sort by number of participants (descending)
-  return Object.values(provincesMap).sort((a, b) => b.participants - a.participants);
+  return Object.values(provincesMap).sort(
+    (a, b) => b.participants - a.participants,
+  );
 }
 
 export async function GET(request: Request) {
@@ -211,7 +213,7 @@ export async function GET(request: Request) {
     console.error("Dashboard API error:", error);
     return NextResponse.json(
       { error: "Failed to load dashboard data" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

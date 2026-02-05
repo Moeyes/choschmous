@@ -32,7 +32,9 @@
         "photoUrl": "/uploads/1770175574362-1770175554482-photo.jpg",
         "name": "Sat Panha",
         "province": "កំពង់ធំ",
-        "status": "approved"
+        "status": "approved",
+        "sportId": "athletics",
+        "sportCategory": "រត់ពាក់កណ្តាលម៉ារ៉ាតុង"
       }
     ]
   },

@@ -1,171 +1,217 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Save, X, Upload, User } from "lucide-react"
-import { useDashboardData } from "../../hooks/useDashboardData"
+import { useState, useEffect, useRef } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Save, X, Upload, User } from "lucide-react";
+import { useDashboardData } from "../../hooks/useDashboardData";
 import type { DashboardAthlete } from "./../types";
-import { EditableInputField, EditableSelectField } from "./../shared/EditableField";
-import { formatDateToDDMMYYYYKhmer, toKhmerDigits } from "@/src/lib/khmer"
+import {
+  EditableInputField,
+  EditableSelectField,
+} from "./../shared/EditableField";
+import { formatDateToDDMMYYYYKhmer, toKhmerDigits } from "@/src/lib/khmer";
 
 interface ParticipantEditDialogProps {
-  participant: DashboardAthlete | null
-  open: boolean
-  onClose: () => void
-  onSave: (participant: DashboardAthlete) => void
+  participant: DashboardAthlete | null;
+  open: boolean;
+  onClose: () => void;
+  onSave: (participant: DashboardAthlete) => void;
 }
 
-export function ParticipantEditDialog({ 
-  participant, 
-  open, 
-  onClose, 
-  onSave 
+export function ParticipantEditDialog({
+  participant,
+  open,
+  onClose,
+  onSave,
 }: ParticipantEditDialogProps) {
-  const { events, sports: allSports } = useDashboardData()
-  const [formData, setFormData] = useState<Partial<DashboardAthlete>>({})
-  const [photoPreview, setPhotoPreview] = useState<string>("")
-  const [organizations, setOrganizations] = useState<Array<{id: string, name: string, khmerName: string, type: string}>>([])
-  const [sports, setSports] = useState<any[]>([])
-  const [selectedSportCategories, setSelectedSportCategories] = useState<string[]>([])
-  const [editingField, setEditingField] = useState<string | null>(null)
+  const { events, sports: allSports } = useDashboardData();
+  const [formData, setFormData] = useState<Partial<DashboardAthlete>>({});
+  const [photoPreview, setPhotoPreview] = useState<string>("");
+  const [organizations, setOrganizations] = useState<
+    Array<{ id: string; name: string; khmerName: string; type: string }>
+  >([]);
+  const [sports, setSports] = useState<any[]>([]);
+  const [selectedSportCategories, setSelectedSportCategories] = useState<
+    string[]
+  >([]);
+  const [editingField, setEditingField] = useState<string | null>(null);
+  const sportInitializedRef = useRef<string | null>(null);
 
   useEffect(() => {
     // Load organizations from API
     async function loadOrganizations() {
       try {
-        const response = await fetch('/api/organizations')
-        const data = await response.json()
-        setOrganizations(Array.isArray(data) ? data : [])
+        const response = await fetch("/api/organizations");
+        const data = await response.json();
+        setOrganizations(Array.isArray(data) ? data : []);
       } catch (error) {
-        console.error('Failed to load organizations:', error)
-        setOrganizations([])
+        console.error("Failed to load organizations:", error);
+        setOrganizations([]);
       }
     }
-    loadOrganizations()
-  }, [])
+    loadOrganizations();
+  }, []);
 
   useEffect(() => {
     // Load sports from events or allSports
     if (events.length > 0 && events[0]?.sports) {
-      setSports(events[0].sports)
+      setSports(events[0].sports);
     } else if (allSports && allSports.length > 0) {
-      setSports(allSports)
+      setSports(allSports);
     } else {
       // Fallback: try to fetch from API
       async function loadSports() {
         try {
-          const response = await fetch('/api/events')
-          const data = await response.json()
+          const response = await fetch("/api/events");
+          const data = await response.json();
           if (data && data.length > 0 && data[0].sports) {
-            setSports(data[0].sports)
+            setSports(data[0].sports);
           }
         } catch (error) {
-          console.error('Failed to load sports:', error)
+          console.error("Failed to load sports:", error);
         }
       }
-      loadSports()
+      loadSports();
     }
-  }, [events, allSports])
+  }, [events, allSports]);
 
+  // Initialize form data when participant changes
   useEffect(() => {
     if (participant) {
-      setFormData(participant)
-      setPhotoPreview(participant.photoUrl || "")
+      setFormData(participant);
+      setPhotoPreview(participant.photoUrl || "");
+      // Reset the sport initialization tracker for new participant
+      sportInitializedRef.current = null;
+    }
+  }, [participant]);
+
+  // Load sport categories when sports data is available
+  useEffect(() => {
+    if (!participant || sports.length === 0) return;
+    
+    const sportToMatch = formData.sportId || formData.sport || participant.sportId || participant.sport;
+    if (!sportToMatch) return;
+    
+    // Prevent re-initialization for the same participant/sport combo
+    const initKey = `${participant.id}-${sportToMatch}`;
+    if (sportInitializedRef.current === initKey) return;
+    
+    // Try to find sport by ID first, then by name
+    const sport = sports.find(
+      (s: any) => s.id === sportToMatch || s.name === sportToMatch,
+    );
+    
+    if (sport) {
+      sportInitializedRef.current = initKey;
       
-      // Load sport categories based on selected sport
-      if (sports.length > 0) {
-        // Try to find sport by ID first, then by name
-        const sport = sports.find((s: any) => 
-          s.id === participant.sportId || s.name === participant.sport
-        )
-        if (sport) {
-          // Ensure sportId is set
-          if (!participant.sportId) {
-            setFormData(prev => ({
-              ...prev,
-              sportId: sport.id,
-              sport: sport.name
-            }))
-          }
-          // Set categories
-          if (sport.categories) {
-            setSelectedSportCategories(sport.categories)
-          }
-        }
+      // Set categories for the dropdown
+      if (sport.categories) {
+        setSelectedSportCategories(sport.categories);
       }
       
-      // Match organization from province name if organization object is not set
-      if (participant.province && !participant.organization?.id && organizations.length > 0) {
-        const org = organizations.find(o => o.khmerName === participant.province || o.name === participant.province)
-        if (org) {
-          setFormData(prev => ({
-            ...prev,
-            organization: {
-              id: org.id,
-              name: org.khmerName,
-              type: org.type
-            }
-          }))
-        }
+      // Only update formData if sportId is not already set correctly
+      if (formData.sportId !== sport.id) {
+        setFormData((prev) => ({
+          ...prev,
+          sportId: sport.id,
+          sport: sport.name,
+        }));
       }
     }
-  }, [participant, sports, organizations])
+  }, [sports, participant, formData.sportId, formData.sport]);
+
+  // Match organization from province name if organization object is not set
+  useEffect(() => {
+    if (
+      formData.province &&
+      !formData.organization?.id &&
+      organizations.length > 0
+    ) {
+      const org = organizations.find(
+        (o) =>
+          o.khmerName === formData.province || o.name === formData.province,
+      );
+      if (org) {
+        setFormData((prev) => ({
+          ...prev,
+          organization: {
+            id: org.id,
+            name: org.khmerName,
+            type: org.type,
+          },
+        }));
+      }
+    }
+  }, [formData.province, formData.organization?.id, organizations]);
 
   const handleChange = (field: keyof DashboardAthlete, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
-    
+    setFormData((prev) => ({ ...prev, [field]: value }));
+
     // Update sport categories when sport changes
-    if (field === 'sportId' && sports.length > 0) {
-      const sport = sports.find((s: any) => s.id === value)
+    if (field === "sportId" && sports.length > 0) {
+      const sport = sports.find((s: any) => s.id === value);
       if (sport) {
-        setSelectedSportCategories(sport.categories || [])
-        setFormData(prev => ({ ...prev, sport: sport.name, sportId: value }))
+        setSelectedSportCategories(sport.categories || []);
+        // Reset sportCategory when sport changes, and update sport name
+        setFormData((prev) => ({
+          ...prev,
+          sport: sport.name,
+          sportId: value,
+          sportCategory: "", // Reset category when sport changes
+        }));
       }
     }
-  }
+  };
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+    const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onloadend = () => {
-        const result = reader.result as string
-        setPhotoPreview(result)
-        setFormData(prev => ({ ...prev, photoUrl: result }))
-      }
-      reader.readAsDataURL(file)
+        const result = reader.result as string;
+        setPhotoPreview(result);
+        setFormData((prev) => ({ ...prev, photoUrl: result }));
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (participant && formData) {
-      onSave({ ...participant, ...formData } as DashboardAthlete)
-      setEditingField(null)
-      onClose()
+      onSave({ ...participant, ...formData } as DashboardAthlete);
+      setEditingField(null);
+      onClose();
     }
-  }
+  };
 
   const handleFieldClick = (fieldName: string) => {
-    setEditingField(fieldName)
-  }
+    setEditingField(fieldName);
+  };
 
   const handleFieldBlur = () => {
     // Keep field editing state until user clicks another field or saves
-  }
+  };
 
-  if (!participant) return null
+  if (!participant) return null;
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">កែប្រែអ្នកចូលរួម</DialogTitle>
+          <DialogTitle className="text-2xl font-bold">
+            កែប្រែអ្នកចូលរួម
+          </DialogTitle>
         </DialogHeader>
-        
+
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Photo Upload */}
           <div className="space-y-3">
@@ -173,9 +219,9 @@ export function ParticipantEditDialog({
             <div className="flex items-start gap-4">
               <div className="relative w-32 h-48 bg-slate-100 rounded-xl border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden group">
                 {photoPreview ? (
-                  <img 
-                    src={photoPreview} 
-                    alt="Preview" 
+                  <img
+                    src={photoPreview}
+                    alt="Preview"
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -210,7 +256,7 @@ export function ParticipantEditDialog({
             onChange={(val) => handleChange("fullNameKhmer", val)}
             onBlur={handleFieldBlur}
           />
-          
+
           <EditableInputField
             id="fullNameEnglish"
             label="ឈ្មោះពេញ (អង់គ្លេស)"
@@ -219,8 +265,8 @@ export function ParticipantEditDialog({
             isEditing={editingField === "fullNameEnglish"}
             onEdit={() => handleFieldClick("fullNameEnglish")}
             onChange={(val) => {
-              handleChange("fullNameEnglish", val)
-              handleChange("name", val) // Also update name field
+              handleChange("fullNameEnglish", val);
+              handleChange("name", val); // Also update name field
             }}
             onBlur={handleFieldBlur}
           />
@@ -230,10 +276,16 @@ export function ParticipantEditDialog({
               id="gender"
               label="ភេទ"
               value={formData.gender}
-              displayValue={formData.gender === "Male" ? "ប្រុស" : formData.gender === "Female" ? "ស្រី" : "គ្មាន"}
+              displayValue={
+                formData.gender === "Male"
+                  ? "ប្រុស"
+                  : formData.gender === "Female"
+                    ? "ស្រី"
+                    : "គ្មាន"
+              }
               options={[
                 { value: "Male", label: "ប្រុស" },
-                { value: "Female", label: "ស្រី" }
+                { value: "Female", label: "ស្រី" },
               ]}
               required
               isEditing={editingField === "gender"}
@@ -245,10 +297,16 @@ export function ParticipantEditDialog({
               id="nationality"
               label="ប្រភេទឯកសារជាតិសញ្ជាតិ"
               value={formData.nationality}
-              displayValue={formData.nationality === "IDCard" ? "អត្តសញ្ញាណប័ណ្ណ" : formData.nationality === "BirthCertificate" ? "វិញ្ញាបនបត្រកំណើត" : "គ្មាន"}
+              displayValue={
+                formData.nationality === "IDCard"
+                  ? "អត្តសញ្ញាណប័ណ្ណ"
+                  : formData.nationality === "BirthCertificate"
+                    ? "វិញ្ញាបនបត្រកំណើត"
+                    : "គ្មាន"
+              }
               options={[
                 { value: "IDCard", label: "អត្តសញ្ញាណប័ណ្ណ" },
-                { value: "BirthCertificate", label: "វិញ្ញាបនបត្រកំណើត" }
+                { value: "BirthCertificate", label: "វិញ្ញាបនបត្រកំណើត" },
               ]}
               required
               isEditing={editingField === "nationality"}
@@ -277,7 +335,9 @@ export function ParticipantEditDialog({
                   onClick={() => handleFieldClick("dateOfBirth")}
                   className="h-11 px-3 rounded-md border border-slate-200 bg-slate-50 flex items-center cursor-pointer hover:bg-slate-100 transition-colors"
                 >
-                  <span className="text-slate-700">{formatDateToDDMMYYYYKhmer(formData.dateOfBirth) || "គ្មាន"}</span>
+                  <span className="text-slate-700">
+                    {formatDateToDDMMYYYYKhmer(formData.dateOfBirth) || "គ្មាន"}
+                  </span>
                 </div>
               )}
             </div>
@@ -299,7 +359,9 @@ export function ParticipantEditDialog({
                   onClick={() => handleFieldClick("nationalID")}
                   className="h-11 px-3 rounded-md border border-slate-200 bg-slate-50 flex items-center cursor-pointer hover:bg-slate-100 transition-colors"
                 >
-                  <span className="text-slate-700">{formData.nationalID || "គ្មាន"}</span>
+                  <span className="text-slate-700">
+                    {formData.nationalID || "គ្មាន"}
+                  </span>
                 </div>
               )}
             </div>
@@ -324,7 +386,9 @@ export function ParticipantEditDialog({
                 onClick={() => handleFieldClick("phone")}
                 className="h-11 px-3 rounded-md border border-slate-200 bg-slate-50 flex items-center cursor-pointer hover:bg-slate-100 transition-colors"
               >
-                <span className="text-slate-700">{toKhmerDigits(formData.phone) || "គ្មាន"}</span>
+                <span className="text-slate-700">
+                  {toKhmerDigits(formData.phone) || "គ្មាន"}
+                </span>
               </div>
             )}
           </div>
@@ -337,7 +401,12 @@ export function ParticipantEditDialog({
                 <select
                   id="position"
                   value={formData.position?.role || ""}
-                  onChange={(e) => handleChange("position", { ...formData.position, role: e.target.value })}
+                  onChange={(e) =>
+                    handleChange("position", {
+                      ...formData.position,
+                      role: e.target.value,
+                    })
+                  }
                   onBlur={handleFieldBlur}
                   className="w-full h-11 px-3 rounded-md border border-slate-200 bg-white"
                   autoFocus
@@ -353,7 +422,11 @@ export function ParticipantEditDialog({
                   className="h-11 px-3 rounded-md border border-slate-200 bg-slate-50 flex items-center cursor-pointer hover:bg-slate-100 transition-colors"
                 >
                   <span className="text-slate-700">
-                    {formData.position?.role === "Athlete" ? "កីឡាករ/កីឡាការិនី" : formData.position?.role === "Leader" ? "អ្នកដឹកនាំ" : "គ្មាន"}
+                    {formData.position?.role === "Athlete"
+                      ? "កីឡាករ/កីឡាការិនី"
+                      : formData.position?.role === "Leader"
+                        ? "អ្នកដឹកនាំ"
+                        : "គ្មាន"}
                   </span>
                 </div>
               )}
@@ -365,7 +438,12 @@ export function ParticipantEditDialog({
                   <select
                     id="athleteCategory"
                     value={formData.position?.category || ""}
-                    onChange={(e) => handleChange("position", { ...formData.position, category: e.target.value })}
+                    onChange={(e) =>
+                      handleChange("position", {
+                        ...formData.position,
+                        category: e.target.value,
+                      })
+                    }
                     onBlur={handleFieldBlur}
                     className="w-full h-11 px-3 rounded-md border border-slate-200 bg-white"
                     autoFocus
@@ -381,7 +459,11 @@ export function ParticipantEditDialog({
                     className="h-11 px-3 rounded-md border border-slate-200 bg-slate-50 flex items-center cursor-pointer hover:bg-slate-100 transition-colors"
                   >
                     <span className="text-slate-700">
-                      {formData.position?.category === "Male" ? "កីឡាករ" : formData.position?.category === "Female" ? "កីឡាការិនី" : "គ្មាន"}
+                      {formData.position?.category === "Male"
+                        ? "កីឡាករ"
+                        : formData.position?.category === "Female"
+                          ? "កីឡាការិនី"
+                          : "គ្មាន"}
                     </span>
                   </div>
                 )}
@@ -394,7 +476,12 @@ export function ParticipantEditDialog({
                   <select
                     id="leaderRole"
                     value={formData.position?.leaderRole || ""}
-                    onChange={(e) => handleChange("position", { ...formData.position, leaderRole: e.target.value })}
+                    onChange={(e) =>
+                      handleChange("position", {
+                        ...formData.position,
+                        leaderRole: e.target.value,
+                      })
+                    }
                     onBlur={handleFieldBlur}
                     className="w-full h-11 px-3 rounded-md border border-slate-200 bg-white"
                     autoFocus
@@ -413,12 +500,18 @@ export function ParticipantEditDialog({
                     className="h-11 px-3 rounded-md border border-slate-200 bg-slate-50 flex items-center cursor-pointer hover:bg-slate-100 transition-colors"
                   >
                     <span className="text-slate-700">
-                      {formData.position?.leaderRole === "coach" ? "ថ្នាក់ដឹកនាំ" : 
-                       formData.position?.leaderRole === "manager" ? "គណកម្មការបច្ចេកទេស" : 
-                       formData.position?.leaderRole === "delegate" ? "ប្រតិភូ" : 
-                       formData.position?.leaderRole === "team_lead" ? "អ្នកដឹកនាំក្រុម" : 
-                       formData.position?.leaderRole === "coach_trainer" ? "គ្រូបង្វឹក" : 
-                       "គ្មាន"}
+                      {formData.position?.leaderRole === "coach"
+                        ? "ថ្នាក់ដឹកនាំ"
+                        : formData.position?.leaderRole === "manager"
+                          ? "គណកម្មការបច្ចេកទេស"
+                          : formData.position?.leaderRole === "delegate"
+                            ? "ប្រតិភូ"
+                            : formData.position?.leaderRole === "team_lead"
+                              ? "អ្នកដឹកនាំក្រុម"
+                              : formData.position?.leaderRole ===
+                                  "coach_trainer"
+                                ? "គ្រូបង្វឹក"
+                                : "គ្មាន"}
                     </span>
                   </div>
                 )}
@@ -434,16 +527,20 @@ export function ParticipantEditDialog({
                 id="organization"
                 value={formData.organization?.id || ""}
                 onChange={(e) => {
-                  const org = organizations.find(o => o.id === e.target.value)
+                  const org = organizations.find(
+                    (o) => o.id === e.target.value,
+                  );
                   if (org) {
-                    const orgType = String(org.type).toLowerCase()
+                    const orgType = String(org.type).toLowerCase();
                     handleChange("organization", {
                       id: org.id,
                       name: org.khmerName,
                       type: orgType,
-                      ...(orgType === 'province' ? { province: org.khmerName } : { department: org.khmerName })
-                    })
-                    handleChange("province", org.khmerName)
+                      ...(orgType === "province"
+                        ? { province: org.khmerName }
+                        : { department: org.khmerName }),
+                    });
+                    handleChange("province", org.khmerName);
                   }
                 }}
                 onBlur={handleFieldBlur}
@@ -453,15 +550,15 @@ export function ParticipantEditDialog({
               >
                 <option value="">ជ្រើសរើសក្រសួង ឬ ខេត្តរបស់អ្នក</option>
                 {organizations
-                  .filter(o => String(o.type).toLowerCase() === 'ministry')
-                  .map(org => (
+                  .filter((o) => String(o.type).toLowerCase() === "ministry")
+                  .map((org) => (
                     <option key={org.id} value={org.id}>
                       {org.khmerName}
                     </option>
                   ))}
                 {organizations
-                  .filter(o => String(o.type).toLowerCase() === 'province')
-                  .map(org => (
+                  .filter((o) => String(o.type).toLowerCase() === "province")
+                  .map((org) => (
                     <option key={org.id} value={org.id}>
                       {org.khmerName}
                     </option>
@@ -472,7 +569,9 @@ export function ParticipantEditDialog({
                 onClick={() => handleFieldClick("organization")}
                 className="h-11 px-3 rounded-md border border-slate-200 bg-slate-50 flex items-center cursor-pointer hover:bg-slate-100 transition-colors"
               >
-                <span className="text-slate-700">{formData.organization?.name || formData.province || "គ្មាន"}</span>
+                <span className="text-slate-700">
+                  {formData.organization?.name || formData.province || "គ្មាន"}
+                </span>
               </div>
             )}
           </div>
@@ -491,9 +590,13 @@ export function ParticipantEditDialog({
               >
                 <option value="">ជ្រើសប្រកួតដែលអ្នកចង់ចូលរួម</option>
                 {sports
-                  ?.sort((a: any, b: any) => (a.name || '').localeCompare(b.name || '', 'km'))
+                  ?.sort((a: any, b: any) =>
+                    (a.name || "").localeCompare(b.name || "", "km"),
+                  )
                   .map((sport: any) => (
-                    <option key={sport.id} value={sport.id}>{sport.name}</option>
+                    <option key={sport.id} value={sport.id}>
+                      {sport.name}
+                    </option>
                   ))}
               </select>
             ) : (
@@ -501,7 +604,9 @@ export function ParticipantEditDialog({
                 onClick={() => handleFieldClick("sport")}
                 className="h-11 px-3 rounded-md border border-slate-200 bg-slate-50 flex items-center cursor-pointer hover:bg-slate-100 transition-colors"
               >
-                <span className="text-slate-700">{formData.sport || "គ្មាន"}</span>
+                <span className="text-slate-700">
+                  {formData.sport || "គ្មាន"}
+                </span>
               </div>
             )}
           </div>
@@ -513,7 +618,9 @@ export function ParticipantEditDialog({
                 <select
                   id="sportCategory"
                   value={formData.sportCategory || ""}
-                  onChange={(e) => handleChange("sportCategory", e.target.value)}
+                  onChange={(e) =>
+                    handleChange("sportCategory", e.target.value)
+                  }
                   onBlur={handleFieldBlur}
                   className="w-full h-11 px-3 rounded-md border border-slate-200 bg-white focus:ring-2 focus:ring-indigo-500"
                   autoFocus
@@ -521,9 +628,11 @@ export function ParticipantEditDialog({
                 >
                   <option value="">ជ្រើសរើសប្រភេទ</option>
                   {selectedSportCategories
-                    .sort((a: string, b: string) => a.localeCompare(b, 'km'))
+                    .sort((a: string, b: string) => a.localeCompare(b, "km"))
                     .map((category: string) => (
-                      <option key={category} value={category}>{category}</option>
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
                     ))}
                 </select>
               ) : (
@@ -536,7 +645,9 @@ export function ParticipantEditDialog({
                 onClick={() => handleFieldClick("sportCategory")}
                 className="h-11 px-3 rounded-md border border-slate-200 bg-slate-50 flex items-center cursor-pointer hover:bg-slate-100 transition-colors"
               >
-                <span className="text-slate-700">{formData.sportCategory || "គ្មាន"}</span>
+                <span className="text-slate-700">
+                  {formData.sportCategory || "គ្មាន"}
+                </span>
               </div>
             )}
           </div>
@@ -564,7 +675,13 @@ export function ParticipantEditDialog({
                 className="h-11 px-3 rounded-md border border-slate-200 bg-slate-50 flex items-center cursor-pointer hover:bg-slate-100 transition-colors"
               >
                 <span className="text-slate-700">
-                  {formData.status === "approved" ? "អនុម័ត" : formData.status === "pending" ? "កំពុងរងចាំ" : formData.status === "rejected" ? "បដិសេធ" : "គ្មាន"}
+                  {formData.status === "approved"
+                    ? "អនុម័ត"
+                    : formData.status === "pending"
+                      ? "កំពុងរងចាំ"
+                      : formData.status === "rejected"
+                        ? "បដិសេធ"
+                        : "គ្មាន"}
                 </span>
               </div>
             )}
@@ -572,7 +689,7 @@ export function ParticipantEditDialog({
 
           {/* Actions */}
           <div className="flex gap-3 pt-4 border-t">
-            <Button 
+            <Button
               type="button"
               variant="outline"
               onClick={onClose}
@@ -581,7 +698,7 @@ export function ParticipantEditDialog({
               <X className="h-4 w-4 mr-2" />
               បោះបង់
             </Button>
-            <Button 
+            <Button
               type="submit"
               className="flex-1 bg-linear-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700"
             >
@@ -592,5 +709,5 @@ export function ParticipantEditDialog({
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

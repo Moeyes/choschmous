@@ -182,22 +182,22 @@ export function ParticipantsSection({
     try {
       // Check if photoUrl is a data URL (base64), indicating a new upload
       const isNewPhoto = updatedParticipant.photoUrl?.startsWith("data:");
-      
+
       let response;
       if (isNewPhoto) {
         // Create FormData for multipart upload
         const formData = new FormData();
-        
+
         // Convert base64 to blob
         const base64Data = updatedParticipant.photoUrl!;
-        const blob = await fetch(base64Data).then(r => r.blob());
+        const blob = await fetch(base64Data).then((r) => r.blob());
         formData.append("photo", blob, "photo.jpg");
-        
+
         // Add participant data as JSON payload
         const participantData = { ...updatedParticipant };
         delete (participantData as any).photoUrl; // Remove base64 data, will be replaced with uploaded file path
         formData.append("payload", JSON.stringify(participantData));
-        
+
         response = await fetch("/api/registrations", {
           method: "PUT",
           body: formData,
