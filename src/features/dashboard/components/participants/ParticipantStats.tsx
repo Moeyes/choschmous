@@ -31,25 +31,25 @@ export function ParticipantStats({ participants }: ParticipantStatsProps) {
           label: "សរុប",
           value: String(stats.total),
           color: "bg-blue-100",
-          icon: <Users className="h-5 w-5 text-blue-600" />,
+          icon: <Users className="h-5 w-5 text-blue-900" />,
         },
         {
           label: "អនុម័ត",
           value: String(stats.approved),
           color: "bg-green-100",
-          icon: <Users className="h-5 w-5 text-green-600" />,
+          icon: <Users className="h-5 w-5 text-green-900" />,
         },
         {
           label: "កំពុងរង់ចាំ",
           value: String(stats.pending),
           color: "bg-yellow-100",
-          icon: <Users className="h-5 w-5 text-yellow-600" />,
+          icon: <Users className="h-5 w-5 text-yellow-900" />,
         },
         {
           label: "បដិសេធ",
           value: String(stats.rejected),
           color: "bg-red-100",
-          icon: <Users className="h-5 w-5 text-red-600" />,
+          icon: <Users className="h-5 w-5 text-red-900" />,
         },
       ]}
     />

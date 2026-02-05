@@ -180,16 +180,51 @@ export function ParticipantsSection({
 
     // Save to backend/JSON
     try {
-      const response = await fetch("/api/registrations", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedParticipant),
-      });
+      // Check if photoUrl is a data URL (base64), indicating a new upload
+      const isNewPhoto = updatedParticipant.photoUrl?.startsWith("data:");
+      
+      let response;
+      if (isNewPhoto) {
+        // Create FormData for multipart upload
+        const formData = new FormData();
+        
+        // Convert base64 to blob
+        const base64Data = updatedParticipant.photoUrl!;
+        const blob = await fetch(base64Data).then(r => r.blob());
+        formData.append("photo", blob, "photo.jpg");
+        
+        // Add participant data as JSON payload
+        const participantData = { ...updatedParticipant };
+        delete (participantData as any).photoUrl; // Remove base64 data, will be replaced with uploaded file path
+        formData.append("payload", JSON.stringify(participantData));
+        
+        response = await fetch("/api/registrations", {
+          method: "PUT",
+          body: formData,
+        });
+      } else {
+        // No new photo, just send JSON
+        response = await fetch("/api/registrations", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedParticipant),
+        });
+      }
 
       if (!response.ok) {
         console.error("Failed to save participant data");
+      } else {
+        const result = await response.json();
+        // Update local state with the server response (which includes the new photo URL if uploaded)
+        if (result.registration) {
+          setList((prev) =>
+            prev.map((p) =>
+              p.id === result.registration.id ? result.registration : p,
+            ),
+          );
+        }
       }
     } catch (error) {
       console.error("Error saving participant:", error);
@@ -402,7 +437,7 @@ export function ParticipantsSection({
             {filteredList.length === 0 && (
               <div className="col-span-full text-center py-12 text-muted-foreground">
                 <Users className="h-12 w-12 mx-auto mb-3 text-slate-300" />
-                <p className="font-medium">គ្មានអ្នកចូលរួមទេ</p>
+                <p className="font-medium">មិនមានអ្នកចូលរួមទេ</p>
                 <p className="text-sm">សូមសាកល្បងកែសម្រួលតម្រង</p>
               </div>
             )}

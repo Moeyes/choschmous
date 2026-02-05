@@ -58,11 +58,7 @@ export function ParticipantTableRow({
       </TableCell>
       <TableCell>
         <div className="flex items-center gap-3">
-          <ParticipantAvatar
-            photoUrl={participant.photoUrl}
-            name={participant.name}
-            size="sm"
-          />
+          <ParticipantAvatar photoUrl={participant.photoUrl} size="sm" />
           <div>
             <p className="font-semibold text-slate-700">
               {getDisplayName(participant)}

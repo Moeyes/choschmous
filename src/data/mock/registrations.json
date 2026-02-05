@@ -7,13 +7,13 @@
         "sport": "អត្តពលកម្ម",
         "category": "រត់ប្រណាំង ១០០ ម៉ែត្រ",
         "position": {
-          "role": "Athlete",
-          "athleteCategory": "Male"
+          "role": "Athlete"
         },
         "organization": {
-          "type": "ministry",
-          "id": "m-2",
-          "name": "ក្រសួងការពារជាតិ"
+          "id": "9",
+          "name": "កំពង់ធំ",
+          "type": "province",
+          "province": "កំពង់ធំ"
         },
         "phone": "34142341",
         "sports": [
@@ -29,7 +29,106 @@
         "userId": 1769647268785,
         "id": "1770175574369",
         "registeredAt": "2026-02-04T03:26:14.369Z",
-        "photoUrl": "/uploads/1770175574362-1770175554482-photo.jpg"
+        "photoUrl": "/uploads/1770175574362-1770175554482-photo.jpg",
+        "name": "Sat Panha",
+        "province": "កំពង់ធំ",
+        "status": "approved"
+      }
+    ]
+  },
+  {
+    "userId": 1770187646269,
+    "accessTime": "2026-02-04T06:52:38.908Z",
+    "registrations": [
+      {
+        "sport": "អត្តពលកម្ម",
+        "category": "រត់ប្រណាំង ១០០ ម៉ែត្រ",
+        "position": {
+          "role": "Athlete",
+          "athleteCategory": "Male"
+        },
+        "organization": {
+          "type": "province",
+          "id": "1",
+          "name": "ភ្នំពេញ"
+        },
+        "phone": "0964461381",
+        "sports": [
+          "អត្តពលកម្ម"
+        ],
+        "fullNameKhmer": "ភោគ​​​​ កែវមុន្នីរតនៈ ",
+        "fullNameEnglish": "Phok Keomonnyratanak",
+        "gender": "Male",
+        "nationality": "IDCard",
+        "dateOfBirth": "2000-12-21",
+        "nationalID": "1300058",
+        "eventId": "evt-1",
+        "userId": 1770187646269,
+        "id": "1770187657698",
+        "registeredAt": "2026-02-04T06:47:37.698Z",
+        "photoUrl": "/uploads/1770187657691-1770187591302-photo.jpg"
+      },
+      {
+        "sport": "អត្តពលកម្ម",
+        "category": "រត់ប្រណាំង ១០០ ម៉ែត្រ",
+        "position": {
+          "role": "Athlete",
+          "athleteCategory": "Female"
+        },
+        "organization": {
+          "type": "province",
+          "id": "1",
+          "name": "ភ្នំពេញ"
+        },
+        "phone": "069882161",
+        "sports": [
+          "អត្តពលកម្ម"
+        ],
+        "fullNameKhmer": "លីម លីហៀង",
+        "fullNameEnglish": "Lim Lyheang",
+        "gender": "Female",
+        "nationality": "IDCard",
+        "dateOfBirth": "2007-05-09",
+        "nationalID": "1233214",
+        "eventId": "evt-1",
+        "userId": 1770187646269,
+        "id": "1770187958908",
+        "registeredAt": "2026-02-04T06:52:38.908Z",
+        "photoUrl": "/uploads/1770187958896-1770187953831-photo.jpg"
+      }
+    ]
+  },
+  {
+    "userId": 1770196498535,
+    "accessTime": "2026-02-04T09:15:21.072Z",
+    "registrations": [
+      {
+        "sport": "បាល់ទះ",
+        "category": "ក្នុងសាល",
+        "position": {
+          "role": "Athlete",
+          "athleteCategory": "Male"
+        },
+        "organization": {
+          "type": "ministry",
+          "id": "m-1",
+          "name": "ក្រសួងមហាផ្ទៃ"
+        },
+        "phone": "016700213",
+        "sports": [
+          "បាល់ទះ"
+        ],
+        "fullNameKhmer": "ហ៊ួត វីរះជាតិ",
+        "fullNameEnglish": "Huot Vireakcheert ",
+        "gender": "Male",
+        "nationality": "IDCard",
+        "dateOfBirth": "2000-06-02",
+        "nationalID": "1900000",
+        "eventId": "evt-2",
+        "userId": 1770196498535,
+        "id": "1770196521072",
+        "registeredAt": "2026-02-04T09:15:21.072Z",
+        "photoUrl": "/uploads/1770196521068-1770196494863-photo.jpg"
       }
     ]
   }

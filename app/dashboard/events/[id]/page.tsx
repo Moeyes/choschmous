@@ -33,8 +33,9 @@ export default function EventDetailPage({ params }: Props) {
     if (!eventId) return;
 
     async function loadEventData() {
+      setIsLoading(true);
       try {
-        const res = await fetch("/api/dashboard");
+        const res = await fetch(`/api/dashboard?eventId=${encodeURIComponent(eventId!)}`);
         const data = await res.json();
         const foundEvent = data.events?.find(
           (e: DashboardEvent) => e.id === eventId,
@@ -155,7 +156,7 @@ export default function EventDetailPage({ params }: Props) {
             icon: <Users className="h-5 w-5 text-purple-600" />,
           },
           {
-            label: "មេដឹកនាំ",
+            label: "ថ្នាក់ដឹកនាំ",
             value: roleStats.leaders,
             color: "bg-orange-100",
             icon: <Users className="h-5 w-5 text-orange-600" />,
@@ -170,10 +171,13 @@ export default function EventDetailPage({ params }: Props) {
         </h3>
         <DataTable
           columns={[
+            { key: "number", header: "លេខរៀង" },
             { key: "name", header: "ឈ្មោះ" },
-            { key: "province", header: "ខេត្ត/ក្រុង" },
+            { key: "gender", header: "ភេទ" },
+            { key: "province", header: "អង្គភាព" },
             { key: "sport", header: "កីឡា" },
-            { key: "role", header: "តួនាទី" },
+            { key: "category", header: "ប្រភេទវីញ្ញាសារ" },
+            { key: "dob", header: "ថ្ងៃខែឆ្នាំកំណើត" },
             { key: "status", header: "ស្ថានភាព" },
           ]}
           data={participants.slice(0, 10)}
