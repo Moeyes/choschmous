@@ -1,7 +1,6 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Progress } from "@/src/components/ui/card";
 import { REGISTRATION_STEP_PARAMS } from "@/src/config/constants";
 import { toKhmerDigits } from "@/src/lib/khmer";
 

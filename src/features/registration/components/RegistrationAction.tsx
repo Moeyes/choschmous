@@ -50,7 +50,7 @@ interface ApiRegistration {
 }
 
 interface RegistrationActionProps {
-  formData: RegistrationFormData;
+  formData: Partial<RegistrationFormData>;
   eventId?: string;
   registrationId?: string;
   registeredParticipants?: RegisteredParticipant[];

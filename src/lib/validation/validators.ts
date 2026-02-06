@@ -50,7 +50,11 @@ export function isWithinLength(
 /**
  * Validate the registration form
  */
-export function validateForm(data: FormData): FormErrors {
+/**
+ * Validate registration form data
+ * Accepts partial data during multi-step registration
+ */
+export function validateForm(data: Partial<FormData>): FormErrors {
   const errors: FormErrors = {};
 
   // Required text fields - at least one full name is required

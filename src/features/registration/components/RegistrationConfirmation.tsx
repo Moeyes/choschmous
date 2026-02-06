@@ -28,7 +28,7 @@ import type { FormData as RegistrationFormData } from "@/src/types/registration"
 import type { PositionInfo, OrganizationInfo } from "@/src/types/participation";
 
 interface RegistrationConfirmationProps {
-  formData: RegistrationFormData;
+  formData: Partial<RegistrationFormData>;
   eventId?: string;
   eventName?: string;
   onEdit?: (step: number) => void;

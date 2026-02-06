@@ -107,7 +107,7 @@ export function useRegistrationForm(initial?: Partial<RegistrationFormData>) {
   }, [formData, submitRegistration]);
 
   const validate = useCallback(() => {
-    const e = validateForm(formData as RegistrationFormData);
+    const e = validateForm(formData);
     setErrors(e);
     return e;
   }, [formData]);
