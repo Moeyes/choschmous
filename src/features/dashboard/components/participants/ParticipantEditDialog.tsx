@@ -18,6 +18,18 @@ import {
   EditableSelectField,
 } from "./../shared/EditableField";
 import { formatDateToDDMMYYYYKhmer, toKhmerDigits } from "@/src/lib/khmer";
+import {
+  LEADER_ROLES,
+  getLeaderRoleLabel,
+  GENDER_OPTIONS,
+  getGenderLabel,
+  NATIONALITY_OPTIONS,
+  getNationalityLabel,
+  API_ENDPOINTS,
+  PARTICIPANT_STATUS,
+  STATUS_LABELS,
+  getStatusLabel,
+} from "@/src/config/constants";
 
 interface ParticipantEditDialogProps {
   participant: DashboardAthlete | null;
@@ -49,7 +61,7 @@ export function ParticipantEditDialog({
     // Load organizations from API
     async function loadOrganizations() {
       try {
-        const response = await fetch("/api/organizations");
+        const response = await fetch(API_ENDPOINTS.organizations);
         const data = await response.json();
         setOrganizations(Array.isArray(data) ? data : []);
       } catch (error) {
@@ -70,7 +82,7 @@ export function ParticipantEditDialog({
       // Fallback: try to fetch from API
       async function loadSports() {
         try {
-          const response = await fetch("/api/events");
+          const response = await fetch(API_ENDPOINTS.events);
           const data = await response.json();
           if (data && data.length > 0 && data[0].sports) {
             setSports(data[0].sports);
@@ -96,27 +108,31 @@ export function ParticipantEditDialog({
   // Load sport categories when sports data is available
   useEffect(() => {
     if (!participant || sports.length === 0) return;
-    
-    const sportToMatch = formData.sportId || formData.sport || participant.sportId || participant.sport;
+
+    const sportToMatch =
+      formData.sportId ||
+      formData.sport ||
+      participant.sportId ||
+      participant.sport;
     if (!sportToMatch) return;
-    
+
     // Prevent re-initialization for the same participant/sport combo
     const initKey = `${participant.id}-${sportToMatch}`;
     if (sportInitializedRef.current === initKey) return;
-    
+
     // Try to find sport by ID first, then by name
     const sport = sports.find(
       (s: any) => s.id === sportToMatch || s.name === sportToMatch,
     );
-    
+
     if (sport) {
       sportInitializedRef.current = initKey;
-      
+
       // Set categories for the dropdown
       if (sport.categories) {
         setSelectedSportCategories(sport.categories);
       }
-      
+
       // Only update formData if sportId is not already set correctly
       if (formData.sportId !== sport.id) {
         setFormData((prev) => ({
@@ -276,17 +292,8 @@ export function ParticipantEditDialog({
               id="gender"
               label="ភេទ"
               value={formData.gender}
-              displayValue={
-                formData.gender === "Male"
-                  ? "ប្រុស"
-                  : formData.gender === "Female"
-                    ? "ស្រី"
-                    : "គ្មាន"
-              }
-              options={[
-                { value: "Male", label: "ប្រុស" },
-                { value: "Female", label: "ស្រី" },
-              ]}
+              displayValue={getGenderLabel(formData.gender)}
+              options={[...GENDER_OPTIONS]}
               required
               isEditing={editingField === "gender"}
               onEdit={() => handleFieldClick("gender")}
@@ -297,17 +304,8 @@ export function ParticipantEditDialog({
               id="nationality"
               label="ប្រភេទឯកសារជាតិសញ្ជាតិ"
               value={formData.nationality}
-              displayValue={
-                formData.nationality === "IDCard"
-                  ? "អត្តសញ្ញាណប័ណ្ណ"
-                  : formData.nationality === "BirthCertificate"
-                    ? "វិញ្ញាបនបត្រកំណើត"
-                    : "គ្មាន"
-              }
-              options={[
-                { value: "IDCard", label: "អត្តសញ្ញាណប័ណ្ណ" },
-                { value: "BirthCertificate", label: "វិញ្ញាបនបត្រកំណើត" },
-              ]}
+              displayValue={getNationalityLabel(formData.nationality)}
+              options={[...NATIONALITY_OPTIONS]}
               required
               isEditing={editingField === "nationality"}
               onEdit={() => handleFieldClick("nationality")}
@@ -336,7 +334,8 @@ export function ParticipantEditDialog({
                   className="h-11 px-3 rounded-md border border-slate-200 bg-slate-50 flex items-center cursor-pointer hover:bg-slate-100 transition-colors"
                 >
                   <span className="text-slate-700">
-                    {formatDateToDDMMYYYYKhmer(formData.dateOfBirth) || "គ្មាន"}
+                    {formatDateToDDMMYYYYKhmer(formData.dateOfBirth) ||
+                      "មិនមាន"}
                   </span>
                 </div>
               )}
@@ -360,7 +359,7 @@ export function ParticipantEditDialog({
                   className="h-11 px-3 rounded-md border border-slate-200 bg-slate-50 flex items-center cursor-pointer hover:bg-slate-100 transition-colors"
                 >
                   <span className="text-slate-700">
-                    {formData.nationalID || "គ្មាន"}
+                    {formData.nationalID || "មិនមាន"}
                   </span>
                 </div>
               )}
@@ -387,7 +386,7 @@ export function ParticipantEditDialog({
                 className="h-11 px-3 rounded-md border border-slate-200 bg-slate-50 flex items-center cursor-pointer hover:bg-slate-100 transition-colors"
               >
                 <span className="text-slate-700">
-                  {toKhmerDigits(formData.phone) || "គ្មាន"}
+                  {toKhmerDigits(formData.phone) || "មិនមាន"}
                 </span>
               </div>
             )}
@@ -426,7 +425,7 @@ export function ParticipantEditDialog({
                       ? "កីឡាករ/កីឡាការិនី"
                       : formData.position?.role === "Leader"
                         ? "អ្នកដឹកនាំ"
-                        : "គ្មាន"}
+                        : "មិនមាន"}
                   </span>
                 </div>
               )}
@@ -463,7 +462,7 @@ export function ParticipantEditDialog({
                         ? "កីឡាករ"
                         : formData.position?.category === "Female"
                           ? "កីឡាការិនី"
-                          : "គ្មាន"}
+                          : "មិនមាន"}
                     </span>
                   </div>
                 )}
@@ -488,11 +487,11 @@ export function ParticipantEditDialog({
                     required
                   >
                     <option value="">ជ្រើសតួនាទី</option>
-                    <option value="coach">ថ្នាក់ដឹកនាំ</option>
-                    <option value="manager">គណកម្មការបច្ចេកទេស</option>
-                    <option value="delegate">ប្រតិភូ</option>
-                    <option value="team_lead">អ្នកដឹកនាំក្រុម</option>
-                    <option value="coach_trainer">គ្រូបង្វឹក</option>
+                    {LEADER_ROLES.map((role) => (
+                      <option key={role.value} value={role.value}>
+                        {role.label}
+                      </option>
+                    ))}
                   </select>
                 ) : (
                   <div
@@ -500,18 +499,7 @@ export function ParticipantEditDialog({
                     className="h-11 px-3 rounded-md border border-slate-200 bg-slate-50 flex items-center cursor-pointer hover:bg-slate-100 transition-colors"
                   >
                     <span className="text-slate-700">
-                      {formData.position?.leaderRole === "coach"
-                        ? "ថ្នាក់ដឹកនាំ"
-                        : formData.position?.leaderRole === "manager"
-                          ? "គណកម្មការបច្ចេកទេស"
-                          : formData.position?.leaderRole === "delegate"
-                            ? "ប្រតិភូ"
-                            : formData.position?.leaderRole === "team_lead"
-                              ? "អ្នកដឹកនាំក្រុម"
-                              : formData.position?.leaderRole ===
-                                  "coach_trainer"
-                                ? "គ្រូបង្វឹក"
-                                : "គ្មាន"}
+                      {getLeaderRoleLabel(formData.position?.leaderRole)}
                     </span>
                   </div>
                 )}
@@ -570,7 +558,7 @@ export function ParticipantEditDialog({
                 className="h-11 px-3 rounded-md border border-slate-200 bg-slate-50 flex items-center cursor-pointer hover:bg-slate-100 transition-colors"
               >
                 <span className="text-slate-700">
-                  {formData.organization?.name || formData.province || "គ្មាន"}
+                  {formData.organization?.name || formData.province || "មិនមាន"}
                 </span>
               </div>
             )}
@@ -605,7 +593,7 @@ export function ParticipantEditDialog({
                 className="h-11 px-3 rounded-md border border-slate-200 bg-slate-50 flex items-center cursor-pointer hover:bg-slate-100 transition-colors"
               >
                 <span className="text-slate-700">
-                  {formData.sport || "គ្មាន"}
+                  {formData.sport || "មិនមាន"}
                 </span>
               </div>
             )}
@@ -646,7 +634,7 @@ export function ParticipantEditDialog({
                 className="h-11 px-3 rounded-md border border-slate-200 bg-slate-50 flex items-center cursor-pointer hover:bg-slate-100 transition-colors"
               >
                 <span className="text-slate-700">
-                  {formData.sportCategory || "គ្មាន"}
+                  {formData.sportCategory || "មិនមាន"}
                 </span>
               </div>
             )}
@@ -665,9 +653,9 @@ export function ParticipantEditDialog({
                 autoFocus
                 required
               >
-                <option value="pending">កំពុងរងចាំ</option>
-                <option value="approved">អនុម័ត</option>
-                <option value="rejected">បដិសេធ</option>
+                <option value={PARTICIPANT_STATUS.pending}>{STATUS_LABELS.pending}</option>
+                <option value={PARTICIPANT_STATUS.approved}>{STATUS_LABELS.approved}</option>
+                <option value={PARTICIPANT_STATUS.rejected}>{STATUS_LABELS.rejected}</option>
               </select>
             ) : (
               <div
@@ -675,13 +663,7 @@ export function ParticipantEditDialog({
                 className="h-11 px-3 rounded-md border border-slate-200 bg-slate-50 flex items-center cursor-pointer hover:bg-slate-100 transition-colors"
               >
                 <span className="text-slate-700">
-                  {formData.status === "approved"
-                    ? "អនុម័ត"
-                    : formData.status === "pending"
-                      ? "កំពុងរងចាំ"
-                      : formData.status === "rejected"
-                        ? "បដិសេធ"
-                        : "គ្មាន"}
+                  {getStatusLabel(formData.status)}
                 </span>
               </div>
             )}

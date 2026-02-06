@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
+import { API_ENDPOINTS } from "@/src/config/constants";
 import type { Event } from "@/src/types/event";
 
 export function useEvents() {
@@ -13,7 +13,7 @@ export function useEvents() {
     const load = async () => {
       setLoading(true);
       try {
-        const res = await fetch("/api/events");
+        const res = await fetch(API_ENDPOINTS.events);
         const data = await res.json();
         if (mounted) setEvents(data ?? data.events ?? []);
       } catch (err) {

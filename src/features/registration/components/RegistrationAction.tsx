@@ -3,46 +3,54 @@
  * Shows success message, displays all user's registrations, and allows adding more participants
  */
 
-import { useState, useEffect, useCallback } from "react"
-import { CheckCircle2, UserPlus, Home, Users, Loader2, Edit2 } from "lucide-react"
-import { Button } from "@/src/components/ui/button"
-import { useLocation } from "wouter"
-import { SectionTitle } from "@/src/components/ui/formElements"
-import { StyledCard } from "@/src/shared/utils/patterns"
-import { useUserSession } from "@/src/hooks/useUserSession"
-import { useMounted } from "@/src/lib/hooks"
-import { toKhmerDigits, formatDateToKhmerLabeled } from "@/src/lib/khmer"
-import { getPositionDisplay } from "@/src/lib/display"
-import type { FormData as RegistrationFormData } from "@/src/types/registration"
+import { useState, useEffect, useCallback } from "react";
+import {
+  CheckCircle2,
+  UserPlus,
+  Home,
+  Users,
+  Loader2,
+  Edit2,
+} from "lucide-react";
+import { Button } from "@/src/components/ui/button";
+import { API_ENDPOINTS } from "@/src/config/constants";
+import { useLocation } from "wouter";
+import { SectionTitle } from "@/src/components/ui/formElements";
+import { StyledCard } from "@/src/shared/utils/patterns";
+import { useUserSession } from "@/src/hooks/useUserSession";
+import { useMounted } from "@/src/lib/hooks";
+import { toKhmerDigits, formatDateToKhmerLabeled } from "@/src/lib/khmer";
+import { getPositionDisplay } from "@/src/lib/display";
+import type { FormData as RegistrationFormData } from "@/src/types/registration";
 
 interface RegisteredParticipant {
-  id: string
-  name: string
-  sport: string
-  role: string
-  registeredAt?: string
+  id: string;
+  name: string;
+  sport: string;
+  role: string;
+  registeredAt?: string;
 }
 
 interface ApiRegistration {
-  id: string
-  fullNameKhmer?: string
-  fullNameEnglish?: string
-  sport?: string
+  id: string;
+  fullNameKhmer?: string;
+  fullNameEnglish?: string;
+  sport?: string;
   position?: {
-    role?: string
-    athleteCategory?: string
-    leaderRole?: string
-  }
-  registeredAt?: string
+    role?: string;
+    athleteCategory?: string;
+    leaderRole?: string;
+  };
+  registeredAt?: string;
 }
 
 interface RegistrationActionProps {
-  formData: RegistrationFormData
-  eventId: string
-  registrationId?: string
-  registeredParticipants?: RegisteredParticipant[]
-  onAddMore: () => void
-  onEditParticipant?: (participantId: string) => void
+  formData: RegistrationFormData;
+  eventId: string;
+  registrationId?: string;
+  registeredParticipants?: RegisteredParticipant[];
+  onAddMore: () => void;
+  onEditParticipant?: (participantId: string) => void;
 }
 
 const formatRegistration = (reg: ApiRegistration): RegisteredParticipant => ({
@@ -51,7 +59,7 @@ const formatRegistration = (reg: ApiRegistration): RegisteredParticipant => ({
   sport: reg.sport || "—",
   role: getPositionDisplay(reg.position) || "អ្នកចូលរួម",
   registeredAt: reg.registeredAt,
-})
+});
 
 export function RegistrationAction({
   formData,
@@ -60,54 +68,63 @@ export function RegistrationAction({
   onAddMore,
   onEditParticipant,
 }: RegistrationActionProps) {
-  const [, setLocation] = useLocation()
-  const { session } = useUserSession()
-  const [allRegistrations, setAllRegistrations] = useState<RegisteredParticipant[]>([])
-  const [loading, setLoading] = useState(true)
-  const mounted = useMounted()
-  
+  const [, setLocation] = useLocation();
+  const { session } = useUserSession();
+  const [allRegistrations, setAllRegistrations] = useState<
+    RegisteredParticipant[]
+  >([]);
+  const [loading, setLoading] = useState(true);
+  const mounted = useMounted();
+
   const fetchUserRegistrations = useCallback(async () => {
     if (!session?.userId) {
-      setAllRegistrations(registeredParticipants)
-      setLoading(false)
-      return
+      setAllRegistrations(registeredParticipants);
+      setLoading(false);
+      return;
     }
 
     try {
-      const res = await fetch(`/api/registrations?userId=${session.userId}`)
+      const res = await fetch(
+        `${API_ENDPOINTS.registrations}?userId=${session.userId}`,
+      );
       if (res.ok) {
-        const data = await res.json()
-        const registrations: ApiRegistration[] = data.registrations || []
+        const data = await res.json();
+        const registrations: ApiRegistration[] = data.registrations || [];
         if (mounted.current) {
-          setAllRegistrations(registrations.map(formatRegistration))
+          setAllRegistrations(registrations.map(formatRegistration));
         }
       } else {
-        if (mounted.current) setAllRegistrations(registeredParticipants)
+        if (mounted.current) setAllRegistrations(registeredParticipants);
       }
     } catch {
-      if (mounted.current) setAllRegistrations(registeredParticipants)
+      if (mounted.current) setAllRegistrations(registeredParticipants);
     } finally {
-      if (mounted.current) setLoading(false)
+      if (mounted.current) setLoading(false);
     }
-  }, [session?.userId, registeredParticipants, mounted])
+  }, [session?.userId, registeredParticipants, mounted]);
 
   useEffect(() => {
-    fetchUserRegistrations()
-  }, [fetchUserRegistrations])
+    fetchUserRegistrations();
+  }, [fetchUserRegistrations]);
 
-  const currentName = formData.fullNameKhmer || formData.fullNameEnglish || "អ្នកចូលរួម"
+  const currentName =
+    formData.fullNameKhmer || formData.fullNameEnglish || "អ្នកចូលរួម";
 
   return (
     <div className="space-y-6 max-w-lg mx-auto">
       <div className="text-center space-y-4 py-6">
         <CheckCircle2 className="h-20 w-20 text-green-500 mx-auto" />
-        <h2 className="text-3xl font-bold text-green-700">បានចុះឈ្មោះដោយជោគជ័យ!</h2>
+        <h2 className="text-3xl font-bold text-green-700">
+          បានចុះឈ្មោះដោយជោគជ័យ!
+        </h2>
         <p className="text-muted-foreground">
-          <span className="font-semibold">{currentName}</span> បានចុះឈ្មោះរួចរាល់សម្រាប់ {formData.sport}។
+          <span className="font-semibold">{currentName}</span>{" "}
+          បានចុះឈ្មោះរួចរាល់សម្រាប់ {formData.sport}។
         </p>
         {registrationId && (
           <p className="text-sm text-muted-foreground">
-            លេខសម្គាល់ការចុះឈ្មោះ: <span className="font-mono">{toKhmerDigits(registrationId)}</span>
+            លេខសម្គាល់ការចុះឈ្មោះ:{" "}
+            <span className="font-mono">{toKhmerDigits(registrationId)}</span>
           </p>
         )}
       </div>
@@ -116,14 +133,17 @@ export function RegistrationAction({
         <div className="flex items-center gap-2 mb-3">
           <Users className="h-5 w-5 text-muted-foreground" />
           <span className="font-semibold">
-            អ្នកចូលរួមដែលបានចុះឈ្មោះ ({loading ? "..." : toKhmerDigits(allRegistrations.length)})
+            អ្នកចូលរួមដែលបានចុះឈ្មោះ (
+            {loading ? "..." : toKhmerDigits(allRegistrations.length)})
           </span>
         </div>
-        
+
         {loading ? (
           <div className="flex items-center justify-center py-4">
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-            <span className="ml-2 text-sm text-muted-foreground">កំពុងផ្ទុក...</span>
+            <span className="ml-2 text-sm text-muted-foreground">
+              កំពុងផ្ទុក...
+            </span>
           </div>
         ) : allRegistrations.length === 0 ? (
           <p className="text-center text-muted-foreground py-4">
@@ -177,18 +197,27 @@ export function RegistrationAction({
         <p className="text-sm text-muted-foreground">
           អ្នកអាចចុះឈ្មោះអ្នកចូលរួមបន្ថែមសម្រាប់ព្រឹត្តិការណ៍តែមួយ ឬ កីឡាផ្សេងៗ។
         </p>
-        <Button onClick={onAddMore} className="bg-blue-600 hover:bg-blue-700 text-white" size="lg">
+        <Button
+          onClick={onAddMore}
+          className="bg-blue-600 hover:bg-blue-700 text-white"
+          size="lg"
+        >
           <UserPlus className="h-5 w-5 mr-2" />
           ចុះឈ្មោះអ្នកចូលរួមបន្ថែម
         </Button>
       </div>
 
       <div className="flex justify-center pt-4">
-        <Button variant="outline" size="lg" onClick={() => setLocation("/")} className="min-w-50">
+        <Button
+          variant="outline"
+          size="lg"
+          onClick={() => setLocation("/")}
+          className="min-w-50"
+        >
           <Home className="h-4 w-4 mr-2" />
           បញ្ចប់ និង ទៅទំព័រដើម
         </Button>
       </div>
     </div>
-  )
+  );
 }

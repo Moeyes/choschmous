@@ -1,24 +1,25 @@
-"use client"
+"use client";
 
-import { SearchInput, FilterDropdown } from "@/src/shared/components"
-import { cn } from "@/src/lib/utils"
+import { SearchInput, FilterDropdown } from "@/src/shared/components";
+import { cn } from "@/src/lib/utils";
+import { PARTICIPANT_STATUS, STATUS_LABELS } from "@/src/config/constants";
 
 interface ParticipantFiltersProps {
-  searchQuery: string
-  onSearchChange: (value: string) => void
-  statusFilter: string
-  onStatusChange: (value: string) => void
-  positionFilter: string
-  onPositionChange: (value: string) => void
-  className?: string
+  searchQuery: string;
+  onSearchChange: (value: string) => void;
+  statusFilter: string;
+  onStatusChange: (value: string) => void;
+  positionFilter: string;
+  onPositionChange: (value: string) => void;
+  className?: string;
 }
 
 const STATUS_OPTIONS = [
   { value: "all", label: "ស្ថានភាពទាំងអស់" },
-  { value: "approved", label: "អនុម័ត" },
-  { value: "pending", label: "កំពុងរង់ចាំ" },
-  { value: "rejected", label: "បដិសេធ" },
-]
+  { value: PARTICIPANT_STATUS.approved, label: STATUS_LABELS.approved },
+  { value: PARTICIPANT_STATUS.pending, label: STATUS_LABELS.pending },
+  { value: PARTICIPANT_STATUS.rejected, label: STATUS_LABELS.rejected },
+];
 
 const POSITION_OPTIONS = [
   { value: "all", label: "មុខតំណែងទាំងអស់" },
@@ -26,16 +27,16 @@ const POSITION_OPTIONS = [
   { value: "Coach", label: "គ្រូបង្វឹក" },
   { value: "Leader", label: "ប្រធាន" },
   { value: "Official", label: "មន្រ្តី" },
-]
+];
 
-export function ParticipantFilters({ 
+export function ParticipantFilters({
   searchQuery,
   onSearchChange,
   statusFilter,
   onStatusChange,
   positionFilter,
   onPositionChange,
-  className 
+  className,
 }: ParticipantFiltersProps) {
   return (
     <div className={cn("flex flex-col sm:flex-row gap-4", className)}>
@@ -58,7 +59,7 @@ export function ParticipantFilters({
         />
       </div>
     </div>
-  )
+  );
 }
 
-export default ParticipantFilters
+export default ParticipantFilters;

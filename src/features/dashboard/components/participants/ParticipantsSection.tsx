@@ -22,6 +22,12 @@ import { useMemo, useState, useEffect } from "react";
 import SectionHeader from "../overview/SectionHeader";
 import StatsGrid from "../overview/StatsGrid";
 import {
+  API_ENDPOINTS,
+  STATUS_LABELS,
+  STATUS_COLORS,
+  PARTICIPANT_STATUS,
+} from "@/src/config/constants";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -96,9 +102,9 @@ export function ParticipantsSection({
 
   // Helper function to get status in Khmer
   const getStatusDisplay = (status?: string) => {
-    if (status === "approved") return "អនុម័ត";
-    if (status === "pending") return "កំពុងរង់ចាំ";
-    if (status === "rejected") return "បដិសេធ";
+    if (status === PARTICIPANT_STATUS.approved) return STATUS_LABELS.approved;
+    if (status === PARTICIPANT_STATUS.pending) return STATUS_LABELS.pending;
+    if (status === PARTICIPANT_STATUS.rejected) return STATUS_LABELS.rejected;
     return status || "";
   };
 
@@ -128,14 +134,14 @@ export function ParticipantsSection({
 
   const getStatusBadgeColor = (status?: string) => {
     switch (status?.toLowerCase()) {
-      case "approved":
-        return "bg-emerald-500 hover:bg-emerald-600";
-      case "pending":
-        return "bg-amber-500 hover:bg-amber-600";
-      case "rejected":
-        return "bg-rose-500 hover:bg-rose-600";
+      case PARTICIPANT_STATUS.approved:
+        return STATUS_COLORS.approved;
+      case PARTICIPANT_STATUS.pending:
+        return STATUS_COLORS.pending;
+      case PARTICIPANT_STATUS.rejected:
+        return STATUS_COLORS.rejected;
       default:
-        return "bg-slate-500 hover:bg-slate-600";
+        return "bg-slate-500 hover:bg-slate-600 text-white";
     }
   };
 
@@ -198,13 +204,13 @@ export function ParticipantsSection({
         delete (participantData as any).photoUrl; // Remove base64 data, will be replaced with uploaded file path
         formData.append("payload", JSON.stringify(participantData));
 
-        response = await fetch("/api/registrations", {
+        response = await fetch(API_ENDPOINTS.registrations, {
           method: "PUT",
           body: formData,
         });
       } else {
         // No new photo, just send JSON
-        response = await fetch("/api/registrations", {
+        response = await fetch(API_ENDPOINTS.registrations, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -269,7 +275,7 @@ export function ParticipantsSection({
             color: "bg-gradient-to-br from-blue-100 to-indigo-100",
           },
           {
-            label: "អនុម័ត",
+            label: STATUS_LABELS.approved,
             value: String(stats.approved),
             color: "bg-gradient-to-br from-emerald-100 to-green-100",
           },
@@ -279,7 +285,7 @@ export function ParticipantsSection({
             color: "bg-gradient-to-br from-amber-100 to-yellow-100",
           },
           {
-            label: "បដិសេធ",
+            label: STATUS_LABELS.rejected,
             value: String(stats.rejected),
             color: "bg-gradient-to-br from-rose-100 to-red-100",
           },

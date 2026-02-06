@@ -3,8 +3,8 @@
  * Centralized validation logic for forms
  */
 
-import type { FormData, FormErrors } from '@/src/types/registration';
-import { PATTERNS, UPLOAD_LIMITS } from '@/src/config/constants';
+import type { FormData, FormErrors } from "@/src/types/registration";
+import { PATTERNS, UPLOAD_LIMITS } from "@/src/config/constants";
 
 /**
  * Validate a single email address
@@ -38,7 +38,11 @@ export function hasMinLength(value: string, min: number): boolean {
 /**
  * Check if a string is within length range
  */
-export function isWithinLength(value: string, min: number, max: number): boolean {
+export function isWithinLength(
+  value: string,
+  min: number,
+  max: number,
+): boolean {
   const len = value.trim().length;
   return len >= min && len <= max;
 }
@@ -51,62 +55,67 @@ export function validateForm(data: FormData): FormErrors {
 
   // Required text fields - at least one full name is required
   if (!data.fullNameKhmer?.trim() && !data.fullNameEnglish?.trim()) {
-    errors.fullNameKhmer = 'សូមបញ្ចូលឈ្មោះពេញជាភាសាខ្មែរ។';
-    errors.fullNameEnglish = 'សូមបញ្ចូលឈ្មោះពេញជាភាសាអង់គ្លេស។';
+    errors.fullNameKhmer = "សូមបញ្ចូលឈ្មោះពេញជាភាសាខ្មែរ។";
+    errors.fullNameEnglish = "សូមបញ្ចូលឈ្មោះពេញជាភាសាអង់គ្លេស។";
   }
 
   // Phone validation
   const phoneValue = data.phone?.trim();
   if (!phoneValue) {
-    errors.phone = 'សូមបញ្ចូលលេខទូរស័ព្ទ។';
+    errors.phone = "សូមបញ្ចូលលេខទូរស័ព្ទ។";
   } else if (!isValidPhone(phoneValue)) {
-    errors.phone = 'សូមបញ្ចូលលេខទូរស័ព្ទត្រឹមត្រូវ (7–15 ខ្ទង់).';
+    errors.phone = "សូមបញ្ចូលលេខទូរស័ព្ទត្រឹមត្រូវ (7–15 ខ្ទង់).";
   }
 
   // Date of birth validation
   if (!data.dateOfBirth) {
-    errors.dateOfBirth = 'សូមបញ្ចូលថ្ងៃខែឆ្នាំកំណើត។';
+    errors.dateOfBirth = "សូមបញ្ចូលថ្ងៃខែឆ្នាំកំណើត។";
   } else if (!isValidPastDate(data.dateOfBirth)) {
-    errors.dateOfBirth = 'ថ្ងៃកំណើតត្រូវតែជាកាលបរិច្ឆេទមុនថ្ងៃនេះ។';
+    errors.dateOfBirth = "ថ្ងៃកំណើតត្រូវតែជាកាលបរិច្ឆេទមុនថ្ងៃនេះ។";
   }
 
   // Organization validation (province/ministry unified)
   // Accept both the new unified organization (id) or legacy fields
-  const orgType = String(data.organization?.type ?? '').toLowerCase();
-  const hasOrg = !!(data.organization?.id || data.organization?.id || data.organization?.type || data.organization?.name);
-  if (orgType === 'province' && !hasOrg) {
-    errors.organization = 'សូមជ្រើសរើសអង្គភាព។';
+  const orgType = String(data.organization?.type ?? "").toLowerCase();
+  const hasOrg = !!(
+    data.organization?.id ||
+    data.organization?.id ||
+    data.organization?.type ||
+    data.organization?.name
+  );
+  if (orgType === "province" && !hasOrg) {
+    errors.organization = "សូមជ្រើសរើសអង្គភាព។";
   }
 
   // National ID validation
   if (!data.nationalID?.trim()) {
-    errors.nationalID = 'សូមបញ្ចូលលេខអត្តសញ្ញាណជាតិ។';
+    errors.nationalID = "សូមបញ្ចូលលេខអត្តសញ្ញាណជាតិ។";
   } else if (!isWithinLength(data.nationalID, 6, 20)) {
-    errors.nationalID = 'លេខអត្តសញ្ញាណត្រូវមានចន្លោះពី 6 ទៅ 20 តួអក្សរ។';
+    errors.nationalID = "លេខអត្តសញ្ញាណត្រូវមានចន្លោះពី 6 ទៅ 20 តួអក្សរ។";
   }
 
   if (!data.sport && !data.selectedSport) {
-    errors.selectedSport = 'សូមជ្រើសរើសកីឡា។';
-    errors.sport = 'សូមជ្រើសរើសកីឡា។';
+    errors.selectedSport = "សូមជ្រើសរើសកីឡា។";
+    errors.sport = "សូមជ្រើសរើសកីឡា។";
   }
 
   // Position validation - position is optional initially, but if provided must be valid
   if (data.position && data.position.role) {
     const role = data.position.role;
-    if (role === 'Athlete' && !data.position.athleteCategory) {
-      errors.position = 'សូមជ្រើសប្រភេទកីឡាករ។';
-    } else if (role === 'Leader' && !data.position.leaderRole) {
-      errors.position = 'សូមជ្រើសតួនាទីសម្រាប់អ្នកដឹកនាំ។';
+    if (role === "Athlete" && !data.position.athleteCategory) {
+      errors.position = "សូមជ្រើសប្រភេទកីឡាករ។";
+    } else if (role === "Leader" && !data.position.leaderRole) {
+      errors.position = "សូមជ្រើសតួនាទីសម្រាប់អ្នកដឹកនាំ។";
     }
   }
 
   if (data.photoUpload) {
     const file = data.photoUpload;
-    
-    if (!file.type.startsWith('image/')) {
-      errors.photoUpload = 'សូមផ្ទុកឡើងឯកសាររូបភាពតែប៉ុណ្ណោះ (JPG, PNG, ...).';
+
+    if (!file.type.startsWith("image/")) {
+      errors.photoUpload = "សូមបញ្ចូលឯកសាររូបភាពតែប៉ុណ្ណោះ (JPG, PNG, ...).";
     } else if (file.size > UPLOAD_LIMITS.maxImageSize) {
-      errors.photoUpload = 'ទំហំរូបភាពត្រូវតែ 2MB ឬតូចជាង។';
+      errors.photoUpload = "ទំហំរូបភាពត្រូវតែ 2MB ឬតូចជាង។";
     }
   }
 

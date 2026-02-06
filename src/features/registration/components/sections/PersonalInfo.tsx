@@ -4,6 +4,11 @@ import { Checkbox } from "@/src/components/ui/checkbox";
 import { SelectField } from "../SelectField";
 import { PhotoUpload } from "../PhotoUpload";
 import { FormError, SectionTitle } from "@/src/components/ui/formElements";
+import {
+  LEADER_ROLES,
+  GENDER_OPTIONS,
+  NATIONALITY_OPTIONS,
+} from "@/src/config/constants";
 import type { FormData, FormErrors } from "@/src/types/registration";
 import type {
   ParticipationGender,
@@ -68,10 +73,7 @@ export function PersonalInfo({
             }
           }}
           placeholder="ភេទ"
-          options={[
-            { value: "Male", label: "ប្រុស" },
-            { value: "Female", label: "ស្រី" },
-          ]}
+          options={[...GENDER_OPTIONS]}
         />
 
         <SelectField
@@ -80,10 +82,7 @@ export function PersonalInfo({
             updateFormData({ nationality: val as ParticipationNationality })
           }
           placeholder="ប្រភេទឯកសារជាតិសញ្ជាតិ"
-          options={[
-            { value: "IDCard", label: "អត្តសញ្ញាណប័ណ្ណ" },
-            { value: "BirthCertificate", label: "សំបុត្របញ្ជាក់កំណើត" },
-          ]}
+          options={[...NATIONALITY_OPTIONS]}
         />
       </div>
 
@@ -132,13 +131,7 @@ export function PersonalInfo({
                 })
               }
               placeholder="ជ្រើសតួនាទី (សម្រាប់អ្នកដឹកនាំ)"
-              options={[
-                { value: "coach", label: "ថ្នាក់ដឹកនាំ" },
-                { value: "manager", label: "គណកម្មការបច្ចេកទេស" },
-                { value: "delegate", label: "ប្រតិភូ" },
-                { value: "team_lead", label: "អ្នកដឹកនាំក្រុម" },
-                { value: "coach_trainer", label: "គ្រូបង្វឹក" },
-              ]}
+              options={[...LEADER_ROLES]}
               disabled={position?.role === "Athlete"}
             />
           </div>
@@ -175,7 +168,7 @@ export function PersonalInfo({
           onChange={(f) => updateFormData({ photoUpload: f ?? null })}
         />
         {formData.photoUrl && (
-          <div className="text-sm text-muted-foreground">បានផ្ទុកឡើង</div>
+          <div className="text-sm text-muted-foreground">បានបញ្ចូល</div>
         )}
       </div>
       <FormError message={errors?.photoUpload} />
