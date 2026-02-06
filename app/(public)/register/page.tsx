@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { RegistrationContent } from "./RegistrationContent";
+import { RegistrationContent } from "@/src/features/registration/components/layout/RegistrationContent";
 
 export const dynamic = "force-dynamic";
 
