@@ -3,13 +3,13 @@
  * Types for registration forms and validation
  */
 
-import type { ReactNode } from 'react';
+import type { ReactNode } from "react";
 import type {
   ParticipationGender,
   ParticipationNationality,
   PositionInfo,
-  OrganizationInfo
-} from './participation';
+  OrganizationInfo,
+} from "./participation";
 
 /** Registration form data structure */
 export interface FormData {
@@ -34,7 +34,7 @@ export interface FormData {
 
   // Sport Selection
   sport: string;
-  sports: string[];
+  sports?: string[];
   selectedSport?: string | string[] | null;
   category?: string;
   sportId?: string;
@@ -76,7 +76,7 @@ export interface FormErrors {
 /** Field change handler type */
 export type OnFieldChange = <K extends keyof FormData>(
   field: K,
-  value: FormData[K]
+  value: FormData[K],
 ) => void;
 
 /** Sport category definition */
@@ -94,7 +94,7 @@ export interface SelectOption {
 
 /** Header button props */
 export interface HeaderButtonProps {
-  variant?: 'primary' | 'outline';
+  variant?: "primary" | "outline";
   onClick?: () => void;
   children: ReactNode;
   className?: string;

@@ -14,17 +14,36 @@ const sports = [
 ];
 
 const random = (arr) => arr[Math.floor(Math.random() * arr.length)];
-const randNum = (len) => [...Array(len)].map(() => Math.floor(Math.random() * 10)).join("");
-
+const randNum = (len) =>
+  [...Array(len)].map(() => Math.floor(Math.random() * 10)).join("");
 const now = () => new Date().toISOString();
+
+// ID counter for generating unique sequential IDs
+let idCounter = 1;
+
+/**
+ * Generate a unique registration ID based on role and date
+ * Format: {ROLE_PREFIX}-{YYYYMMDD}-{SEQ}
+ */
+function generateRegistrationId(role) {
+  const rolePrefix = role === "Leader" ? "LEAD" : "ATH";
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const dateStr = `${year}${month}${day}`;
+  const seqStr = String(idCounter++).padStart(3, "0");
+  return `${rolePrefix}-${dateStr}-${seqStr}`;
+}
 
 const generateRegistration = () => {
   const sport = random(sports);
   const province = random(provinces);
-  const id = Date.now() + Math.floor(Math.random() * 10000);
+  const isLeader = Math.random() > 0.8; // 20% chance to be a leader
+  const role = isLeader ? "Leader" : "Athlete";
 
   return {
-    id: String(id),
+    id: generateRegistrationId(role),
     registeredAt: now(),
     photoUrl: null,
     firstName: "User",
@@ -36,34 +55,43 @@ const generateRegistration = () => {
     nationality: "IDCard",
     nationalID: randNum(12),
     phone: "0" + randNum(8),
-    position: {
-      role: "Athlete",
-      coach: null,
-      assistant: null,
-      leaderRole: null,
-      athleteCategory: "Male",
-    },
+    position: isLeader
+      ? {
+          role: "Leader",
+          leaderRole: random([
+            "គ្រូបង្វឹក",
+            "គ្រូជំនួយ",
+            "អ្នកគ្រប់គ្រង",
+            "វេជ្ជបណ្ឌិត",
+          ]),
+          athleteCategory: null,
+        }
+      : {
+          role: "Athlete",
+          athleteCategory: Math.random() > 0.5 ? "Male" : "Female",
+          leaderRole: null,
+        },
     organization: {
       type: "province",
       id: province.id,
       name: province.name,
-      province: province.name,
-      department: null,
     },
     eventId: "evt-1",
     sport: sport.name,
-    sports: [sport.name],
-    sportId: "",
+    sportId: sport.name.toLowerCase().replace(/\s+/g, "-"),
     sportCategory: sport.category,
-    status: "pending",
+    status: random(["pending", "approved", "rejected"]),
+    name: `User ${randNum(4)}`,
+    province: province.name,
   };
 };
 
 const data = Array.from({ length: 1000 }).map(() => ({
   userId: Date.now() + Math.floor(Math.random() * 100000),
   accessTime: now(),
-  registrations: Array.from({ length: 1 + Math.floor(Math.random() * 3) })
-    .map(generateRegistration),
+  registrations: Array.from({ length: 1 + Math.floor(Math.random() * 3) }).map(
+    generateRegistration,
+  ),
 }));
 
 fs.writeFileSync("registrations_1000.json", JSON.stringify(data, null, 2));

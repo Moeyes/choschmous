@@ -3,7 +3,10 @@
  * Shows success message, displays all user's registrations, and allows adding more participants
  */
 
+"use client";
+
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import {
   CheckCircle2,
   UserPlus,
@@ -13,8 +16,10 @@ import {
   Edit2,
 } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
-import { API_ENDPOINTS } from "@/src/config/constants";
-import { useLocation } from "wouter";
+import {
+  API_ENDPOINTS,
+  REGISTRATION_STEP_PARAMS,
+} from "@/src/config/constants";
 import { SectionTitle } from "@/src/components/ui/formElements";
 import { StyledCard } from "@/src/shared/utils/patterns";
 import { useUserSession } from "@/src/hooks/useUserSession";
@@ -46,10 +51,10 @@ interface ApiRegistration {
 
 interface RegistrationActionProps {
   formData: RegistrationFormData;
-  eventId: string;
+  eventId?: string;
   registrationId?: string;
   registeredParticipants?: RegisteredParticipant[];
-  onAddMore: () => void;
+  onAddMore?: () => void;
   onEditParticipant?: (participantId: string) => void;
 }
 
@@ -63,18 +68,23 @@ const formatRegistration = (reg: ApiRegistration): RegisteredParticipant => ({
 
 export function RegistrationAction({
   formData,
-  registrationId,
+  registrationId: propRegistrationId,
   registeredParticipants = [],
   onAddMore,
   onEditParticipant,
 }: RegistrationActionProps) {
-  const [, setLocation] = useLocation();
+  const router = useRouter();
   const { session } = useUserSession();
+  const mounted = useMounted();
+
+  // Get registrationId from props or session storage
+  const registrationId =
+    propRegistrationId || sessionStorage.getItem("registrationId") || undefined;
+
   const [allRegistrations, setAllRegistrations] = useState<
     RegisteredParticipant[]
   >([]);
   const [loading, setLoading] = useState(true);
-  const mounted = useMounted();
 
   const fetchUserRegistrations = useCallback(async () => {
     if (!session?.userId) {
@@ -109,6 +119,24 @@ export function RegistrationAction({
 
   const currentName =
     formData.fullNameKhmer || formData.fullNameEnglish || "អ្នកចូលរួម";
+
+  const handleAddMore = () => {
+    if (onAddMore) {
+      onAddMore();
+    } else {
+      // Clear form data and restart from event selection
+      sessionStorage.removeItem("selectedEventId");
+      sessionStorage.removeItem("selectedSport");
+      sessionStorage.removeItem("selectedCategory");
+      sessionStorage.removeItem("selectedOrganization");
+      sessionStorage.removeItem("registrationId");
+      router.push(`/register?step=${REGISTRATION_STEP_PARAMS.event}`);
+    }
+  };
+
+  const handleGoHome = () => {
+    router.push("/");
+  };
 
   return (
     <div className="space-y-6 max-w-lg mx-auto">
@@ -198,7 +226,7 @@ export function RegistrationAction({
           អ្នកអាចចុះឈ្មោះអ្នកចូលរួមបន្ថែមសម្រាប់ព្រឹត្តិការណ៍តែមួយ ឬ កីឡាផ្សេងៗ។
         </p>
         <Button
-          onClick={onAddMore}
+          onClick={handleAddMore}
           className="bg-blue-600 hover:bg-blue-700 text-white"
           size="lg"
         >
@@ -211,7 +239,7 @@ export function RegistrationAction({
         <Button
           variant="outline"
           size="lg"
-          onClick={() => setLocation("/")}
+          onClick={handleGoHome}
           className="min-w-50"
         >
           <Home className="h-4 w-4 mr-2" />

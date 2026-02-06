@@ -1,11 +1,17 @@
+"use client";
+
 import { useEffect, useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import type { OrganizationInfo } from "@/src/types/participation";
 import type { FormErrors } from "@/src/types/registration";
 import { SelectableCard } from "@/src/components/ui/selectTableCard";
 import { FormError, SectionTitle } from "@/src/components/ui/formElements";
 import { Grid } from "@/src/shared/utils/patterns";
 import { useMounted } from "@/src/lib/hooks";
-import { API_ENDPOINTS } from "@/src/config/constants";
+import {
+  API_ENDPOINTS,
+  REGISTRATION_STEP_PARAMS,
+} from "@/src/config/constants";
 
 interface OrganizationItem {
   id: string;
@@ -16,16 +22,26 @@ interface OrganizationItem {
 
 interface LocationDetailsProps {
   selectedOrganization?: OrganizationInfo;
-  onSelect: (organization: OrganizationInfo) => void;
+  onSelect?: (organization: OrganizationInfo) => void;
   errors?: Partial<FormErrors>;
 }
 
 export function LocationDetails({
-  selectedOrganization,
+  selectedOrganization: propOrganization,
   onSelect,
   errors,
 }: LocationDetailsProps) {
+  const router = useRouter();
   const mounted = useMounted();
+
+  // Get selected organization from props or session storage
+  const storedOrg =
+    typeof window !== "undefined"
+      ? sessionStorage.getItem("selectedOrganization")
+      : null;
+  const selectedOrganization =
+    propOrganization || (storedOrg ? JSON.parse(storedOrg) : undefined);
+
   const [selectedId, setSelectedId] = useState<string | undefined>(
     () => selectedOrganization?.id,
   );
@@ -81,7 +97,7 @@ export function LocationDetails({
   }, [selectedOrganization, mounted]);
 
   const handleSelect = useCallback(
-    (id: string) => {
+    async (id: string) => {
       const sel = organizations.find((o) => o.id === id);
       if (!sel) return;
 
@@ -96,9 +112,21 @@ export function LocationDetails({
         name: sel.khmerName ?? sel.name,
       };
 
-      onSelect(orgInfo);
+      // Store selected organization
+      sessionStorage.setItem("selectedOrganization", JSON.stringify(orgInfo));
+
+      // Call callback if provided
+      if (onSelect) {
+        onSelect(orgInfo);
+      }
+
+      // Small delay to ensure state updates propagate
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      // Navigate to personal info step
+      router.push(`/register?step=${REGISTRATION_STEP_PARAMS.personal}`);
     },
-    [organizations, onSelect],
+    [organizations, onSelect, router],
   );
 
   const ministries = organizations.filter(

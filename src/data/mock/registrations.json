@@ -1,7 +1,7 @@
 [
   {
     "userId": 1769647268785,
-    "accessTime": "2026-02-04T03:26:14.369Z",
+    "accessTime": "2026-02-06T17:02:50.641Z",
     "registrations": [
       {
         "sport": "អត្តពលកម្ម",
@@ -16,9 +16,6 @@
           "province": "កំពង់ធំ"
         },
         "phone": "34142341",
-        "sports": [
-          "អត្តពលកម្ម"
-        ],
         "fullNameKhmer": "សាត​ បញ្្ា",
         "fullNameEnglish": "Sat Panha",
         "gender": "Male",
@@ -27,14 +24,93 @@
         "nationalID": "1234124",
         "eventId": "evt-1",
         "userId": 1769647268785,
-        "id": "1770175574369",
+        "id": "ATH-20260204-001",
         "registeredAt": "2026-02-04T03:26:14.369Z",
         "photoUrl": "/uploads/1770175574362-1770175554482-photo.jpg",
         "name": "Sat Panha",
         "province": "កំពង់ធំ",
         "status": "approved",
         "sportId": "athletics",
-        "sportCategory": "រត់ពាក់កណ្តាលម៉ារ៉ាតុង"
+        "sportCategory": "រត់ប្រណាំង ១០០ ម៉ែត្រ"
+      },
+      {
+        "sport": "អត្តពលកម្ម",
+        "category": "រត់ប្រណាំង ១០០ ម៉ែត្រ",
+        "position": {
+          "role": "Athlete",
+          "athleteCategory": "Male"
+        },
+        "organization": {
+          "type": "ministry",
+          "id": "m-1",
+          "name": "ក្រសួងមហាផ្ទៃ"
+        },
+        "phone": "0964461381",
+        "fullNameKhmer": "សាត​ ​បញ្ញា",
+        "fullNameEnglish": "Sat Panha",
+        "gender": "Male",
+        "nationality": "IDCard",
+        "dateOfBirth": "2005-08-17",
+        "nationalID": "12333009",
+        "eventId": "evt-1",
+        "userId": 1769647268785,
+        "id": "ATH-20260206-001",
+        "registeredAt": "2026-02-06T16:29:05.884Z",
+        "photoUrl": "/uploads/1770395345878-1770395340214-photo.jpg",
+        "name": "Sat Panha",
+        "status": "pending",
+        "sportId": "athletics",
+        "sportCategory": "រត់ប្រណាំង ១០០ ម៉ែត្រ"
+      },
+      {
+        "sport": "អត្តពលកម្ម",
+        "category": "រត់ប្រណាំង ១០០ ម៉ែត្រ",
+        "position": {
+          "role": "Leader",
+          "leaderRole": "coach"
+        },
+        "organization": {
+          "type": "ministry",
+          "id": "m-1",
+          "name": "ក្រសួងមហាផ្ទៃ"
+        },
+        "phone": "0964461381",
+        "fullNameKhmer": "សាត បញ្ញា",
+        "fullNameEnglish": "Sat Panha",
+        "gender": "Male",
+        "nationality": "IDCard",
+        "dateOfBirth": "2005-08-17",
+        "nationalID": "1700056",
+        "eventId": "evt-1",
+        "userId": 1769647268785,
+        "id": "LEAD-20260206-001",
+        "registeredAt": "2026-02-06T16:41:01.167Z",
+        "photoUrl": "/uploads/1770396061163-1770396052740-photo.jpg"
+      },
+      {
+        "sport": "អត្តពលកម្ម",
+        "category": "រត់ប្រណាំង ១០០ ម៉ែត្រ",
+        "position": {
+          "role": "Athlete",
+          "athleteCategory": "Female"
+        },
+        "organization": {
+          "type": "ministry",
+          "id": "m-1",
+          "name": "ក្រសួងមហាផ្ទៃ"
+        },
+        "phone": "0964461381",
+        "fullNameKhmer": "ជា បូនីន",
+        "fullNameEnglish": "Chea Bonin",
+        "gender": "Female",
+        "nationality": "IDCard",
+        "dateOfBirth": "2005-09-14",
+        "nationalID": "41234234",
+        "eventId": "evt-1",
+        "userId": 1769647268785,
+        "id": "ATH-20260207-001",
+        "registeredAt": "2026-02-06T17:02:50.641Z",
+        "photoUrl": "/uploads/1770397370637-1770397366215-photo.jpg"
       }
     ]
   },
@@ -55,9 +131,6 @@
           "name": "ភ្នំពេញ"
         },
         "phone": "0964461381",
-        "sports": [
-          "អត្តពលកម្ម"
-        ],
         "fullNameKhmer": "ភោគ​​​​ កែវមុន្នីរតនៈ ",
         "fullNameEnglish": "Phok Keomonnyratanak",
         "gender": "Male",
@@ -66,9 +139,14 @@
         "nationalID": "1300058",
         "eventId": "evt-1",
         "userId": 1770187646269,
-        "id": "1770187657698",
+        "id": "ATH-20260204-002",
         "registeredAt": "2026-02-04T06:47:37.698Z",
-        "photoUrl": "/uploads/1770187657691-1770187591302-photo.jpg"
+        "photoUrl": "/uploads/1770187657691-1770187591302-photo.jpg",
+        "name": "Phok Keomonnyratanak",
+        "province": "ភ្នំពេញ",
+        "status": "approved",
+        "sportId": "athletics",
+        "sportCategory": "រត់ប្រណាំង ១០០ ម៉ែត្រ"
       },
       {
         "sport": "អត្តពលកម្ម",
@@ -83,9 +161,6 @@
           "name": "ភ្នំពេញ"
         },
         "phone": "069882161",
-        "sports": [
-          "អត្តពលកម្ម"
-        ],
         "fullNameKhmer": "លីម លីហៀង",
         "fullNameEnglish": "Lim Lyheang",
         "gender": "Female",
@@ -94,9 +169,14 @@
         "nationalID": "1233214",
         "eventId": "evt-1",
         "userId": 1770187646269,
-        "id": "1770187958908",
+        "id": "ATH-20260204-003",
         "registeredAt": "2026-02-04T06:52:38.908Z",
-        "photoUrl": "/uploads/1770187958896-1770187953831-photo.jpg"
+        "photoUrl": "/uploads/1770187958896-1770187953831-photo.jpg",
+        "name": "Lim Lyheang",
+        "province": "ភ្នំពេញ",
+        "status": "approved",
+        "sportId": "athletics",
+        "sportCategory": "រត់ប្រណាំង ១០០ ម៉ែត្រ"
       }
     ]
   },
@@ -117,9 +197,6 @@
           "name": "ក្រសួងមហាផ្ទៃ"
         },
         "phone": "016700213",
-        "sports": [
-          "បាល់ទះ"
-        ],
         "fullNameKhmer": "ហ៊ួត វីរះជាតិ",
         "fullNameEnglish": "Huot Vireakcheert ",
         "gender": "Male",
@@ -128,9 +205,13 @@
         "nationalID": "1900000",
         "eventId": "evt-2",
         "userId": 1770196498535,
-        "id": "1770196521072",
+        "id": "ATH-20260204-004",
         "registeredAt": "2026-02-04T09:15:21.072Z",
-        "photoUrl": "/uploads/1770196521068-1770196494863-photo.jpg"
+        "photoUrl": "/uploads/1770196521068-1770196494863-photo.jpg",
+        "name": "Huot Vireakcheert",
+        "status": "pending",
+        "sportId": "volleyball",
+        "sportCategory": "ក្នុងសាល"
       }
     ]
   }

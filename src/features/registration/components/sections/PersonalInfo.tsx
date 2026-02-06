@@ -1,3 +1,6 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Checkbox } from "@/src/components/ui/checkbox";
@@ -8,6 +11,7 @@ import {
   LEADER_ROLES,
   GENDER_OPTIONS,
   NATIONALITY_OPTIONS,
+  REGISTRATION_STEP_PARAMS,
 } from "@/src/config/constants";
 import type { FormData, FormErrors } from "@/src/types/registration";
 import type {
@@ -31,10 +35,24 @@ export function PersonalInfo({
   errors,
   hideContinue = false,
 }: PersonalInfoProps) {
+  const router = useRouter();
   const hasName = !!(formData.fullNameKhmer || formData.fullNameEnglish);
   const continueDisabled = !hasName;
 
   const position = formData.position as PositionInfo | null | undefined;
+
+  const handleNext = async () => {
+    // Call callback if provided
+    if (onNext) {
+      onNext();
+    }
+
+    // Small delay to ensure state updates propagate
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    // Navigate to confirmation step
+    router.push(`/register?step=${REGISTRATION_STEP_PARAMS.confirm}`);
+  };
 
   return (
     <div className="space-y-6 max-w-md mx-auto">
@@ -176,7 +194,7 @@ export function PersonalInfo({
       {!hideContinue && (
         <Button
           className="w-full h-12 rounded-full"
-          onClick={onNext}
+          onClick={handleNext}
           disabled={continueDisabled}
         >
           បន្ត

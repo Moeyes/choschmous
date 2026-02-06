@@ -19,11 +19,14 @@ import { useEvents } from "@/src/features/events/hooks/useEvents";
 import { useRegistrationForm } from "../hooks/useRegistrationForm";
 import { validateForm } from "@/src/lib/validation/validators";
 
-import type { FormData as RegistrationFormData, FormErrors } from "@/src/types/registration";
+import type {
+  FormData as RegistrationFormData,
+  FormErrors,
+} from "@/src/types/registration";
 import type { PositionInfo } from "@/src/types/participation";
 import { toKhmerDigits } from "@/src/lib/khmer";
 
-const TOTAL_STEPS = 7; 
+const TOTAL_STEPS = 7;
 
 interface RegisteredParticipant {
   id: string;
@@ -38,21 +41,27 @@ export default function RegistrationWizard() {
   const { events, loading: eventsLoading } = useEvents();
 
   const [step, setStep] = useState(1);
-  const [selectedEvent, setSelectedEvent] =
-    useState<(typeof events)[number] | null>(null);
-  const [validationMessage, setValidationMessage] = useState<string | null>(null);
-  
+  const [selectedEvent, setSelectedEvent] = useState<
+    (typeof events)[number] | null
+  >(null);
+  const [validationMessage, setValidationMessage] = useState<string | null>(
+    null,
+  );
+
   // Track registered participants for multiple registrations
-  const [registeredParticipants, setRegisteredParticipants] = useState<RegisteredParticipant[]>([]);
-  const [lastRegistrationId, setLastRegistrationId] = useState<string | null>(null);
+  const [registeredParticipants, setRegisteredParticipants] = useState<
+    RegisteredParticipant[]
+  >([]);
+  const [lastRegistrationId, setLastRegistrationId] = useState<string | null>(
+    null,
+  );
 
-  const { formData, setField, errors, setFormErrors, reset } = useRegistrationForm();
+  const { formData, setField, errors, setFormErrors, reset } =
+    useRegistrationForm();
 
-  const nextStep = () =>
-    setStep((s) => Math.min(s + 1, TOTAL_STEPS));
+  const nextStep = () => setStep((s) => Math.min(s + 1, TOTAL_STEPS));
 
-  const prevStep = () =>
-    setStep((s) => Math.max(s - 1, 1));
+  const prevStep = () => setStep((s) => Math.max(s - 1, 1));
 
   const goToStep = (targetStep: number) => {
     setStep(Math.max(1, Math.min(targetStep, TOTAL_STEPS)));
@@ -61,9 +70,12 @@ export default function RegistrationWizard() {
 
   const attemptAdvance = (
     dataUpdate?: Partial<RegistrationFormData>,
-    stepToCheck = step
+    stepToCheck = step,
   ) => {
-    const future = { ...formData, ...(dataUpdate || {}) } as RegistrationFormData;
+    const future = {
+      ...formData,
+      ...(dataUpdate || {}),
+    } as RegistrationFormData;
 
     const allErrors = validateForm(future);
 
@@ -71,8 +83,17 @@ export default function RegistrationWizard() {
       2: ["sport"],
       3: ["category"],
       4: ["organization"],
-      5: ["fullNameKhmer", "fullNameEnglish", "dateOfBirth", "nationalID", "gender", "phone", "photoUpload", "position"],
-      6: []
+      5: [
+        "fullNameKhmer",
+        "fullNameEnglish",
+        "dateOfBirth",
+        "nationalID",
+        "gender",
+        "phone",
+        "photoUpload",
+        "position",
+      ],
+      6: [],
     };
 
     const keys = stepFieldMap[stepToCheck] ?? [];
@@ -99,51 +120,64 @@ export default function RegistrationWizard() {
   };
 
   // Handle successful registration submission
-  const handleSubmitSuccess = useCallback((registrationId: string) => {
-    const position = formData.position as PositionInfo | undefined;
-    const roleName = position?.role === "Athlete" 
-      ? (position?.athleteCategory === "Male" ? "កីឡាករ" : "កីឡាការិនី")
-      : position?.leaderRole || "អ្នកចូលរួម";
+  const handleSubmitSuccess = useCallback(
+    (registrationId: string) => {
+      const position = formData.position as PositionInfo | undefined;
+      const roleName =
+        position?.role === "Athlete"
+          ? position?.athleteCategory === "Male"
+            ? "កីឡាករ"
+            : "កីឡាការិនី"
+          : position?.leaderRole || "អ្នកចូលរួម";
 
-    const participantName = formData.fullNameKhmer || 
-                           formData.fullNameEnglish || 
-                           "អ្នកចូលរួម";
+      const participantName =
+        formData.fullNameKhmer || formData.fullNameEnglish || "អ្នកចូលរួម";
 
-    setRegisteredParticipants(prev => [...prev, {
-      id: registrationId,
-      name: participantName,
-      sport: formData.sport || "—",
-      role: roleName,
-    }]);
-    
-    setLastRegistrationId(registrationId);
-    nextStep();
-  }, [formData]);
+      setRegisteredParticipants((prev) => [
+        ...prev,
+        {
+          id: registrationId,
+          name: participantName,
+          sport: formData.sport || "—",
+          role: roleName,
+        },
+      ]);
+
+      setLastRegistrationId(registrationId);
+      nextStep();
+    },
+    [formData],
+  );
 
   // Reset form for adding another participant
   const handleAddMore = useCallback(() => {
     // Keep event, sport, category, organization but reset personal info
     const preservedData = {
       sport: formData.sport,
-      sports: formData.sports,
       category: formData.category,
       organization: formData.organization,
     };
-    
+
     reset();
     setField(preservedData);
-    
+
     // Go back to personal info step (step 5)
     setStep(5);
     setValidationMessage(null);
     setFormErrors({});
     setLastRegistrationId(null);
-  }, [formData.sport, formData.sports, formData.category, formData.organization, reset, setField, setFormErrors]);
+  }, [
+    formData.sport,
+    formData.category,
+    formData.organization,
+    reset,
+    setField,
+    setFormErrors,
+  ]);
 
   return (
     <div className="min-h-screen bg-white p-6 border rounded-xl shadow-sm">
       <div id="registration-wizard-top" className="max-w-4xl mx-auto">
-
         {validationMessage && (
           <div className="mb-4 p-3 rounded bg-red-50 border text-red-700 text-sm">
             {validationMessage}
@@ -151,15 +185,20 @@ export default function RegistrationWizard() {
         )}
 
         <div className="mb-8 flex justify-between items-center">
-          <Button variant="ghost" onClick={prevStep} disabled={step === 1 || step === 6}>
+          <Button
+            variant="ghost"
+            onClick={prevStep}
+            disabled={step === 1 || step === 6}
+          >
             ត្រលប់
           </Button>
-          <Badge variant="secondary">ជំហាន {toKhmerDigits(step)} នៃ {toKhmerDigits(TOTAL_STEPS)}</Badge>
+          <Badge variant="secondary">
+            ជំហាន {toKhmerDigits(step)} នៃ {toKhmerDigits(TOTAL_STEPS)}
+          </Badge>
         </div>
 
         {step === 1 && (
           <div className="space-y-8">
-        
             <div>
               <h2 className="text-2xl font-bold mb-4">ព្រឹត្តិការណ៍ទាំងអស់</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -189,15 +228,12 @@ export default function RegistrationWizard() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -10 }}
           >
-
             {step === 2 && selectedEvent && (
               <Card className="p-6">
                 <SportSelection
                   event={selectedEvent}
                   selectedSport={formData.sport || ""}
-                  onSelect={(sport) =>
-                    attemptAdvance({ sport, sports: [sport] }, 2)
-                  }
+                  onSelect={(sport) => attemptAdvance({ sport }, 2)}
                 />
               </Card>
             )}
@@ -207,9 +243,7 @@ export default function RegistrationWizard() {
                 <SportCategory
                   event={selectedEvent}
                   selectedSport={formData.sport}
-                  onSelect={(category) =>
-                    attemptAdvance({ category }, 3)
-                  }
+                  onSelect={(category) => attemptAdvance({ category }, 3)}
                 />
               </Card>
             )}
@@ -235,7 +269,7 @@ export default function RegistrationWizard() {
                   errors={errors}
                 />
               </Card>
-            )}  
+            )}
 
             {step === 6 && (
               <Card className="p-6">
@@ -252,7 +286,7 @@ export default function RegistrationWizard() {
             {step === 7 && (
               <Card className="p-6">
                 <RegistrationAction
-                  formData={formData as RegistrationFormData} 
+                  formData={formData as RegistrationFormData}
                   eventId={selectedEvent?.id ?? eventId ?? ""}
                   registrationId={lastRegistrationId ?? undefined}
                   registeredParticipants={registeredParticipants}
@@ -260,7 +294,6 @@ export default function RegistrationWizard() {
                 />
               </Card>
             )}
-
           </motion.div>
         </AnimatePresence>
       </div>

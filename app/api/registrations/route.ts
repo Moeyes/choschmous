@@ -3,6 +3,7 @@ import path from "path";
 import { promises as fs } from "fs";
 import type { FormData } from "@/src/types/registration";
 import { UPLOAD_LIMITS } from "@/src/config/constants";
+import { generateRegistrationId } from "@/src/lib/idGenerator";
 
 const FILE = path.join(process.cwd(), "src/data/mock/registrations.json");
 
@@ -149,7 +150,17 @@ export async function POST(request: Request) {
     }
 
     const allUsers = await readUserRegistrations();
-    const id = String(Date.now());
+
+    // Collect all existing IDs for sequence generation
+    const allExistingIds = allUsers.flatMap((u) =>
+      u.registrations.map((r) => r.id),
+    );
+
+    // Extract role from position
+    const role = (body as any).position?.role;
+
+    // Generate role-based ID
+    const id = generateRegistrationId(role, allExistingIds);
     const now = new Date().toISOString();
 
     // Use body directly (normalization removed as normalizer was deleted)
@@ -159,8 +170,17 @@ export async function POST(request: Request) {
       console.debug("registration data:", JSON.stringify(normalized));
     }
 
+    // Clean up empty/undefined fields
+    const cleanData = Object.entries(normalized).reduce((acc, [key, value]) => {
+      if (value === undefined || value === null) return acc;
+      if (Array.isArray(value) && value.length === 0) return acc;
+      if (value === "") return acc;
+      acc[key] = value;
+      return acc;
+    }, {} as Record<string, unknown>);
+
     const created: RegistrationRecord = {
-      ...normalized,
+      ...cleanData,
       id,
       registeredAt: now,
       // Override photoUrl with uploaded photo if available
@@ -270,6 +290,15 @@ export async function PUT(request: Request) {
     let updated = false;
     let updatedRegistration: RegistrationRecord | null = null;
 
+    // Clean up empty/undefined fields from update data
+    const cleanBody = Object.entries(body).reduce((acc, [key, value]) => {
+      if (value === undefined || value === null) return acc;
+      if (Array.isArray(value) && value.length === 0) return acc;
+      if (value === "null") return acc;
+      acc[key] = value;
+      return acc;
+    }, {} as Record<string, unknown>);
+
     // Find and update the registration
     for (const userRecord of allUsers) {
       const index = userRecord.registrations.findIndex((r) => r.id === id);
@@ -277,7 +306,7 @@ export async function PUT(request: Request) {
         // Update the registration while preserving the id and registeredAt
         userRecord.registrations[index] = {
           ...userRecord.registrations[index],
-          ...body,
+          ...cleanBody,
           id: userRecord.registrations[index].id, // Preserve original ID
           registeredAt: userRecord.registrations[index].registeredAt, // Preserve original registration date
           // Override photoUrl with uploaded photo if available

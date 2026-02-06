@@ -179,6 +179,43 @@ export const ROUTES = {
   },
 } as const;
 
+/** Registration step query parameters */
+export const REGISTRATION_STEP_PARAMS = {
+  event: "event",
+  sport: "sport",
+  category: "category",
+  organization: "organization",
+  personal: "personal",
+  confirm: "confirm",
+  success: "success",
+} as const;
+
+/** Registration step labels */
+export const REGISTRATION_STEP_LABELS = {
+  event: "ជ្រើសរើសព្រឹត្តិការណ៍",
+  sport: "ជ្រើសរើសកីឡា",
+  category: "ជ្រើសរើសប្រភេទ",
+  organization: "ជ្រើសរើសអង្គភាព",
+  personal: "ព័ត៌មានផ្ទាល់ខ្លួន",
+  confirm: "បញ្ជាក់ការចុះឈ្មោះ",
+  success: "ជោគជ័យ",
+} as const;
+
+/** Position role labels */
+export const ROLE_LABELS = {
+  Athlete: "កីឡាករ/កីឡាការិនី",
+  Leader: "អ្នកដឹកនាំ",
+  Coach: "គ្រូបង្វឹក",
+  Official: "មន្ត្រី",
+  Technical: "បច្ចេកទេស",
+} as const;
+
+/** Athlete category labels */
+export const ATHLETE_CATEGORY_LABELS = {
+  Male: "កីឡាករ",
+  Female: "កីឡាការិនី",
+} as const;
+
 /** Empty state messages */
 export const EMPTY_MESSAGES = {
   participants: {
