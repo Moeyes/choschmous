@@ -1,126 +1,12 @@
 "use client";
 
-import { useSearchParams, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
 import { cn } from "@/src/lib/utils";
-import {
-  Calendar,
-  Trophy,
-  Grid,
-  Building2,
-  User,
-  CheckCircle2,
-  PartyPopper,
-} from "lucide-react";
-import {
-  REGISTRATION_STEP_PARAMS,
-  REGISTRATION_STEP_LABELS,
-} from "@/src/config/constants";
-import { useEvents } from "@/src/features/events/hooks/useEvents";
-
-const STEPS = [
-  {
-    param: REGISTRATION_STEP_PARAMS.event,
-    label: REGISTRATION_STEP_LABELS.event,
-    icon: Calendar,
-  },
-  {
-    param: REGISTRATION_STEP_PARAMS.sport,
-    label: REGISTRATION_STEP_LABELS.sport,
-    icon: Trophy,
-  },
-  {
-    param: REGISTRATION_STEP_PARAMS.category,
-    label: REGISTRATION_STEP_LABELS.category,
-    icon: Grid,
-  },
-  {
-    param: REGISTRATION_STEP_PARAMS.organization,
-    label: REGISTRATION_STEP_LABELS.organization,
-    icon: Building2,
-  },
-  {
-    param: REGISTRATION_STEP_PARAMS.personal,
-    label: REGISTRATION_STEP_LABELS.personal,
-    icon: User,
-  },
-  {
-    param: REGISTRATION_STEP_PARAMS.confirm,
-    label: REGISTRATION_STEP_LABELS.confirm,
-    icon: CheckCircle2,
-  },
-  {
-    param: REGISTRATION_STEP_PARAMS.success,
-    label: REGISTRATION_STEP_LABELS.success,
-    icon: PartyPopper,
-  },
-] as const;
+import { CheckCircle2 } from "lucide-react";
+import { useRegistrationSteps } from "./useRegistrationSteps";
 
 export function RegistrationSidebar() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const { events } = useEvents();
-  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
-  const [selectedSport, setSelectedSport] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedOrganization, setSelectedOrganization] = useState<
-    string | null
-  >(null);
-
-  const currentStep =
-    searchParams.get("step") || REGISTRATION_STEP_PARAMS.event;
-
-  const currentStepIndex = STEPS.findIndex((s) => s.param === currentStep);
-
-  // Load selected values from sessionStorage
-  useEffect(() => {
-    const loadSelections = () => {
-      const eventId = sessionStorage.getItem("selectedEventId");
-      const sport = sessionStorage.getItem("selectedSport");
-      const category = sessionStorage.getItem("selectedCategory");
-      const orgStr = sessionStorage.getItem("selectedOrganization");
-
-      setSelectedEventId(eventId);
-      setSelectedSport(sport);
-      setSelectedCategory(category);
-
-      if (orgStr) {
-        try {
-          const org = JSON.parse(orgStr);
-          setSelectedOrganization(org.name || null);
-        } catch {
-          setSelectedOrganization(null);
-        }
-      }
-    };
-
-    // Load on mount
-    loadSelections();
-
-    // Listen for storage changes
-    const handleStorageChange = () => {
-      loadSelections();
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-
-    // Poll for changes in the same tab
-    const interval = setInterval(() => {
-      loadSelections();
-    }, 500);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-      clearInterval(interval);
-    };
-  }, []);
-
-  // Find the selected event
-  const selectedEvent = events.find((e) => e.id === selectedEventId);
-
-  const navigateToStep = (stepParam: string) => {
-    router.push(`/register?step=${stepParam}`);
-  };
+  const { stepsWithState, stepsLength, navigateToStep } =
+    useRegistrationSteps();
 
   return (
     <aside className="hidden lg:flex lg:flex-col w-80 bg-white/95 border-r border-slate-200 p-6 lg:sticky lg:top-18 lg:h-[calc(100vh-72px)] lg:overflow-y-auto lg:pb-8">
@@ -129,68 +15,43 @@ export function RegistrationSidebar() {
           ជំហានចុះឈ្មោះ
         </h3>
 
-        {STEPS.map((step, index) => {
+        {stepsWithState.map((step) => {
           const Icon = step.icon;
-          const isActive = step.param === currentStep;
-          const isCompleted = index < currentStepIndex;
-          const isAccessible = index <= currentStepIndex;
-
-          // Dynamic labels based on selection
-          let displayLabel: string = step.label;
-
-          if (step.param === REGISTRATION_STEP_PARAMS.event && selectedEvent) {
-            displayLabel = selectedEvent.name;
-          } else if (
-            step.param === REGISTRATION_STEP_PARAMS.sport &&
-            selectedSport
-          ) {
-            displayLabel = selectedSport;
-          } else if (
-            step.param === REGISTRATION_STEP_PARAMS.category &&
-            selectedCategory
-          ) {
-            displayLabel = selectedCategory;
-          } else if (
-            step.param === REGISTRATION_STEP_PARAMS.organization &&
-            selectedOrganization
-          ) {
-            displayLabel = selectedOrganization;
-          } else if (
-            step.param === REGISTRATION_STEP_PARAMS.success &&
-            isCompleted
-          ) {
-            displayLabel = "បានបញ្ជាក់";
-          }
 
           return (
             <button
               key={step.param}
-              onClick={() => isAccessible && navigateToStep(step.param)}
-              disabled={!isAccessible}
+              onClick={() => step.isAccessible && navigateToStep(step.param)}
+              disabled={!step.isAccessible}
               className={cn(
                 "w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all",
                 "text-left",
-                isActive &&
+                step.isActive &&
                   "bg-indigo-50 text-indigo-700 border-l-4 border-indigo-600",
-                !isActive &&
-                  isCompleted &&
+                !step.isActive &&
+                  step.isCompleted &&
                   "bg-green-50 text-green-700 hover:bg-green-100",
-                !isActive &&
-                  !isCompleted &&
-                  isAccessible &&
+                !step.isActive &&
+                  !step.isCompleted &&
+                  step.isAccessible &&
                   "text-slate-600 hover:bg-slate-50",
-                !isAccessible && "text-slate-300 cursor-not-allowed opacity-50",
+                !step.isAccessible &&
+                  "text-slate-300 cursor-not-allowed opacity-50",
               )}
             >
               <div
                 className={cn(
                   "shrink-0 w-8 h-8 rounded-full flex items-center justify-center",
-                  isActive && "bg-indigo-600 text-white",
-                  isCompleted && !isActive && "bg-green-600 text-white",
-                  !isActive && !isCompleted && "bg-slate-200 text-slate-600",
+                  step.isActive && "bg-indigo-600 text-white",
+                  step.isCompleted &&
+                    !step.isActive &&
+                    "bg-green-600 text-white",
+                  !step.isActive &&
+                    !step.isCompleted &&
+                    "bg-slate-200 text-slate-600",
                 )}
               >
-                {isCompleted && !isActive ? (
+                {step.isCompleted && !step.isActive ? (
                   <CheckCircle2 className="h-4 w-4" />
                 ) : (
                   <Icon className="h-4 w-4" />
@@ -199,10 +60,10 @@ export function RegistrationSidebar() {
 
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-medium truncate">
-                  {displayLabel}
+                  {step.displayLabel}
                 </div>
                 <div className="text-xs text-slate-500">
-                  ជំហាន {index + 1} នៃ {STEPS.length}
+                  ជំហាន {step.index + 1} នៃ {stepsLength}
                 </div>
               </div>
             </button>

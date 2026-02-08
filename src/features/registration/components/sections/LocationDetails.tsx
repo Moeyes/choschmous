@@ -26,6 +26,12 @@ interface LocationDetailsProps {
   errors?: Partial<FormErrors>;
 }
 
+// Simple cache to prevent repeated organization fetches (e.g., strict mode double-render)
+const organizationsCache: {
+  data?: OrganizationItem[];
+  promise?: Promise<OrganizationItem[]>;
+} = {};
+
 export function LocationDetails({
   selectedOrganization: propOrganization,
   onSelect,
@@ -70,44 +76,77 @@ export function LocationDetails({
   }, [selectedOrganization?.id, selectedId]);
 
   useEffect(() => {
-    const fetchOrganizations = async () => {
-      try {
-        const response = await fetch(API_ENDPOINTS.organizations);
-        const data = await response.json();
+    let cancelled = false;
 
-        if (!mounted.current) return;
+    const syncSelected = (arr: OrganizationItem[]) => {
+      if (!selectedOrganization) return;
+      const match = arr.find((o) => {
+        if (String(selectedOrganization.type).toLowerCase() === "ministry") {
+          return (
+            o.type === "ministry" &&
+            (o.name === selectedOrganization.name ||
+              o.id === selectedOrganization.id)
+          );
+        }
+        return (
+          o.type === "province" &&
+          (o.name === selectedOrganization.name ||
+            o.id === selectedOrganization.id)
+        );
+      });
+      if (match) setSelectedId(match.id);
+    };
 
-        const arr: OrganizationItem[] = Array.isArray(data) ? data : [];
-        setOrganizations(arr);
-        setError(null);
+    const loadOrganizations = async () => {
+      setLoading(true);
 
-        if (selectedOrganization) {
-          const match = arr.find((o) => {
-            if (
-              String(selectedOrganization.type).toLowerCase() === "ministry"
-            ) {
-              return (
-                o.type === "ministry" &&
-                (o.name === selectedOrganization.name ||
-                  o.id === selectedOrganization.id)
-              );
-            }
-            return (
-              o.type === "province" &&
-              (o.name === selectedOrganization.name ||
-                o.id === selectedOrganization.id)
-            );
+      if (organizationsCache.data) {
+        if (!cancelled && mounted.current) {
+          setOrganizations(organizationsCache.data);
+          syncSelected(organizationsCache.data);
+          setLoading(false);
+        }
+        return;
+      }
+
+      const promise =
+        organizationsCache.promise ||
+        fetch(API_ENDPOINTS.organizations)
+          .then((res) => (res.ok ? res.json() : []))
+          .then((data) =>
+            Array.isArray(data) ? data : ([] as OrganizationItem[]),
+          )
+          .then((arr: OrganizationItem[]) => {
+            organizationsCache.data = arr;
+            organizationsCache.promise = undefined;
+            return arr;
+          })
+          .catch(() => {
+            organizationsCache.promise = undefined;
+            throw new Error("org fetch failed");
           });
-          if (match) setSelectedId(match.id);
+
+      organizationsCache.promise = promise;
+
+      try {
+        const arr = await promise;
+        if (!cancelled && mounted.current) {
+          setOrganizations(arr);
+          syncSelected(arr);
+          setError(null);
         }
       } catch {
-        if (mounted.current) setError("មិនអាចផ្ទុកខេត្ដបាន");
+        if (!cancelled && mounted.current) setError("មិនអាចផ្ទុកខេត្ដបាន");
       } finally {
-        if (mounted.current) setLoading(false);
+        if (!cancelled && mounted.current) setLoading(false);
       }
     };
 
-    fetchOrganizations();
+    loadOrganizations();
+
+    return () => {
+      cancelled = true;
+    };
   }, [selectedOrganization, mounted]);
 
   const handleSelect = useCallback(
