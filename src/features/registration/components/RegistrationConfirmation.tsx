@@ -104,13 +104,26 @@ export function RegistrationConfirmation({
       const payload = { ...formData, eventId, userId: userSession.userId };
       const payloadToSend = { ...payload } as Record<string, unknown>;
       delete payloadToSend.photoUpload;
+      delete payloadToSend.nationalityDocumentUpload;
 
       let res: Response;
+      const hasPhoto = Boolean(formData.photoUpload);
+      const hasNationalityDocument = Boolean(
+        formData.nationalityDocumentUpload,
+      );
 
-      if (formData.photoUpload) {
+      if (hasPhoto || hasNationalityDocument) {
         const fd = new FormData();
         fd.append("payload", JSON.stringify(payloadToSend));
-        fd.append("photo", formData.photoUpload as File);
+        if (formData.photoUpload) {
+          fd.append("photo", formData.photoUpload as File);
+        }
+        if (formData.nationalityDocumentUpload) {
+          fd.append(
+            "nationalityDocument",
+            formData.nationalityDocumentUpload as File,
+          );
+        }
         res = await fetch(API_ENDPOINTS.registrations, {
           method: "POST",
           body: fd,
@@ -223,6 +236,13 @@ export function RegistrationConfirmation({
           value={formData.photoUpload ? "បានបញ្ចូល ✓" : "មិនទាន់បាន"}
           onEdit={() => handleEdit(5)}
         />
+        <InfoRow
+          label="ឯកសារជាតិសញ្ជាតិ"
+          value={
+            formData.nationalityDocumentUpload ? "បានបញ្ចូល ✓" : "មិនទាន់បាន"
+          }
+          onEdit={() => handleEdit(5)}
+        />
       </StyledCard>
 
       {formData.photoUpload && (
@@ -231,6 +251,18 @@ export function RegistrationConfirmation({
             <img
               src={URL.createObjectURL(formData.photoUpload)}
               alt="Preview"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+      )}
+
+      {formData.nationalityDocumentUpload && (
+        <div className="flex justify-center">
+          <div className="w-32 h-32 rounded-lg overflow-hidden border-2 border-slate-200">
+            <img
+              src={URL.createObjectURL(formData.nationalityDocumentUpload)}
+              alt="Nationality Document"
               className="w-full h-full object-cover"
             />
           </div>

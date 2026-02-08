@@ -4,10 +4,10 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import type { OrganizationInfo } from "@/src/types/participation";
 import type { FormErrors } from "@/src/types/registration";
-import { SelectableCard } from "@/src/components/ui/selectTableCard";
-import { FormError, SectionTitle } from "@/src/components/ui/formElements";
-import { Grid } from "@/src/shared/utils/patterns";
 import { useMounted } from "@/src/lib/hooks";
+import { Skeleton } from "@/src/components/ui/skeleton";
+// import { RegistrationSidebar, SelectionPill, ContentHeader } from "../shared";
+import { SelectionPill, ContentHeader, SectionCard } from "../shared";
 import {
   API_ENDPOINTS,
   REGISTRATION_STEP_PARAMS,
@@ -48,6 +48,20 @@ export function LocationDetails({
   const [organizations, setOrganizations] = useState<OrganizationItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Load context from session storage
+  const selectedEvent =
+    typeof window !== "undefined"
+      ? sessionStorage.getItem("selectedEventId")
+      : null;
+  const selectedSport =
+    typeof window !== "undefined"
+      ? sessionStorage.getItem("selectedSport")
+      : null;
+  const selectedCategory =
+    typeof window !== "undefined"
+      ? sessionStorage.getItem("selectedCategory")
+      : null;
 
   useEffect(() => {
     if (selectedOrganization?.id && selectedOrganization.id !== selectedId) {
@@ -120,8 +134,8 @@ export function LocationDetails({
         onSelect(orgInfo);
       }
 
-      // Small delay to ensure state updates propagate
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      // Small delay for visual feedback
+      await new Promise((resolve) => setTimeout(resolve, 300));
 
       // Navigate to personal info step
       router.push(`/register?step=${REGISTRATION_STEP_PARAMS.personal}`);
@@ -137,33 +151,98 @@ export function LocationDetails({
   );
   const organizationError = errors?.organization;
 
-  return (
-    <div className="space-y-6">
-      <SectionTitle subtitle="សូមជ្រើសរើសក្រសួង ឬ ខេត្តរបស់អ្នក">
-        តំណាង
-      </SectionTitle>
-      <div className="space-y-4">
-        {loading ? (
-          <div className="text-sm text-muted-foreground text-center">
-            កំពុងផ្ទុកទិន្នន័យ...
-          </div>
-        ) : error ? (
-          <FormError message={error} className="text-center" />
-        ) : (
-          <Grid cols={4} className="mt-2">
-            {[...ministries, ...provinces].map((p) => (
-              <SelectableCard
-                key={p.id}
-                title={p.khmerName ?? p.name}
-                selected={selectedId === p.id}
-                onSelect={() => handleSelect(p.id)}
-                className="items-center justify-center p-6 text-center"
-              />
+  if (loading) {
+    return (
+      <div className="reg-split-layout">
+        <Skeleton className="w-64 rounded-xl" />
+        <div className="flex-1 space-y-4">
+          <Skeleton className="h-12 w-48" />
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <Skeleton key={i} className="h-12 rounded-full" />
             ))}
-          </Grid>
-        )}
+          </div>
+        </div>
       </div>
-      <FormError message={organizationError} />
+    );
+  }
+
+  return (
+    <div className="reg-split-layout">
+      {/* <RegistrationSidebar
+        sections={[
+          { label: "ព្រឹត្តិការណ៍", value: selectedEvent, color: "indigo" },
+          { label: "កីឡា", value: selectedSport, color: "purple" },
+          { label: "ប្រភេទ", value: selectedCategory, color: "pink" },
+        ]}
+      /> */}
+
+      <div className="reg-content">
+        <ContentHeader
+          title="ជ្រើសរើសស្ថាប័ន"
+          subtitle="ជ្រើសរើសក្រសួង ឬ ខេត្តរបស់អ្នក"
+        />
+        <SectionCard
+          title="ជ្រើសរើសស្ថាប័ន"
+          subtitle="ជ្រើសក្រសួង ឬ ខេត្តពីបញ្ជីខាងក្រោម"
+        >
+          {error ? (
+            <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+              {error}
+            </div>
+          ) : organizationError ? (
+            <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+              {organizationError}
+            </div>
+          ) : null}
+
+          {ministries.length > 0 && (
+            <div className="mb-8">
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-700">
+                ក្រសួង
+              </h3>
+              <div className="flex flex-wrap gap-3">
+                {ministries.map((org) => (
+                  <SelectionPill
+                    key={org.id}
+                    label={org.khmerName ?? org.name}
+                    isSelected={selectedId === org.id}
+                    onClick={() => handleSelect(org.id)}
+                    variant="emerald"
+                    size="sm"
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {provinces.length > 0 && (
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-700">
+                ខេត្ត
+              </h3>
+              <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+                {provinces.map((org) => (
+                  <SelectionPill
+                    key={org.id}
+                    label={org.khmerName ?? org.name}
+                    isSelected={selectedId === org.id}
+                    onClick={() => handleSelect(org.id)}
+                    variant="emerald"
+                    size="sm"
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {organizations.length === 0 && !error && (
+            <div className="py-10 text-center text-slate-500">
+              <p>មិនមានស្ថាប័នទេ</p>
+            </div>
+          )}
+        </SectionCard>
+      </div>
     </div>
   );
 }

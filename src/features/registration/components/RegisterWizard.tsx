@@ -28,6 +28,23 @@ import { toKhmerDigits } from "@/src/lib/khmer";
 
 const TOTAL_STEPS = 7;
 
+const STEP_VARIANTS = {
+  initial: { opacity: 0, x: 40, scale: 0.995 },
+  animate: { opacity: 1, x: 0, scale: 1 },
+  exit: { opacity: 0, x: -40, scale: 0.995 },
+};
+
+const STEP_TRANSITION = {
+  type: "tween" as const,
+  duration: 0.45,
+  ease: "easeInOut" as const,
+};
+
+const OVERLAY_VARIANTS = {
+  initial: { opacity: 0 },
+  animate: { opacity: 0.08 },
+  exit: { opacity: 0 },
+};
 interface RegisteredParticipant {
   id: string;
   name: string;
@@ -91,6 +108,7 @@ export default function RegistrationWizard() {
         "gender",
         "phone",
         "photoUpload",
+        "nationalityDocumentUpload",
         "position",
       ],
       6: [],
@@ -197,105 +215,124 @@ export default function RegistrationWizard() {
           </Badge>
         </div>
 
-        {step === 1 && (
-          <div className="space-y-8">
-            <div>
-              <h2 className="text-2xl font-bold mb-4">ព្រឹត្តិការណ៍ទាំងអស់</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {eventsLoading ? (
-                  <div className="h-24 bg-slate-100 animate-pulse rounded" />
-                ) : (
-                  events.map((e) => (
-                    <EventCard
-                      key={e.id}
-                      event={e}
-                      onClick={() => {
-                        setSelectedEvent(e);
-                        nextStep();
-                      }}
-                    />
-                  ))
-                )}
-              </div>
-            </div>
-          </div>
-        )}
+        <div className="relative">
+          <AnimatePresence mode="popLayout" initial={false}>
+            <motion.div
+              key={`overlay-${step}`}
+              className="pointer-events-none absolute inset-0 rounded-3xl bg-slate-900"
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              variants={OVERLAY_VARIANTS}
+              transition={{ type: "tween", duration: 0.35, ease: "easeInOut" }}
+            />
+          </AnimatePresence>
 
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={step}
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -10 }}
-          >
-            {step === 2 && selectedEvent && (
-              <Card className="p-6">
-                <SportSelection
-                  event={selectedEvent}
-                  selectedSport={formData.sport || ""}
-                  onSelect={(sport) => attemptAdvance({ sport }, 2)}
-                />
-              </Card>
-            )}
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={step}
+              layout
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              variants={STEP_VARIANTS}
+              transition={STEP_TRANSITION}
+            >
+              {step === 1 && (
+                <Card className="p-6">
+                  <div className="space-y-6">
+                    <h2 className="text-2xl font-bold text-slate-900">
+                      ព្រឹត្តិការណ៍ទាំងអស់
+                    </h2>
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      {eventsLoading ? (
+                        <div className="h-24 animate-pulse rounded bg-slate-100" />
+                      ) : (
+                        events.map((e) => (
+                          <EventCard
+                            key={e.id}
+                            event={e}
+                            onClick={() => {
+                              setSelectedEvent(e);
+                              nextStep();
+                            }}
+                          />
+                        ))
+                      )}
+                    </div>
+                  </div>
+                </Card>
+              )}
 
-            {step === 3 && selectedEvent && (
-              <Card className="p-6">
-                <SportCategory
-                  event={selectedEvent}
-                  selectedSport={formData.sport}
-                  onSelect={(category) => attemptAdvance({ category }, 3)}
-                />
-              </Card>
-            )}
+              {step === 2 && selectedEvent && (
+                <Card className="p-6">
+                  <SportSelection
+                    event={selectedEvent}
+                    selectedSport={formData.sport || ""}
+                    onSelect={(sport) => attemptAdvance({ sport }, 2)}
+                  />
+                </Card>
+              )}
 
-            {step === 4 && (
-              <Card className="p-6">
-                <LocationDetails
-                  selectedOrganization={formData.organization ?? undefined}
-                  onSelect={(organization) =>
-                    attemptAdvance({ organization }, 4)
-                  }
-                  errors={errors}
-                />
-              </Card>
-            )}
+              {step === 3 && selectedEvent && (
+                <Card className="p-6">
+                  <SportCategory
+                    event={selectedEvent}
+                    selectedSport={formData.sport}
+                    onSelect={(category) => attemptAdvance({ category }, 3)}
+                  />
+                </Card>
+              )}
 
-            {step === 5 && (
-              <Card className="p-6">
-                <PersonalInfo
-                  formData={formData}
-                  updateFormData={setField}
-                  onNext={() => attemptAdvance(undefined, 5)}
-                  errors={errors}
-                />
-              </Card>
-            )}
+              {step === 4 && (
+                <Card className="p-6">
+                  <LocationDetails
+                    selectedOrganization={formData.organization ?? undefined}
+                    onSelect={(organization) =>
+                      attemptAdvance({ organization }, 4)
+                    }
+                    errors={errors}
+                  />
+                </Card>
+              )}
 
-            {step === 6 && (
-              <Card className="p-6">
-                <RegistrationConfirmation
-                  formData={formData as RegistrationFormData}
-                  eventId={selectedEvent?.id ?? eventId ?? ""}
-                  eventName={selectedEvent?.name}
-                  onEdit={goToStep}
-                  onSubmit={handleSubmitSuccess}
-                />
-              </Card>
-            )}
+              {step === 5 && (
+                <Card className="p-6">
+                  <PersonalInfo
+                    formData={formData}
+                    updateFormData={setField}
+                    onNext={() => attemptAdvance(undefined, 5)}
+                    errors={errors}
+                  />
+                </Card>
+              )}
 
-            {step === 7 && (
-              <Card className="p-6">
-                <RegistrationAction
-                  formData={formData as RegistrationFormData}
-                  eventId={selectedEvent?.id ?? eventId ?? ""}
-                  registrationId={lastRegistrationId ?? undefined}
-                  registeredParticipants={registeredParticipants}
-                  onAddMore={handleAddMore}
-                />
-              </Card>
-            )}
-          </motion.div>
-        </AnimatePresence>
+              {step === 6 && (
+                <Card className="p-6">
+                  <RegistrationConfirmation
+                    formData={formData as RegistrationFormData}
+                    eventId={selectedEvent?.id ?? eventId ?? ""}
+                    eventName={selectedEvent?.name}
+                    onEdit={goToStep}
+                    onSubmit={handleSubmitSuccess}
+                  />
+                </Card>
+              )}
+
+              {step === 7 && (
+                <Card className="p-6">
+                  <RegistrationAction
+                    formData={formData as RegistrationFormData}
+                    eventId={selectedEvent?.id ?? eventId ?? ""}
+                    registrationId={lastRegistrationId ?? undefined}
+                    registeredParticipants={registeredParticipants}
+                    onAddMore={handleAddMore}
+                  />
+                </Card>
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );

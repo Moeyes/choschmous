@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Battambang:wght@100;300;400;700;900&family=Geist:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Sans+Khmer:wght@100..900&family=Siemreap&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Battambang:wght@100;300;400;700;900&family=Geist:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Sans+Khmer:wght@100..900&family=Siemreap&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -79,23 +79,25 @@
 }
 
 @font-face {
-  font-family: 'Noto Sans Khmer';
-  src: url('/fonts/NotoSansKhmer-Regular.woff2') format('woff2');
+  font-family: "Noto Sans Khmer";
+  src: url("/fonts/NotoSansKhmer-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Noto Sans Khmer';
-  src: url('/fonts/NotoSansKhmer-Bold.woff2') format('woff2');
+  font-family: "Noto Sans Khmer";
+  src: url("/fonts/NotoSansKhmer-Bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
 @theme inline {
-  --font-sans: 'Inter', 'Noto Sans Khmer', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  --font-sans:
+    "Inter", "Noto Sans Khmer", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial;
   --font-mono: "Geist Mono", monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -137,7 +139,34 @@
 
 /* Design system additions: card shadow variable and responsive grid utility */
 :root {
-  --card-shadow: 0 6px 20px rgba(15,23,42,0.06);
+  --card-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
+
+  /* Registration Flow Color System */
+  --reg-indigo-50: #eef2ff;
+  --reg-indigo-200: #c7d2fe;
+  --reg-indigo-600: #4f46e5;
+  --reg-indigo-700: #4338ca;
+  --reg-indigo-900: #312e81;
+
+  --reg-purple-50: #faf5ff;
+  --reg-purple-600: #9333ea;
+  --reg-purple-700: #7e22ce;
+  --reg-purple-900: #581c87;
+
+  --reg-pink-50: #fdf2f8;
+  --reg-pink-600: #db2777;
+  --reg-pink-900: #831843;
+
+  --reg-emerald-50: #ecfdf5;
+  --reg-emerald-600: #059669;
+  --reg-emerald-700: #047857;
+  --reg-emerald-900: #064e3b;
+
+  --reg-slate-200: #e2e8f0;
+  --reg-slate-300: #cbd5e1;
+  --reg-slate-600: #475569;
+  --reg-slate-700: #334155;
+  --reg-slate-800: #1e293b;
 }
 
 @layer components {
@@ -146,19 +175,290 @@
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 1rem;
   }
-}
 
+  /* Registration Flow - Split Layout */
+  .reg-split-layout {
+    @apply flex flex-col md:flex-row gap-6 min-h-100;
+  }
+
+  /* Registration Flow - Context Sidebar */
+  .reg-sidebar {
+    @apply md:w-64 shrink-0;
+  }
+
+  .reg-sidebar-content {
+    @apply sticky top-4 p-6 rounded-xl border-2 space-y-4;
+    background: linear-gradient(
+      to bottom right,
+      var(--reg-indigo-50),
+      var(--reg-purple-50)
+    );
+    border-color: var(--reg-indigo-200);
+  }
+
+  .reg-sidebar-content.to-pink {
+    background: linear-gradient(
+      to bottom right,
+      var(--reg-indigo-50),
+      var(--reg-pink-50)
+    );
+  }
+
+  .reg-sidebar-section {
+    @apply pt-3 first:pt-0 border-t first:border-t-0;
+    border-color: var(--reg-indigo-200);
+  }
+
+  .reg-sidebar-label {
+    @apply flex items-center gap-2 mb-2;
+  }
+
+  .reg-sidebar-dot {
+    @apply h-2 w-2 rounded-full;
+  }
+
+  .reg-sidebar-dot.indigo {
+    background-color: var(--reg-indigo-600);
+  }
+
+  .reg-sidebar-dot.purple {
+    background-color: var(--reg-purple-600);
+  }
+
+  .reg-sidebar-dot.pink {
+    background-color: var(--reg-pink-600);
+  }
+
+  .reg-sidebar-dot.emerald {
+    background-color: var(--reg-emerald-600);
+  }
+
+  .reg-sidebar-badge {
+    @apply text-xs font-semibold uppercase tracking-wide;
+  }
+
+  .reg-sidebar-badge.indigo {
+    color: var(--reg-indigo-600);
+  }
+
+  .reg-sidebar-badge.purple {
+    color: var(--reg-purple-600);
+  }
+
+  .reg-sidebar-badge.pink {
+    color: var(--reg-pink-600);
+  }
+
+  .reg-sidebar-badge.emerald {
+    color: var(--reg-emerald-600);
+  }
+
+  .reg-sidebar-title {
+    @apply text-sm font-bold;
+  }
+
+  .reg-sidebar-title.indigo {
+    color: var(--reg-indigo-900);
+  }
+
+  .reg-sidebar-title.purple {
+    color: var(--reg-purple-900);
+  }
+
+  .reg-sidebar-title.pink {
+    color: var(--reg-pink-900);
+  }
+
+  .reg-sidebar-title.emerald {
+    color: var(--reg-emerald-900);
+  }
+
+  /* Registration Flow - Content Area */
+  .reg-content {
+    @apply flex-1;
+  }
+
+  .reg-content-header {
+    @apply mb-6;
+  }
+
+  .reg-content-title {
+    @apply text-2xl font-bold;
+    color: var(--reg-slate-800);
+  }
+
+  .reg-content-subtitle {
+    @apply mt-1;
+    color: var(--reg-slate-600);
+  }
+
+  /* Event Selection Cards */
+  .event-card {
+    @apply relative p-8 rounded-xl border-2 text-left transition-all duration-300;
+    @apply border-slate-200 bg-white shadow hover:shadow-md hover:border-slate-300;
+  }
+
+  .event-card:hover {
+    @apply border-indigo-400;
+  }
+
+  .event-card.selected {
+    @apply border-indigo-600 bg-indigo-50 shadow-lg scale-[1.02];
+  }
+
+  .event-card.selected:hover {
+    @apply border-indigo-700 bg-indigo-100;
+  }
+
+  .event-card-check {
+    @apply absolute top-4 right-4 h-6 w-6 rounded-full flex items-center justify-center;
+    background-color: var(--reg-indigo-600);
+  }
+
+  .event-card-title {
+    @apply text-xl font-bold mb-3;
+    color: var(--reg-slate-800);
+  }
+
+  .event-card-title.selected {
+    color: var(--reg-indigo-900);
+  }
+
+  .event-card-text {
+    color: var(--reg-slate-600);
+  }
+
+  .event-card-text.selected {
+    color: var(--reg-indigo-700);
+  }
+
+  /* Selection Pills/Buttons */
+  .selection-pill {
+    @apply px-6 py-3 rounded-full font-medium transition-all duration-200;
+    @apply bg-white border-2 hover:bg-indigo-50;
+    color: var(--reg-slate-700);
+    border-color: var(--reg-slate-300);
+  }
+
+  .selection-pill:hover {
+    border-color: var(--reg-indigo-600);
+  }
+
+  .selection-pill.selected {
+    @apply shadow-md scale-105;
+    background-color: var(--reg-indigo-600);
+    color: white;
+    border-color: var(--reg-indigo-600);
+  }
+
+  .selection-pill.selected:hover {
+    background-color: var(--reg-indigo-700);
+    border-color: var(--reg-indigo-700);
+  }
+
+  .selection-pill.purple.selected {
+    background-color: var(--reg-purple-600);
+    border-color: var(--reg-purple-600);
+  }
+
+  .selection-pill.purple.selected:hover {
+    background-color: var(--reg-purple-700);
+    border-color: var(--reg-purple-700);
+  }
+
+  .selection-pill.purple:hover {
+    border-color: var(--reg-purple-600);
+    background-color: var(--reg-purple-50);
+  }
+
+  .selection-pill.emerald.selected {
+    background-color: var(--reg-emerald-600);
+    border-color: var(--reg-emerald-600);
+  }
+
+  .selection-pill.emerald.selected:hover {
+    background-color: var(--reg-emerald-700);
+    border-color: var(--reg-emerald-700);
+  }
+
+  .selection-pill.emerald:hover {
+    border-color: var(--reg-emerald-600);
+    background-color: var(--reg-emerald-50);
+  }
+
+  /* Form Labels */
+  .form-label {
+    @apply block text-sm font-medium mb-2;
+    color: var(--reg-slate-700);
+  }
+
+  /* Section Separators */
+  .section-separator {
+    @apply border-t pt-5 mt-6;
+  }
+
+  /* Center Title Layout */
+  .center-title {
+    @apply text-center mb-8;
+  }
+
+  .center-title h1 {
+    @apply text-3xl font-bold;
+    color: var(--reg-slate-800);
+  }
+
+  .center-title p {
+    @apply mt-2;
+    color: var(--reg-slate-600);
+  }
+
+  /* Event Grid */
+  .event-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto;
+  }
+
+  /* Secondary Indicator */
+  .secondary-indicator {
+    @apply mt-8 pt-6 border-t flex items-center justify-center gap-3 text-sm;
+    border-color: var(--reg-slate-200);
+    color: var(--reg-slate-600);
+  }
+
+  .secondary-indicator-name {
+    @apply font-semibold;
+    color: var(--reg-slate-800);
+  }
+}
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
-    font-family: var(--font-sans), system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    font-family:
+      var(--font-sans),
+      system-ui,
+      -apple-system,
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      Arial;
     @apply bg-background text-foreground;
   }
-  h1,h2,h3,h4,h5,h6 {
-    font-family: var(--font-sans), system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family:
+      var(--font-sans),
+      system-ui,
+      -apple-system,
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      Arial;
   }
 }
 
@@ -171,4 +471,3 @@
     @apply opacity-100 translate-y-0;
   }
 }
-

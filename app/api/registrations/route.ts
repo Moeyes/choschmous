@@ -11,6 +11,7 @@ interface RegistrationRecord {
   id: string;
   registeredAt: string;
   photoUrl: string | null;
+  nationalityDocumentUrl?: string | null;
   [key: string]: unknown;
 }
 
@@ -92,6 +93,7 @@ export async function POST(request: Request) {
     const contentType = request.headers.get("content-type") || "";
     let body: Partial<FormData> & { userId?: number } = {};
     let photoUrl: string | null = null;
+    let nationalityDocumentUrl: string | null = null;
 
     if (contentType.includes("multipart/form-data")) {
       const fd = await request.formData();
@@ -109,9 +111,19 @@ export async function POST(request: Request) {
       const uploadsDir = path.join(process.cwd(), "public", "uploads");
       await fs.mkdir(uploadsDir, { recursive: true });
 
+      const uploadTargets = new Map<string, (url: string) => void>([
+        ["photo", (url) => (photoUrl = url)],
+        ["nationalityDocument", (url) => (nationalityDocumentUrl = url)],
+      ]);
+
       for (const [key, val] of fd.entries()) {
-        if (key !== "photo") continue;
-        if (!val || typeof val !== "object" || !("arrayBuffer" in val))
+        const setUrl = uploadTargets.get(key);
+        if (
+          !setUrl ||
+          !val ||
+          typeof val !== "object" ||
+          !("arrayBuffer" in val)
+        )
           continue;
 
         const file = val as File;
@@ -131,10 +143,14 @@ export async function POST(request: Request) {
           );
         }
 
-        const filename = `${Date.now()}-${(file.name ?? "upload.jpg").replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+        const safeName = (file.name ?? "upload.jpg").replace(
+          /[^a-zA-Z0-9.-]/g,
+          "_",
+        );
+        const filename = `${Date.now()}-${key}-${safeName}`;
         const filepath = path.join(uploadsDir, filename);
         await fs.writeFile(filepath, buffer);
-        photoUrl = `/uploads/${filename}`;
+        setUrl(`/uploads/${filename}`);
       }
     } else {
       body = (await request.json()) as Partial<FormData> & { userId?: number };
@@ -171,13 +187,16 @@ export async function POST(request: Request) {
     }
 
     // Clean up empty/undefined fields
-    const cleanData = Object.entries(normalized).reduce((acc, [key, value]) => {
-      if (value === undefined || value === null) return acc;
-      if (Array.isArray(value) && value.length === 0) return acc;
-      if (value === "") return acc;
-      acc[key] = value;
-      return acc;
-    }, {} as Record<string, unknown>);
+    const cleanData = Object.entries(normalized).reduce(
+      (acc, [key, value]) => {
+        if (value === undefined || value === null) return acc;
+        if (Array.isArray(value) && value.length === 0) return acc;
+        if (value === "") return acc;
+        acc[key] = value;
+        return acc;
+      },
+      {} as Record<string, unknown>,
+    );
 
     const created: RegistrationRecord = {
       ...cleanData,
@@ -185,6 +204,10 @@ export async function POST(request: Request) {
       registeredAt: now,
       // Override photoUrl with uploaded photo if available
       photoUrl: photoUrl ?? (normalized as any).photoUrl ?? null,
+      nationalityDocumentUrl:
+        nationalityDocumentUrl ??
+        (normalized as any).nationalityDocumentUrl ??
+        null,
     };
 
     // Find or create user record
@@ -229,6 +252,7 @@ export async function PUT(request: Request) {
     const contentType = request.headers.get("content-type") || "";
     let body: Partial<FormData> & { id?: string } = {};
     let photoUrl: string | null = null;
+    let nationalityDocumentUrl: string | null = null;
 
     if (contentType.includes("multipart/form-data")) {
       const fd = await request.formData();
@@ -246,9 +270,19 @@ export async function PUT(request: Request) {
       const uploadsDir = path.join(process.cwd(), "public", "uploads");
       await fs.mkdir(uploadsDir, { recursive: true });
 
+      const uploadTargets = new Map<string, (url: string) => void>([
+        ["photo", (url) => (photoUrl = url)],
+        ["nationalityDocument", (url) => (nationalityDocumentUrl = url)],
+      ]);
+
       for (const [key, val] of fd.entries()) {
-        if (key !== "photo") continue;
-        if (!val || typeof val !== "object" || !("arrayBuffer" in val))
+        const setUrl = uploadTargets.get(key);
+        if (
+          !setUrl ||
+          !val ||
+          typeof val !== "object" ||
+          !("arrayBuffer" in val)
+        )
           continue;
 
         const file = val as File;
@@ -268,10 +302,14 @@ export async function PUT(request: Request) {
           );
         }
 
-        const filename = `${Date.now()}-${(file.name ?? "upload.jpg").replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+        const safeName = (file.name ?? "upload.jpg").replace(
+          /[^a-zA-Z0-9.-]/g,
+          "_",
+        );
+        const filename = `${Date.now()}-${key}-${safeName}`;
         const filepath = path.join(uploadsDir, filename);
         await fs.writeFile(filepath, buffer);
-        photoUrl = `/uploads/${filename}`;
+        setUrl(`/uploads/${filename}`);
       }
     } else {
       body = await request.json();
@@ -291,13 +329,16 @@ export async function PUT(request: Request) {
     let updatedRegistration: RegistrationRecord | null = null;
 
     // Clean up empty/undefined fields from update data
-    const cleanBody = Object.entries(body).reduce((acc, [key, value]) => {
-      if (value === undefined || value === null) return acc;
-      if (Array.isArray(value) && value.length === 0) return acc;
-      if (value === "null") return acc;
-      acc[key] = value;
-      return acc;
-    }, {} as Record<string, unknown>);
+    const cleanBody = Object.entries(body).reduce(
+      (acc, [key, value]) => {
+        if (value === undefined || value === null) return acc;
+        if (Array.isArray(value) && value.length === 0) return acc;
+        if (value === "null") return acc;
+        acc[key] = value;
+        return acc;
+      },
+      {} as Record<string, unknown>,
+    );
 
     // Find and update the registration
     for (const userRecord of allUsers) {
@@ -314,6 +355,11 @@ export async function PUT(request: Request) {
             photoUrl ??
             (body as any).photoUrl ??
             userRecord.registrations[index].photoUrl,
+          nationalityDocumentUrl:
+            nationalityDocumentUrl ??
+            (body as any).nationalityDocumentUrl ??
+            userRecord.registrations[index].nationalityDocumentUrl ??
+            null,
         };
         updatedRegistration = userRecord.registrations[index];
         updated = true;

@@ -123,6 +123,17 @@ export function validateForm(data: Partial<FormData>): FormErrors {
     }
   }
 
+  if (data.nationalityDocumentUpload) {
+    const file = data.nationalityDocumentUpload;
+
+    if (!file.type.startsWith("image/")) {
+      errors.nationalityDocumentUpload =
+        "សូមបញ្ចូលឯកសារជាតិសញ្ជាតិជារូបភាព (JPG, PNG, ...).";
+    } else if (file.size > UPLOAD_LIMITS.maxImageSize) {
+      errors.nationalityDocumentUpload = "ទំហំឯកសារត្រូវតែ 2MB ឬតូចជាង។";
+    }
+  }
+
   return errors;
 }
 

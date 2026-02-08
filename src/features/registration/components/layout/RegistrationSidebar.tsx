@@ -1,6 +1,7 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import { cn } from "@/src/lib/utils";
 import {
   Calendar,
@@ -15,6 +16,7 @@ import {
   REGISTRATION_STEP_PARAMS,
   REGISTRATION_STEP_LABELS,
 } from "@/src/config/constants";
+import { useEvents } from "@/src/features/events/hooks/useEvents";
 
 const STEPS = [
   {
@@ -57,17 +59,71 @@ const STEPS = [
 export function RegistrationSidebar() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { events } = useEvents();
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+  const [selectedSport, setSelectedSport] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedOrganization, setSelectedOrganization] = useState<
+    string | null
+  >(null);
+
   const currentStep =
     searchParams.get("step") || REGISTRATION_STEP_PARAMS.event;
 
   const currentStepIndex = STEPS.findIndex((s) => s.param === currentStep);
+
+  // Load selected values from sessionStorage
+  useEffect(() => {
+    const loadSelections = () => {
+      const eventId = sessionStorage.getItem("selectedEventId");
+      const sport = sessionStorage.getItem("selectedSport");
+      const category = sessionStorage.getItem("selectedCategory");
+      const orgStr = sessionStorage.getItem("selectedOrganization");
+
+      setSelectedEventId(eventId);
+      setSelectedSport(sport);
+      setSelectedCategory(category);
+
+      if (orgStr) {
+        try {
+          const org = JSON.parse(orgStr);
+          setSelectedOrganization(org.name || null);
+        } catch {
+          setSelectedOrganization(null);
+        }
+      }
+    };
+
+    // Load on mount
+    loadSelections();
+
+    // Listen for storage changes
+    const handleStorageChange = () => {
+      loadSelections();
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    // Poll for changes in the same tab
+    const interval = setInterval(() => {
+      loadSelections();
+    }, 500);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      clearInterval(interval);
+    };
+  }, []);
+
+  // Find the selected event
+  const selectedEvent = events.find((e) => e.id === selectedEventId);
 
   const navigateToStep = (stepParam: string) => {
     router.push(`/register?step=${stepParam}`);
   };
 
   return (
-    <aside className="hidden lg:block w-80 bg-white border-r border-slate-200 p-6">
+    <aside className="hidden lg:flex lg:flex-col w-80 bg-white/95 border-r border-slate-200 p-6 lg:sticky lg:top-18 lg:h-[calc(100vh-72px)] lg:overflow-y-auto lg:pb-8">
       <div className="space-y-2">
         <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">
           ជំហានចុះឈ្មោះ
@@ -78,6 +134,33 @@ export function RegistrationSidebar() {
           const isActive = step.param === currentStep;
           const isCompleted = index < currentStepIndex;
           const isAccessible = index <= currentStepIndex;
+
+          // Dynamic labels based on selection
+          let displayLabel: string = step.label;
+
+          if (step.param === REGISTRATION_STEP_PARAMS.event && selectedEvent) {
+            displayLabel = selectedEvent.name;
+          } else if (
+            step.param === REGISTRATION_STEP_PARAMS.sport &&
+            selectedSport
+          ) {
+            displayLabel = selectedSport;
+          } else if (
+            step.param === REGISTRATION_STEP_PARAMS.category &&
+            selectedCategory
+          ) {
+            displayLabel = selectedCategory;
+          } else if (
+            step.param === REGISTRATION_STEP_PARAMS.organization &&
+            selectedOrganization
+          ) {
+            displayLabel = selectedOrganization;
+          } else if (
+            step.param === REGISTRATION_STEP_PARAMS.success &&
+            isCompleted
+          ) {
+            displayLabel = "បានបញ្ជាក់";
+          }
 
           return (
             <button
@@ -115,7 +198,9 @@ export function RegistrationSidebar() {
               </div>
 
               <div className="flex-1 min-w-0">
-                <div className="text-sm font-medium truncate">{step.label}</div>
+                <div className="text-sm font-medium truncate">
+                  {displayLabel}
+                </div>
                 <div className="text-xs text-slate-500">
                   ជំហាន {index + 1} នៃ {STEPS.length}
                 </div>

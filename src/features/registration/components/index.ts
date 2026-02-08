@@ -1,5 +1,6 @@
 export { RegistrationForm } from "./RegistrationForm";
 export { PhotoUpload } from "./PhotoUpload";
+export { NationalityDocumentUpload } from "./NationalityDocumentUpload";
 export { SelectField } from "./SelectField";
 export { RegistrationAction } from "./RegistrationAction";
 export { RegistrationConfirmation } from "./RegistrationConfirmation";

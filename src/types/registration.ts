@@ -27,6 +27,8 @@ export interface FormData {
   phone?: string;
   photoUrl?: string;
   photoUpload?: File | null;
+  nationalityDocumentUrl?: string;
+  nationalityDocumentUpload?: File | null;
 
   // Position & Organization
   position?: PositionInfo | null;
@@ -59,6 +61,7 @@ export interface FormErrors {
   phone?: string;
   email?: string;
   photoUpload?: string;
+  nationalityDocumentUpload?: string;
 
   // Organization errors
   organization?: string;

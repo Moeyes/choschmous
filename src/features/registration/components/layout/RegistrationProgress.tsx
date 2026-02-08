@@ -20,7 +20,6 @@ export function RegistrationProgress() {
     searchParams.get("step") || REGISTRATION_STEP_PARAMS.event;
 
   const currentIndex = STEP_ORDER.indexOf(currentStep as any);
-  const progress = ((currentIndex + 1) / STEP_ORDER.length) * 100;
 
   return (
     <div className="space-y-2">
@@ -29,13 +28,17 @@ export function RegistrationProgress() {
           ជំហានទី {toKhmerDigits(currentIndex + 1)} នៃ{" "}
           {toKhmerDigits(STEP_ORDER.length)}
         </span>
-        <span className="text-slate-500">{Math.round(progress)}%</span>
       </div>
-      <div className="w-full bg-slate-200 rounded-full h-2">
-        <div
-          className="bg-indigo-600 h-2 rounded-full transition-all duration-500"
-          style={{ width: `${progress}%` }}
-        />
+      <div className="flex items-center gap-2">
+        {STEP_ORDER.map((step, index) => (
+          <div key={step} className="flex items-center flex-1">
+            <div
+              className={`h-2 rounded-full w-full transition-all duration-300 ${
+                index <= currentIndex ? "bg-indigo-600" : "bg-slate-200"
+              }`}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );
