@@ -3,7 +3,7 @@
 import { useId, useRef, useMemo, useEffect, useState } from "react";
 import { Button } from "@/src/components/ui/button";
 import Image from "next/image";
-import { UploadCloud, ImageIcon, Trash2, Replace } from "lucide-react";
+import { UploadCloud, ImageIcon, CheckCircle2 } from "lucide-react";
 import { cn } from "@/src/lib/utils";
 import { PHOTO_DIMENSIONS } from "@/src/config/constants";
 
@@ -92,13 +92,7 @@ export function PhotoUpload({
       </div>
 
       <div className="px-4 py-4 sm:px-6 sm:py-6">
-        <div
-          className={cn(
-            "grid grid-cols-1 gap-4",
-            hasFile && "lg:grid-cols-2 lg:items-start",
-          )}
-        >
-          {/* Dropzone / uploader */}
+        {!hasFile ? (
           <label
             htmlFor={`photo-upload-${id}`}
             onDragOver={(e) => {
@@ -113,7 +107,7 @@ export function PhotoUpload({
               if (dropped) handleFile(dropped);
             }}
             className={cn(
-              "group relative flex cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed bg-slate-50/60 p-5 transition",
+              "group relative flex cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed bg-slate-50/60 p-6 transition",
               "hover:border-indigo-300 hover:bg-indigo-50/60 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-200",
               isDragging && "border-indigo-400 bg-indigo-50",
             )}
@@ -141,79 +135,45 @@ export function PhotoUpload({
                 JPEG/PNG • ទំហំប្រហែល 4x6 • អតិបរមា 5MB
               </p>
             </div>
-            <div className="flex flex-col gap-2 w-full sm:flex-row sm:items-center sm:justify-center sm:gap-3">
-              <Button variant="outline" className="w-full sm:w-auto">
-                ជ្រើសរើសរូបថត
-              </Button>
-              {file && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  className="w-full sm:w-auto text-destructive"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onChange(null);
-                  }}
-                >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  យកចេញ
-                </Button>
-              )}
-            </div>
+            <Button variant="outline" className="w-full sm:w-auto">
+              ជ្រើសរើសរូបថត
+            </Button>
           </label>
-
-          {/* Preview & details */}
-          {hasFile && (
-            <div className="flex flex-col gap-3 rounded-lg border border-slate-100 bg-slate-50 p-4">
-              <div className="aspect-2/3 w-full overflow-hidden rounded-md border border-slate-200 bg-white shadow-xs">
-                <Image
-                  src={preview as string}
-                  alt="រូបថតដែលបានបញ្ចូល"
-                  width={PHOTO_DIMENSIONS.width}
-                  height={PHOTO_DIMENSIONS.height}
-                  className="h-full w-full object-cover"
-                  unoptimized
-                />
-              </div>
-
-              <div className="rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-xs">
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="font-medium truncate" title={file?.name}>
-                      {file?.name}
-                    </span>
-                    <span className="text-xs text-slate-500">
-                      {file ? formatBytes(file.size) : ""}
-                    </span>
-                  </div>
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                    <span>ទំហំ 4x6 (កែសម្រួលដោយប្រព័ន្ធ)</span>
-                  </div>
-                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="w-full sm:w-auto"
-                      onClick={() => inputRef.current?.click()}
-                    >
-                      <Replace className="mr-2 h-4 w-4" />
-                      ប្តូររូបថត
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      className="w-full sm:w-auto text-destructive"
-                      onClick={() => onChange(null)}
-                    >
-                      <Trash2 className="mr-2 h-4 w-4" />
-                      យកចេញ
-                    </Button>
-                  </div>
-                </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            className="group flex w-full flex-col gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4 text-left shadow-sm transition hover:border-indigo-200 hover:bg-indigo-50"
+          >
+            <div className="relative overflow-hidden rounded-md border border-slate-200 bg-white">
+              <Image
+                src={preview as string}
+                alt="រូបថតដែលបានបញ្ចូល"
+                width={PHOTO_DIMENSIONS.width}
+                height={PHOTO_DIMENSIONS.height}
+                className="h-full w-full object-cover"
+                unoptimized
+              />
+              <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-2 bg-slate-900/20 opacity-0 transition group-hover:opacity-100">
+                <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                <span className="text-xs font-semibold text-white">
+                  បានផ្ទុករូបថត • ចុចដើម្បីប្តូរ
+                </span>
               </div>
             </div>
-          )}
-        </div>
+            <div className="flex items-center justify-between rounded-md bg-white px-3 py-2 text-sm text-slate-700 shadow-xs">
+              <span className="font-medium truncate" title={file?.name}>
+                {file?.name}
+              </span>
+              <span className="text-xs text-slate-500">
+                {file ? formatBytes(file.size) : ""}
+              </span>
+            </div>
+            <p className="text-xs text-slate-500">
+              ចុចលើរូបថតដើម្បីប្តូរ ឬ បញ្ចូលឡើងវិញ
+            </p>
+          </button>
+        )}
       </div>
     </section>
   );

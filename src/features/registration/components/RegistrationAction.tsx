@@ -296,7 +296,7 @@ export function RegistrationAction({
   const currentName =
     formData.fullNameKhmer || formData.fullNameEnglish || "អ្នកចូលរួម";
 
-  const highlight = allRegistrations[0];
+  const highlight = allRegistrations[allRegistrations.length - 1];
 
   const handleAddMore = () => {
     if (onAddMore) {

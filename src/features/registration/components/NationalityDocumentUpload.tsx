@@ -2,13 +2,7 @@
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import {
-  UploadCloud,
-  FileText,
-  ImageIcon,
-  Trash2,
-  Replace,
-} from "lucide-react";
+import { UploadCloud, FileText, CheckCircle2 } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import { cn } from "@/src/lib/utils";
 
@@ -62,18 +56,13 @@ export function NationalityDocumentUpload({
           <h2 className="text-base font-semibold">ឯកសារជាតិសញ្ជាតិ</h2>
         </div>
         <p className="text-sm text-slate-600">
-          បញ្ចូលសំបុត្រកំណើត សំបុត្រណែនាំ ឬឯកសារបញ្ជាក់ជាតិសញ្ជាតិ 
+          បញ្ចូលសំបុត្រកំណើត សំបុត្រណែនាំ ឬឯកសារបញ្ជាក់ជាតិសញ្ជាតិ
           សម្រាប់ការផ្ទៀងផ្ទាត់។ រក្សាទំហំឯកសារតិចជាង 5MB។
         </p>
       </div>
 
       <div className="px-4 py-4 sm:px-6 sm:py-6">
-        <div
-          className={cn(
-            "grid grid-cols-1 gap-4",
-            hasFile && "lg:grid-cols-2 lg:items-start",
-          )}
-        >
+        {!hasFile ? (
           <label
             htmlFor={`nationality-document-upload-${id}`}
             onDragOver={(e) => {
@@ -88,7 +77,7 @@ export function NationalityDocumentUpload({
               if (dropped) handleFile(dropped);
             }}
             className={cn(
-              "group relative flex cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed bg-slate-50/60 p-5 transition",
+              "group relative flex cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border-2 border-dashed bg-slate-50/60 p-6 transition",
               "hover:border-indigo-300 hover:bg-indigo-50/60 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-200",
               isDragging && "border-indigo-400 bg-indigo-50",
             )}
@@ -114,77 +103,45 @@ export function NationalityDocumentUpload({
               </p>
               <p className="text-xs text-slate-500">JPEG/PNG • អតិបរមា 5MB</p>
             </div>
-            <div className="flex flex-col gap-2 w-full sm:flex-row sm:items-center sm:justify-center sm:gap-3">
-              <Button variant="outline" className="w-full sm:w-auto">
-                ជ្រើសរើសឯកសារ
-              </Button>
-              {file && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  className="w-full sm:w-auto text-destructive"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onChange(null);
-                  }}
-                >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  យកចេញ
-                </Button>
-              )}
-            </div>
+            <Button variant="outline" className="w-full sm:w-auto">
+              ជ្រើសរើសឯកសារ
+            </Button>
           </label>
-
-          {hasFile && (
-            <div className="flex flex-col gap-3 rounded-lg border border-slate-100 bg-slate-50 p-4">
-              <div className="aspect-video w-full overflow-hidden rounded-md border border-slate-200 bg-white shadow-xs">
-                <Image
-                  src={preview as string}
-                  alt="ឯកសារជាតិសញ្ជាតិ"
-                  fill
-                  className="object-cover"
-                  unoptimized
-                />
-              </div>
-
-              <div className="rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-xs">
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="font-medium truncate" title={file?.name}>
-                      {file?.name}
-                    </span>
-                    <span className="text-xs text-slate-500">
-                      {file ? formatBytes(file.size) : ""}
-                    </span>
-                  </div>
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                    <span>ឯកសារជាតិសញ្ជាតិ (JPEG/PNG)</span>
-                  </div>
-                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="w-full sm:w-auto"
-                      onClick={() => inputRef.current?.click()}
-                    >
-                      <Replace className="mr-2 h-4 w-4" />
-                      ប្តូរឯកសារ
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      className="w-full sm:w-auto text-destructive"
-                      onClick={() => onChange(null)}
-                    >
-                      <Trash2 className="mr-2 h-4 w-4" />
-                      យកចេញ
-                    </Button>
-                  </div>
-                </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            className="group flex w-full flex-col gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4 text-left shadow-sm transition hover:border-indigo-200 hover:bg-indigo-50"
+          >
+            <div className="relative overflow-hidden rounded-md border border-slate-200 bg-white">
+              <Image
+                src={preview as string}
+                alt="ឯកសារជាតិសញ្ជាតិ"
+                width={1200}
+                height={800}
+                className="h-full w-full object-cover"
+                unoptimized
+              />
+              <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-2 bg-slate-900/20 opacity-0 transition group-hover:opacity-100">
+                <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                <span className="text-xs font-semibold text-white">
+                  បានផ្ទុកឯកសារ • ចុចដើម្បីប្តូរ
+                </span>
               </div>
             </div>
-          )}
-        </div>
+            <div className="flex items-center justify-between rounded-md bg-white px-3 py-2 text-sm text-slate-700 shadow-xs">
+              <span className="font-medium truncate" title={file?.name}>
+                {file?.name}
+              </span>
+              <span className="text-xs text-slate-500">
+                {file ? formatBytes(file.size) : ""}
+              </span>
+            </div>
+            <p className="text-xs text-slate-500">
+              ចុចលើឯកសារដើម្បីប្តូរ ឬ បញ្ចូលឡើងវិញ
+            </p>
+          </button>
+        )}
       </div>
     </section>
   );
