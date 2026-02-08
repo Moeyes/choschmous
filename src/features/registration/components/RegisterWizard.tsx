@@ -194,8 +194,11 @@ export default function RegistrationWizard() {
   ]);
 
   return (
-    <div className="min-h-screen bg-white p-6 border rounded-xl shadow-sm">
-      <div id="registration-wizard-top" className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-white p-4 sm:p-6 md:p-8 border rounded-xl shadow-sm">
+      <div
+        id="registration-wizard-top"
+        className="mx-auto w-full max-w-5xl md:max-w-6xl"
+      >
         {validationMessage && (
           <div className="mb-4 p-3 rounded bg-red-50 border text-red-700 text-sm">
             {validationMessage}

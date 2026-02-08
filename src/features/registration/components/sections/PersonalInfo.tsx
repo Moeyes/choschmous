@@ -99,7 +99,7 @@ export function PersonalInfo({
         gradientTo="pink"
       /> */}
 
-      <div className="reg-content max-w-2xl">
+      <div className="reg-content">
         <ContentHeader
           title="ព័ត៌មានផ្ទាល់ខ្លួន"
           subtitle="បំពេញព័ត៌មានផ្ទាល់ខ្លួនដើម្បីបញ្ចប់ការចុះឈ្មោះ"
