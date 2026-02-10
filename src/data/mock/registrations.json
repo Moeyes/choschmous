@@ -16,7 +16,7 @@
           "province": "កំពង់ធំ"
         },
         "phone": "34142341",
-        "fullNameKhmer": "សាត​ បញ្្ា",
+        "fullNameKhmer": "សាត​ បញ្ញា",
         "fullNameEnglish": "Sat Panha",
         "gender": "Male",
         "nationality": "IDCard",
@@ -31,19 +31,23 @@
         "province": "កំពង់ធំ",
         "status": "approved",
         "sportId": "athletics",
-        "sportCategory": "រត់ប្រណាំង ១០០ ម៉ែត្រ"
+        "sportCategory": "រត់ប្រណាំង ១០០ ម៉ែត្រ",
+        "sports": [
+          "អត្តពលកម្ម"
+        ],
+        "nationalityDocumentUrl": null
       },
       {
         "sport": "អត្តពលកម្ម",
         "category": "រត់ប្រណាំង ១០០ ម៉ែត្រ",
         "position": {
           "role": "Athlete",
-          "athleteCategory": "Male"
+          "category": "Male"
         },
         "organization": {
-          "type": "ministry",
           "id": "m-1",
-          "name": "ក្រសួងមហាផ្ទៃ"
+          "name": "ក្រសួងមហាផ្ទៃ",
+          "type": "ministry"
         },
         "phone": "0964461381",
         "fullNameKhmer": "សាត​ ​បញ្ញា",
@@ -58,9 +62,14 @@
         "registeredAt": "2026-02-06T16:29:05.884Z",
         "photoUrl": "/uploads/1770395345878-1770395340214-photo.jpg",
         "name": "Sat Panha",
-        "status": "pending",
+        "status": "approved",
         "sportId": "athletics",
-        "sportCategory": "រត់ប្រណាំង ១០០ ម៉ែត្រ"
+        "sportCategory": "រត់ប្រណាំង ១០០ ម៉ែត្រ",
+        "province": "ក្រសួងមហាផ្ទៃ",
+        "sports": [
+          "អត្តពលកម្ម"
+        ],
+        "nationalityDocumentUrl": null
       },
       {
         "sport": "អត្តពលកម្ម",
