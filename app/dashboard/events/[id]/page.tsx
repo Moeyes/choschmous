@@ -24,6 +24,8 @@ export default function EventDetailPage({ params }: Props) {
   const [participants, setParticipants] = useState<DashboardParticipant[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [eventId, setEventId] = useState<string | null>(null);
+  const [selectedSport, setSelectedSport] = useState<string | null>(null);
+  const [selectedOrg, setSelectedOrg] = useState<string | null>(null);
 
   useEffect(() => {
     params.then((p) => setEventId(p.id));
@@ -90,6 +92,31 @@ export default function EventDetailPage({ params }: Props) {
       .length,
   };
 
+  const normalized = (value?: string | null) =>
+    (value || "").toLowerCase().trim();
+
+  const participantOrg = (p: DashboardParticipant) =>
+    p.organization?.name || p.organization?.province || p.province || "";
+
+  const availableSports = (
+    event.sports?.map((s) => (typeof s === "string" ? s : s?.name || "")) ||
+    participants.map((p) => p.sport)
+  )
+    .filter(Boolean)
+    .filter((v, i, arr) => arr.indexOf(v) === i);
+
+  const availableOrgs = participants
+    .map(participantOrg)
+    .filter(Boolean)
+    .filter((v, i, arr) => arr.indexOf(v) === i);
+
+  const filteredParticipants = participants.filter((p) => {
+    const sportMatch = !selectedSport || normalized(p.sport) === normalized(selectedSport);
+    const orgMatch =
+      !selectedOrg || normalized(participantOrg(p)) === normalized(selectedOrg);
+    return sportMatch && orgMatch;
+  });
+
   return (
     <div className="p-6 space-y-6">
       {/* Back button */}
@@ -118,17 +145,25 @@ export default function EventDetailPage({ params }: Props) {
               </span>
             )}
           </div>
-          <div className="flex gap-2 mt-4">
-            {event.sports?.map((sport, i) => (
-              <Badge
-                key={i}
-                className="bg-white/20 text-white border-white/30 rounded-lg"
-              >
-                {typeof sport === "string"
-                  ? sport
-                  : ((sport as any)?.name ?? "កីឡា")}
-              </Badge>
-            ))}
+          <div className="flex gap-2 mt-4 flex-wrap">
+            {availableSports.map((sport, i) => {
+              const active = normalized(sport) === normalized(selectedSport);
+              return (
+                <Badge
+                  key={`${sport}-${i}`}
+                  onClick={() =>
+                    setSelectedSport(active ? null : sport || null)
+                  }
+                  className={`rounded-lg cursor-pointer transition ${
+                    active
+                      ? "bg-white text-[#1a4cd8] border-white"
+                      : "bg-white/20 text-white border-white/30 hover:bg-white/30"
+                  }`}
+                >
+                  {sport || "កីឡា"}
+                </Badge>
+              );
+            })}
           </div>
         </div>
         <div className="absolute -bottom-12 -right-12 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
@@ -166,9 +201,48 @@ export default function EventDetailPage({ params }: Props) {
 
       {/* Participants Table */}
       <div className="space-y-4">
-        <h3 className="text-lg font-bold">
-          អ្នកចូលរួម ({participants.length})
-        </h3>
+        <div className="flex flex-wrap items-center gap-3">
+          <h3 className="text-lg font-bold">
+            អ្នកចូលរួម ({filteredParticipants.length}
+            {filteredParticipants.length !== participants.length
+              ? `/ ${participants.length}`
+              : ""}
+            )
+          </h3>
+          {(selectedSport || selectedOrg) && (
+            <div className="flex flex-wrap items-center gap-2 text-sm">
+              <span className="text-muted-foreground">កំពុងត្រង់:</span>
+              {selectedSport && (
+                <Badge
+                  variant="secondary"
+                  className="cursor-pointer"
+                  onClick={() => setSelectedSport(null)}
+                >
+                  កីឡា: {selectedSport}
+                </Badge>
+              )}
+              {selectedOrg && (
+                <Badge
+                  variant="secondary"
+                  className="cursor-pointer"
+                  onClick={() => setSelectedOrg(null)}
+                >
+                  អង្គភាព/ខេត្ត: {selectedOrg}
+                </Badge>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setSelectedSport(null);
+                  setSelectedOrg(null);
+                }}
+              >
+                លុបត្រង់
+              </Button>
+            </div>
+          )}
+        </div>
         <DataTable
           columns={[
             { key: "number", header: "លេខរៀង" },
@@ -180,7 +254,7 @@ export default function EventDetailPage({ params }: Props) {
             { key: "dob", header: "ថ្ងៃខែឆ្នាំកំណើត" },
             { key: "status", header: "ស្ថានភាព" },
           ]}
-          data={participants.slice(0, 10)}
+          data={filteredParticipants}
           renderRow={(participant, index) => (
             <ParticipantTableRow
               key={participant.id}
@@ -196,11 +270,6 @@ export default function EventDetailPage({ params }: Props) {
             </Card>
           }
         />
-        {participants.length > 10 && (
-          <p className="text-sm text-muted-foreground text-center mt-4">
-            និង {participants.length - 10} នាក់ទៀត...
-          </p>
-        )}
       </div>
 
       {/* Organizations Section */}
@@ -212,27 +281,30 @@ export default function EventDetailPage({ params }: Props) {
           <Card className="p-6">
             <h4 className="font-bold mb-4 text-base">ក្រសួង</h4>
             <div className="space-y-2">
-              {Object.entries(
-                participants
-                  .filter(
-                    (p) =>
-                      p.organization?.type === "ministry" ||
-                      p.organization?.name?.includes("ក្រសួង"),
-                  )
-                  .reduce(
-                    (acc, p) => {
-                      const name = p.organization?.name || "មិនបញ្ជាក់";
-                      acc[name] = (acc[name] || 0) + 1;
-                      return acc;
-                    },
-                    {} as Record<string, number>,
-                  ),
+                {Object.entries(
+                  participants
+                    .filter(
+                      (p) =>
+                        p.organization?.type === "ministry" ||
+                        p.organization?.name?.includes("ក្រសួង"),
+                    )
+                    .reduce(
+                      (acc, p) => {
+                        const name = p.organization?.name || "មិនបញ្ជាក់";
+                        acc[name] = (acc[name] || 0) + 1;
+                        return acc;
+                      },
+                      {} as Record<string, number>,
+                    ),
               ).map(([name, count]) => (
                 <div
                   key={name}
                   className="flex justify-between items-center py-2 border-b last:border-0"
+                  onClick={() => setSelectedOrg(name)}
+                  role="button"
+                  tabIndex={0}
                 >
-                  <span className="text-sm">{name}</span>
+                  <span className="text-sm cursor-pointer">{name}</span>
                   <Badge variant="secondary">{count} នាក់</Badge>
                 </div>
               ))}
@@ -252,33 +324,36 @@ export default function EventDetailPage({ params }: Props) {
           <Card className="p-6">
             <h4 className="font-bold mb-4 text-base">ខេត្ត/ក្រុង</h4>
             <div className="space-y-2">
-              {Object.entries(
-                participants
-                  .filter(
-                    (p) =>
-                      p.organization?.type === "province" ||
-                      (!p.organization?.name?.includes("ក្រសួង") && p.province),
-                  )
-                  .reduce(
-                    (acc, p) => {
-                      const name =
-                        p.province ||
-                        p.organization?.province ||
-                        p.organization?.name ||
-                        "មិនបញ្ជាក់";
-                      acc[name] = (acc[name] || 0) + 1;
-                      return acc;
-                    },
-                    {} as Record<string, number>,
-                  ),
+                {Object.entries(
+                  participants
+                    .filter(
+                      (p) =>
+                        p.organization?.type === "province" ||
+                        (!p.organization?.name?.includes("ក្រសួង") && p.province),
+                    )
+                    .reduce(
+                      (acc, p) => {
+                        const name =
+                          p.province ||
+                          p.organization?.province ||
+                          p.organization?.name ||
+                          "មិនបញ្ជាក់";
+                        acc[name] = (acc[name] || 0) + 1;
+                        return acc;
+                      },
+                      {} as Record<string, number>,
+                    ),
               )
                 .sort((a, b) => b[1] - a[1])
                 .map(([name, count]) => (
                   <div
                     key={name}
                     className="flex justify-between items-center py-2 border-b last:border-0"
+                    onClick={() => setSelectedOrg(name)}
+                    role="button"
+                    tabIndex={0}
                   >
-                    <span className="text-sm">{name}</span>
+                    <span className="text-sm cursor-pointer">{name}</span>
                     <Badge variant="secondary">{count} នាក់</Badge>
                   </div>
                 ))}
