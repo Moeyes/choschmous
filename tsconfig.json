@@ -26,7 +26,7 @@
       "@/*": ["./*"],
       "@/components/*": ["./src/components/*"],
       "@/ui/*": ["./src/components/ui/*"],
-      "@/features/*": ["./src/components/features/*"],
+      "@/features/*": ["./src/features/*"],
       "@/forms/*": ["./src/components/forms/*"],
       "@/hooks/*": ["./src/hooks/*"],
       "@/services/*": ["./src/services/*"],

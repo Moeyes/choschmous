@@ -42,7 +42,7 @@ export function ProvincesSection({
     <div className="space-y-6">
       <SectionHeader
         icon={<MapPin className="h-6 w-6 text-slate-400" />}
-        title="ស្ថិតិខេត្ត/ក្រុង"
+        title="ស្ថិតិអង្គភាព"
         subtitle="មើលចំណាត់ថ្នាក់ និងចំនួនអ្នកចូលរួមតាមខេត្ត"
         actions={
           <>
@@ -125,7 +125,7 @@ export function ProvincesSection({
                   ចំណាត់ថ្នាក់
                 </TableHead>
                 <TableHead className="font-bold text-[10px] uppercase text-slate-400">
-                  ខេត្ត/ក្រុង
+                  អង្គភាព
                 </TableHead>
                 <TableHead className="font-bold text-[10px] uppercase text-slate-400">
                   អ្នកចូលរួម
