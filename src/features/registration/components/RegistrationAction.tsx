@@ -203,9 +203,13 @@ export function RegistrationAction({
   const { session } = useUserSession();
   const mounted = useMounted();
 
-  // Get registrationId from props or session storage
+  // Get registrationId from props or session storage (guard `sessionStorage` for SSR)
   const registrationId =
-    propRegistrationId || sessionStorage.getItem("registrationId") || undefined;
+    propRegistrationId ||
+    (typeof window !== "undefined"
+      ? sessionStorage.getItem("registrationId")
+      : undefined) ||
+    undefined;
 
   const [allRegistrations, setAllRegistrations] = useState<
     DisplayRegistration[]
@@ -217,9 +221,10 @@ export function RegistrationAction({
 
     const fallbackToLocal = () => {
       if (!mounted.current) return;
-      setAllRegistrations(
-        registeredParticipants.map((reg) => formatRegistration(reg, new Map())),
+      const localRegs = registeredParticipants.map((reg) =>
+        formatRegistration(reg, new Map()),
       );
+      setAllRegistrations(localRegs);
       setLoading(false);
     };
 
@@ -256,9 +261,10 @@ export function RegistrationAction({
             const eventLookup = toEventLookup(eventsData as EventRecord[]);
             const registrations: ApiRegistration[] =
               registrationsData.registrations || [];
-            return registrations.map((reg) =>
+            const formattedRegs = registrations.map((reg) =>
               formatRegistration(reg, eventLookup),
             );
+            return formattedRegs;
           })
           .then((formatted) => {
             registrationCache.set(userId, { data: formatted });
@@ -278,7 +284,7 @@ export function RegistrationAction({
         if (!cancelled && mounted.current) {
           setAllRegistrations(formatted);
         }
-      } catch {
+      } catch (err) {
         if (!cancelled) fallbackToLocal();
         return;
       } finally {
@@ -297,6 +303,8 @@ export function RegistrationAction({
     formData.fullNameKhmer || formData.fullNameEnglish || "អ្នកចូលរួម";
 
   const highlight = allRegistrations[allRegistrations.length - 1];
+  // Debug: log highlight registration
+  // console.log("Highlight registration:", highlight);
 
   const handleAddMore = () => {
     if (onAddMore) {
@@ -304,9 +312,9 @@ export function RegistrationAction({
     } else {
       // Clear form data and restart from event selection
       sessionStorage.removeItem("selectedEventId");
+      sessionStorage.removeItem("selectedOrganization");
       sessionStorage.removeItem("selectedSport");
       sessionStorage.removeItem("selectedCategory");
-      sessionStorage.removeItem("selectedOrganization");
       sessionStorage.removeItem("registrationId");
       router.push(`/register?step=${REGISTRATION_STEP_PARAMS.event}`);
     }
@@ -353,7 +361,7 @@ export function RegistrationAction({
           </div>
         ) : allRegistrations.length === 0 ? (
           <p className="text-center text-muted-foreground py-4">
-            មិនមានអ្នកចូលរួមដែលបានចុះឈ្មោះទេ។
+            មិនមានអ្នកចូលរួមដែលបានចុះឈ្មោះទេ
           </p>
         ) : (
           <div className="space-y-4">
@@ -401,9 +409,9 @@ export function RegistrationAction({
               >
                 <span>ឈ្មោះ</span>
                 <span>ព្រឹត្តិការណ៍</span>
+                <span>អង្គភាព/ខេត្ត</span>
                 <span>កីឡា</span>
                 <span>ប្រភេទ</span>
-                <span>អង្គភាព/ខេត្ត</span>
                 {onEditParticipant && (
                   <span className="text-right">សកម្មភាព</span>
                 )}

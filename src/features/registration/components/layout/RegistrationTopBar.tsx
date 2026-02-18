@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Calendar, Home, Menu, CheckCircle2 } from "lucide-react";
+import { Home, Menu, CheckCircle2 } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
-import { Badge } from "@/src/components/ui/badge";
 import {
   Sheet,
   SheetContent,
@@ -18,8 +17,7 @@ import { useRegistrationSteps } from "./useRegistrationSteps";
 
 export function RegistrationTopBar() {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const { stepsWithState, stepsLength, currentStepIndex, navigateToStep } =
-    useRegistrationSteps();
+  const { stepsWithState, stepsLength, currentStepIndex, navigateToStep } = useRegistrationSteps();
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">

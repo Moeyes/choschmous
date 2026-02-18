@@ -6,9 +6,9 @@ import { toKhmerDigits } from "@/src/lib/khmer";
 
 const STEP_ORDER = [
   REGISTRATION_STEP_PARAMS.event,
+  REGISTRATION_STEP_PARAMS.organization,
   REGISTRATION_STEP_PARAMS.sport,
   REGISTRATION_STEP_PARAMS.category,
-  REGISTRATION_STEP_PARAMS.organization,
   REGISTRATION_STEP_PARAMS.personal,
   REGISTRATION_STEP_PARAMS.confirm,
   REGISTRATION_STEP_PARAMS.success,

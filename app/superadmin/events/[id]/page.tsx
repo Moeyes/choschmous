@@ -37,7 +37,9 @@ export default function EventDetailPage({ params }: Props) {
     async function loadEventData() {
       setIsLoading(true);
       try {
-        const res = await fetch(`/api/dashboard?eventId=${encodeURIComponent(eventId!)}`);
+        const res = await fetch(
+          `/api/superadmin?eventId=${encodeURIComponent(eventId!)}`,
+        );
         const data = await res.json();
         const foundEvent = data.events?.find(
           (e: DashboardEvent) => e.id === eventId,
@@ -111,7 +113,8 @@ export default function EventDetailPage({ params }: Props) {
     .filter((v, i, arr) => arr.indexOf(v) === i);
 
   const filteredParticipants = participants.filter((p) => {
-    const sportMatch = !selectedSport || normalized(p.sport) === normalized(selectedSport);
+    const sportMatch =
+      !selectedSport || normalized(p.sport) === normalized(selectedSport);
     const orgMatch =
       !selectedOrg || normalized(participantOrg(p)) === normalized(selectedOrg);
     return sportMatch && orgMatch;
@@ -281,21 +284,21 @@ export default function EventDetailPage({ params }: Props) {
           <Card className="p-6">
             <h4 className="font-bold mb-4 text-base">ក្រសួង</h4>
             <div className="space-y-2">
-                {Object.entries(
-                  participants
-                    .filter(
-                      (p) =>
-                        p.organization?.type === "ministry" ||
-                        p.organization?.name?.includes("ក្រសួង"),
-                    )
-                    .reduce(
-                      (acc, p) => {
-                        const name = p.organization?.name || "មិនបញ្ជាក់";
-                        acc[name] = (acc[name] || 0) + 1;
-                        return acc;
-                      },
-                      {} as Record<string, number>,
-                    ),
+              {Object.entries(
+                participants
+                  .filter(
+                    (p) =>
+                      p.organization?.type === "ministry" ||
+                      p.organization?.name?.includes("ក្រសួង"),
+                  )
+                  .reduce(
+                    (acc, p) => {
+                      const name = p.organization?.name || "មិនបញ្ជាក់";
+                      acc[name] = (acc[name] || 0) + 1;
+                      return acc;
+                    },
+                    {} as Record<string, number>,
+                  ),
               ).map(([name, count]) => (
                 <div
                   key={name}
@@ -324,25 +327,25 @@ export default function EventDetailPage({ params }: Props) {
           <Card className="p-6">
             <h4 className="font-bold mb-4 text-base">ខេត្ត/ក្រុង</h4>
             <div className="space-y-2">
-                {Object.entries(
-                  participants
-                    .filter(
-                      (p) =>
-                        p.organization?.type === "province" ||
-                        (!p.organization?.name?.includes("ក្រសួង") && p.province),
-                    )
-                    .reduce(
-                      (acc, p) => {
-                        const name =
-                          p.province ||
-                          p.organization?.province ||
-                          p.organization?.name ||
-                          "មិនបញ្ជាក់";
-                        acc[name] = (acc[name] || 0) + 1;
-                        return acc;
-                      },
-                      {} as Record<string, number>,
-                    ),
+              {Object.entries(
+                participants
+                  .filter(
+                    (p) =>
+                      p.organization?.type === "province" ||
+                      (!p.organization?.name?.includes("ក្រសួង") && p.province),
+                  )
+                  .reduce(
+                    (acc, p) => {
+                      const name =
+                        p.province ||
+                        p.organization?.province ||
+                        p.organization?.name ||
+                        "មិនបញ្ជាក់";
+                      acc[name] = (acc[name] || 0) + 1;
+                      return acc;
+                    },
+                    {} as Record<string, number>,
+                  ),
               )
                 .sort((a, b) => b[1] - a[1])
                 .map(([name, count]) => (

@@ -97,9 +97,9 @@ export default function RegistrationWizard() {
     const allErrors = validateForm(future);
 
     const stepFieldMap: Record<number, (keyof FormErrors)[]> = {
-      2: ["sport"],
-      3: ["category"],
-      4: ["organization"],
+      2: ["organization"],
+      3: ["sport"],
+      4: ["category"],
       5: [
         "fullNameKhmer",
         "fullNameEnglish",
@@ -269,6 +269,18 @@ export default function RegistrationWizard() {
 
               {step === 2 && selectedEvent && (
                 <Card className="p-6">
+                  <LocationDetails
+                    selectedOrganization={formData.organization ?? undefined}
+                    onSelect={(organization) =>
+                      attemptAdvance({ organization }, 4)
+                    }
+                    errors={errors}
+                  />
+                </Card>
+              )}
+
+              {step === 3 && selectedEvent && (
+                <Card className="p-6">
                   <SportSelection
                     event={selectedEvent}
                     selectedSport={formData.sport || ""}
@@ -277,25 +289,15 @@ export default function RegistrationWizard() {
                 </Card>
               )}
 
-              {step === 3 && selectedEvent && (
+              {step === 4 && selectedEvent && (
                 <Card className="p-6">
-                  <SportCategory
-                    event={selectedEvent}
-                    selectedSport={formData.sport}
-                    onSelect={(category) => attemptAdvance({ category }, 3)}
-                  />
-                </Card>
-              )}
-
-              {step === 4 && (
-                <Card className="p-6">
-                  <LocationDetails
-                    selectedOrganization={formData.organization ?? undefined}
-                    onSelect={(organization) =>
-                      attemptAdvance({ organization }, 4)
-                    }
-                    errors={errors}
-                  />
+                  <Card className="p-6">
+                    <SportCategory
+                      event={selectedEvent}
+                      selectedSport={formData.sport}
+                      onSelect={(category) => attemptAdvance({ category }, 3)}
+                    />
+                  </Card>
                 </Card>
               )}
 
@@ -326,7 +328,7 @@ export default function RegistrationWizard() {
                 <Card className="p-6">
                   <RegistrationAction
                     formData={formData as RegistrationFormData}
-                    eventId={selectedEvent?.id ?? eventId ?? ""}
+                    // eventId={selectedEvent?.id ?? eventId ?? ""}
                     registrationId={lastRegistrationId ?? undefined}
                     registeredParticipants={registeredParticipants}
                     onAddMore={handleAddMore}

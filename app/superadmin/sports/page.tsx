@@ -15,7 +15,7 @@ export default function SportsPage() {
   useEffect(() => {
     async function loadSports() {
       try {
-        const res = await fetch("/api/dashboard");
+        const res = await fetch("/api/superadmin");
         const data = await res.json();
         setSports(data.sports || []);
         setParticipants(data.participants || []);

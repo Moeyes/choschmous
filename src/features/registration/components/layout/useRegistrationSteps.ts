@@ -24,6 +24,11 @@ const STEPS = [
     icon: Calendar,
   },
   {
+    param: REGISTRATION_STEP_PARAMS.organization,
+    label: REGISTRATION_STEP_LABELS.organization,
+    icon: Building2,
+  },
+  {
     param: REGISTRATION_STEP_PARAMS.sport,
     label: REGISTRATION_STEP_LABELS.sport,
     icon: Trophy,
@@ -32,11 +37,6 @@ const STEPS = [
     param: REGISTRATION_STEP_PARAMS.category,
     label: REGISTRATION_STEP_LABELS.category,
     icon: Grid,
-  },
-  {
-    param: REGISTRATION_STEP_PARAMS.organization,
-    label: REGISTRATION_STEP_LABELS.organization,
-    icon: Building2,
   },
   {
     param: REGISTRATION_STEP_PARAMS.personal,
@@ -88,9 +88,9 @@ export function useRegistrationSteps() {
   useEffect(() => {
     const loadSelections = () => {
       const eventId = sessionStorage.getItem("selectedEventId");
+      const orgStr = sessionStorage.getItem("selectedOrganization");
       const sport = sessionStorage.getItem("selectedSport");
       const category = sessionStorage.getItem("selectedCategory");
-      const orgStr = sessionStorage.getItem("selectedOrganization");
 
       setSelectedEventId(eventId);
       setSelectedSport(sport);
@@ -144,17 +144,17 @@ export function useRegistrationSteps() {
       if (stepParam === REGISTRATION_STEP_PARAMS.event && selectedEvent) {
         return selectedEvent.name;
       }
-      if (stepParam === REGISTRATION_STEP_PARAMS.sport && selectedSport) {
-        return selectedSport;
-      }
-      if (stepParam === REGISTRATION_STEP_PARAMS.category && selectedCategory) {
-        return selectedCategory;
-      }
       if (
         stepParam === REGISTRATION_STEP_PARAMS.organization &&
         selectedOrganization
       ) {
         return selectedOrganization;
+      }
+      if (stepParam === REGISTRATION_STEP_PARAMS.sport && selectedSport) {
+        return selectedSport;
+      }
+      if (stepParam === REGISTRATION_STEP_PARAMS.category && selectedCategory) {
+        return selectedCategory;
       }
       if (stepParam === REGISTRATION_STEP_PARAMS.success && isCompleted) {
         return "បានបញ្ជាក់";
@@ -162,7 +162,12 @@ export function useRegistrationSteps() {
 
       return defaultLabel;
     },
-    [selectedCategory, selectedEvent, selectedOrganization, selectedSport],
+    [
+      selectedOrganization,
+      selectedOrganization,
+      selectedCategory,
+      selectedSport,
+    ],
   );
 
   const stepsWithState: RegistrationStepWithState[] = useMemo(

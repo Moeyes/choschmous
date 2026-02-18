@@ -176,8 +176,8 @@ export function LocationDetails({
       // Small delay for visual feedback
       await new Promise((resolve) => setTimeout(resolve, 300));
 
-      // Navigate to personal info step
-      router.push(`/register?step=${REGISTRATION_STEP_PARAMS.personal}`);
+      // Navigate to sport step
+      router.push(`/register?step=${REGISTRATION_STEP_PARAMS.sport}`);
     },
     [organizations, onSelect, router],
   );

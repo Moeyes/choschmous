@@ -31,7 +31,8 @@ export function EventSelection() {
 
     // Navigate after a brief delay to show selection feedback
     setTimeout(() => {
-      router.push(`/register?step=${REGISTRATION_STEP_PARAMS.sport}`);
+      router.push(`/register?step=${REGISTRATION_STEP_PARAMS.organization}`);
+      // router.push(`/register?step=${REGISTRATION_STEP_PARAMS.event}`);
     }, 300);
   };
 

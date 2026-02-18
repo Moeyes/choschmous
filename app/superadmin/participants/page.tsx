@@ -14,7 +14,7 @@ export default function ParticipantsPage() {
   useEffect(() => {
     async function loadParticipants() {
       try {
-        const res = await fetch("/api/dashboard");
+        const res = await fetch("/api/superadmin");
         const data = await res.json();
         setParticipants(data.participants || []);
       } catch (error) {

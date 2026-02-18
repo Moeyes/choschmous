@@ -17,17 +17,26 @@ export function RegistrationContent() {
   const step = searchParams.get("step") || REGISTRATION_STEP_PARAMS.event;
   const { formData, setField } = useRegistrationForm();
 
+  // For the success step, get registrationId from sessionStorage
+  let registrationId: string | undefined = undefined;
+  if (
+    typeof window !== "undefined" &&
+    step === REGISTRATION_STEP_PARAMS.success
+  ) {
+    registrationId = sessionStorage.getItem("registrationId") || undefined;
+  }
+
   return (
     <Card className="p-6 bg-white shadow-lg">
       {step === REGISTRATION_STEP_PARAMS.event && <EventSelection />}
       {step === REGISTRATION_STEP_PARAMS.sport && (
         <SportSelection onSelect={(sport) => setField({ sport })} />
       )}
-      {step === REGISTRATION_STEP_PARAMS.category && (
-        <SportCategory onSelect={(category) => setField({ category })} />
-      )}
       {step === REGISTRATION_STEP_PARAMS.organization && (
         <LocationDetails onSelect={(org) => setField({ organization: org })} />
+      )}
+      {step === REGISTRATION_STEP_PARAMS.category && (
+        <SportCategory onSelect={(category) => setField({ category })} />
       )}
       {step === REGISTRATION_STEP_PARAMS.personal && (
         <PersonalInfo formData={formData} updateFormData={setField} />
@@ -36,7 +45,10 @@ export function RegistrationContent() {
         <RegistrationConfirmation formData={formData} />
       )}
       {step === REGISTRATION_STEP_PARAMS.success && (
-        <RegistrationAction formData={formData} />
+        <RegistrationAction
+          formData={formData}
+          registrationId={registrationId}
+        />
       )}
     </Card>
   );

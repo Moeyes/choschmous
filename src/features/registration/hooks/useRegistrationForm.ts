@@ -26,19 +26,19 @@ const loadFromSessionStorage = (): Partial<RegistrationFormData> => {
   }
 
   return {
+    organization,
     sport: sport || "",
     category: category || "",
-    organization,
   };
 };
 
 export function useRegistrationForm(initial?: Partial<RegistrationFormData>) {
   const [formData, setFormData] = useState<Partial<RegistrationFormData>>(
     () => ({
+      organization: undefined,
       sport: "",
       category: "",
       position: undefined,
-      organization: undefined,
       phone: "",
       ...loadFromSessionStorage(),
       ...initial,

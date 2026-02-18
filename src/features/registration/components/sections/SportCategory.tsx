@@ -70,7 +70,7 @@ export function SportCategory({
     // Small delay for visual feedback
     await new Promise((resolve) => setTimeout(resolve, 300));
 
-    router.push(`/register?step=${REGISTRATION_STEP_PARAMS.organization}`);
+    router.push(`/register?step=${REGISTRATION_STEP_PARAMS.personal}`);
   };
 
   if (loading) {
@@ -91,16 +91,6 @@ export function SportCategory({
 
   return (
     <div className="reg-split-layout">
-      {/* <RegistrationSidebar
-        sections={[
-          {
-            label: "ព្រឹត្តិការណ៍",
-            value: event?.name || null,
-            color: "indigo",
-          },
-          { label: "កីឡា", value: selectedSport, color: "purple" },
-        ]}
-      /> */}
 
       <div className="reg-content">
         <ContentHeader

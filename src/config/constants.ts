@@ -47,9 +47,9 @@ export const DEFAULTS = {
 export const REGISTRATION_STEPS = {
   total: 6,
   eventSelection: 1,
-  sportSelection: 2,
-  categorySelection: 3,
-  organizationSelection: 4,
+  organizationSelection: 2,
+  sportSelection: 3,
+  categorySelection: 4,
   personalInfo: 5,
   confirmation: 6,
 } as const;
@@ -182,9 +182,9 @@ export const ROUTES = {
 /** Registration step query parameters */
 export const REGISTRATION_STEP_PARAMS = {
   event: "event",
+  organization: "organization",
   sport: "sport",
   category: "category",
-  organization: "organization",
   personal: "personal",
   confirm: "confirm",
   success: "success",
@@ -193,9 +193,9 @@ export const REGISTRATION_STEP_PARAMS = {
 /** Registration step labels */
 export const REGISTRATION_STEP_LABELS = {
   event: "ជ្រើសរើសព្រឹត្តិការណ៍",
+  organization: "ជ្រើសរើសអង្គភាព",
   sport: "ជ្រើសរើសកីឡា",
   category: "ជ្រើសរើសប្រភេទ",
-  organization: "ជ្រើសរើសអង្គភាព",
   personal: "ព័ត៌មានផ្ទាល់ខ្លួន",
   confirm: "បញ្ជាក់ការចុះឈ្មោះ",
   success: "ជោគជ័យ",

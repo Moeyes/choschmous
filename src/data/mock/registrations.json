@@ -1,7 +1,7 @@
 [
   {
     "userId": 1769647268785,
-    "accessTime": "2026-02-15T17:42:26.570Z",
+    "accessTime": "2026-02-16T03:53:06.776Z",
     "registrations": [
       {
         "sport": "អត្តពលកម្ម",
@@ -379,6 +379,28 @@
         "registeredAt": "2026-02-15T17:42:26.570Z",
         "photoUrl": null,
         "nationalityDocumentUrl": null
+      },
+      {
+        "sport": "បាល់ទាត់",
+        "category": "បាល់ទាត់ ១១ នាក់ នារី",
+        "organization": {
+          "type": "province",
+          "id": "1",
+          "name": "ភ្នំពេញ"
+        },
+        "phone": "0964461381",
+        "fullNameKhmer": "សាត​ បញ្ញា",
+        "fullNameEnglish": "Sat Panha",
+        "gender": "Male",
+        "nationality": "IDCard",
+        "dateOfBirth": "2005-08-17",
+        "nationalID": "13200058",
+        "eventId": "evt-1",
+        "userId": 1769647268785,
+        "id": "ATH-20260216-001",
+        "registeredAt": "2026-02-16T03:53:06.776Z",
+        "photoUrl": "/uploads/1771213986769-photo-1771213932404-photo.jpg",
+        "nationalityDocumentUrl": "/uploads/1771213986772-nationalityDocument-474265986_122139211364385144_131447630417988689_n.jpg"
       }
     ]
   },
@@ -480,6 +502,326 @@
         "status": "pending",
         "sportId": "volleyball",
         "sportCategory": "ក្នុងសាល"
+      }
+    ]
+  },
+  {
+    "userId": -1,
+    "accessTime": "2026-02-18T07:35:29.189Z",
+    "registrations": [
+      {
+        "organization": {
+          "type": "province",
+          "id": "1",
+          "name": "ភ្នំពេញ"
+        },
+        "sport": "អត្តពលកម្ម",
+        "category": "រត់ប្រណាំង ១០០ ម៉ែត្រ",
+        "position": {
+          "role": "Leader",
+          "leaderRole": "coach"
+        },
+        "phone": "124123412",
+        "fullNameKhmer": "oiusfd",
+        "fullNameEnglish": "sajbv",
+        "gender": "Male",
+        "nationality": "IDCard",
+        "dateOfBirth": "2026-02-05",
+        "nationalID": "32421421",
+        "eventId": "evt-1",
+        "userId": -1,
+        "id": "LEAD-20260217-001",
+        "registeredAt": "2026-02-17T13:08:21.796Z",
+        "photoUrl": null,
+        "nationalityDocumentUrl": null
+      },
+      {
+        "organization": {
+          "type": "ministry",
+          "id": "m-1",
+          "name": "ក្រសួងមហាផ្ទៃ"
+        },
+        "sport": "បាល់ទាត់",
+        "category": "បាល់ទាត់ ១១ នាក់ បុរស",
+        "position": {
+          "role": "Athlete",
+          "athleteCategory": "Male"
+        },
+        "phone": "241324134",
+        "fullNameKhmer": "asdf",
+        "fullNameEnglish": "dafsd",
+        "gender": "Male",
+        "nationality": "IDCard",
+        "dateOfBirth": "2026-01-27",
+        "nationalID": "234123412",
+        "eventId": "evt-1",
+        "userId": -1,
+        "id": "ATH-20260217-001",
+        "registeredAt": "2026-02-17T13:24:54.800Z",
+        "photoUrl": null,
+        "nationalityDocumentUrl": null
+      },
+      {
+        "organization": {
+          "type": "ministry",
+          "id": "m-1",
+          "name": "ក្រសួងមហាផ្ទៃ"
+        },
+        "sport": "បាល់ទាត់",
+        "category": "បាល់ទាត់ ១១ នាក់ បុរស",
+        "position": {
+          "role": "Athlete",
+          "athleteCategory": "Male"
+        },
+        "phone": "241324134",
+        "fullNameKhmer": "asdf",
+        "fullNameEnglish": "dafsd",
+        "gender": "Male",
+        "nationality": "IDCard",
+        "dateOfBirth": "2026-01-27",
+        "nationalID": "234123412",
+        "eventId": "evt-1",
+        "userId": -1,
+        "id": "ATH-20260217-002",
+        "registeredAt": "2026-02-17T13:24:57.145Z",
+        "photoUrl": null,
+        "nationalityDocumentUrl": null
+      },
+      {
+        "organization": {
+          "type": "province",
+          "id": "1",
+          "name": "ភ្នំពេញ"
+        },
+        "sport": "ជិះកង់",
+        "category": "ប្រណាំងលើផ្លូវ",
+        "position": {
+          "role": "Athlete",
+          "athleteCategory": "Male"
+        },
+        "phone": "1234123412",
+        "fullNameKhmer": "sg",
+        "fullNameEnglish": "asg",
+        "gender": "Male",
+        "nationality": "IDCard",
+        "dateOfBirth": "2026-02-04",
+        "nationalID": "4124124",
+        "eventId": "evt-1",
+        "userId": -1,
+        "id": "ATH-20260217-003",
+        "registeredAt": "2026-02-17T13:28:28.054Z",
+        "photoUrl": null,
+        "nationalityDocumentUrl": null
+      },
+      {
+        "organization": {
+          "type": "province",
+          "id": "1",
+          "name": "ភ្នំពេញ"
+        },
+        "sport": "បាល់ទាត់",
+        "category": "បាល់ទាត់ ១១ នាក់ បុរស",
+        "position": {
+          "role": "Athlete",
+          "athleteCategory": "Male"
+        },
+        "phone": "1234123412431",
+        "fullNameKhmer": "231234",
+        "fullNameEnglish": "2341234",
+        "gender": "Male",
+        "nationality": "BirthCertificate",
+        "dateOfBirth": "2026-01-28",
+        "nationalID": "2141234",
+        "eventId": "evt-1",
+        "userId": -1,
+        "id": "ATH-20260217-004",
+        "registeredAt": "2026-02-17T13:56:11.990Z",
+        "photoUrl": null,
+        "nationalityDocumentUrl": null
+      },
+      {
+        "organization": {
+          "type": "province",
+          "id": "1",
+          "name": "ភ្នំពេញ"
+        },
+        "sport": "អត្តពលកម្ម",
+        "category": "រត់ប្រណាំង ១០០ ម៉ែត្រ",
+        "position": {
+          "role": "Athlete",
+          "athleteCategory": "Male"
+        },
+        "phone": "12341234",
+        "fullNameKhmer": "sdf",
+        "fullNameEnglish": "sdfasdf",
+        "gender": "Male",
+        "nationality": "IDCard",
+        "dateOfBirth": "2026-01-26",
+        "nationalID": "2123412",
+        "eventId": "evt-1",
+        "userId": -1,
+        "id": "ATH-20260217-005",
+        "registeredAt": "2026-02-17T14:02:31.313Z",
+        "photoUrl": null,
+        "nationalityDocumentUrl": null
+      },
+      {
+        "organization": {
+          "type": "province",
+          "id": "1",
+          "name": "ភ្នំពេញ"
+        },
+        "sport": "អត្តពលកម្ម",
+        "category": "រត់ប្រណាំង ១០០ ម៉ែត្រ",
+        "position": {
+          "role": "Athlete",
+          "athleteCategory": "Male"
+        },
+        "phone": "34123412",
+        "fullNameKhmer": "dafd",
+        "fullNameEnglish": "asdfa",
+        "gender": "Male",
+        "nationality": "IDCard",
+        "dateOfBirth": "2026-01-29",
+        "nationalID": "423412",
+        "eventId": "evt-1",
+        "userId": -1,
+        "id": "ATH-20260217-006",
+        "registeredAt": "2026-02-17T14:10:15.275Z",
+        "photoUrl": null,
+        "nationalityDocumentUrl": null
+      },
+      {
+        "organization": {
+          "type": "province",
+          "id": "1",
+          "name": "ភ្នំពេញ"
+        },
+        "sport": "អត្តពលកម្ម",
+        "category": "រត់ប្រណាំង ១០០ ម៉ែត្រ",
+        "position": {
+          "role": "Leader",
+          "leaderRole": "coach"
+        },
+        "phone": "2341234",
+        "fullNameKhmer": "dfasdf",
+        "fullNameEnglish": "fdasfa",
+        "gender": "Male",
+        "nationality": "IDCard",
+        "dateOfBirth": "2026-01-26",
+        "nationalID": "214344123",
+        "eventId": "evt-1",
+        "userId": -1,
+        "id": "LEAD-20260217-002",
+        "registeredAt": "2026-02-17T14:14:19.240Z",
+        "photoUrl": null,
+        "nationalityDocumentUrl": null
+      },
+      {
+        "organization": {
+          "type": "ministry",
+          "id": "m-1",
+          "name": "ក្រសួងមហាផ្ទៃ"
+        },
+        "sport": "អត្តពលកម្ម",
+        "category": "រត់ប្រណាំង ១០០ ម៉ែត្រ",
+        "position": {
+          "role": "Athlete",
+          "athleteCategory": "Male"
+        },
+        "phone": "42341221421412",
+        "fullNameKhmer": "agd",
+        "fullNameEnglish": "afdg",
+        "gender": "Male",
+        "nationality": "IDCard",
+        "nationalID": "341234123",
+        "dateOfBirth": "2026-01-28",
+        "eventId": "evt-1",
+        "userId": -1,
+        "id": "ATH-20260218-001",
+        "registeredAt": "2026-02-18T07:25:46.648Z",
+        "photoUrl": null,
+        "nationalityDocumentUrl": null
+      },
+      {
+        "organization": {
+          "type": "ministry",
+          "id": "m-2",
+          "name": "ក្រសួងការពារជាតិ"
+        },
+        "sport": "អត្តពលកម្ម",
+        "category": "រត់ប្រណាំង ១៥០០ ម៉ែត្រ",
+        "position": {
+          "role": "Athlete",
+          "athleteCategory": "Male"
+        },
+        "phone": "2512351235",
+        "fullNameKhmer": "asg",
+        "fullNameEnglish": "gas",
+        "gender": "Male",
+        "nationality": "IDCard",
+        "nationalID": "123512351235",
+        "dateOfBirth": "2026-01-29",
+        "eventId": "evt-1",
+        "userId": -1,
+        "id": "ATH-20260218-002",
+        "registeredAt": "2026-02-18T07:27:42.196Z",
+        "photoUrl": null,
+        "nationalityDocumentUrl": null
+      },
+      {
+        "organization": {
+          "type": "ministry",
+          "id": "m-2",
+          "name": "ក្រសួងការពារជាតិ"
+        },
+        "sport": "អត្តពលកម្ម",
+        "category": "រត់ប្រណាំង ១០០ ម៉ែត្រ",
+        "position": {
+          "role": "Leader",
+          "leaderRole": "coach"
+        },
+        "phone": "3454523452345",
+        "fullNameKhmer": "fgdfgd",
+        "fullNameEnglish": "fghdfghdfg",
+        "gender": "Male",
+        "nationality": "IDCard",
+        "nationalID": "32452345345",
+        "dateOfBirth": "2026-01-28",
+        "eventId": "evt-1",
+        "userId": -1,
+        "id": "LEAD-20260218-001",
+        "registeredAt": "2026-02-18T07:35:29.189Z",
+        "photoUrl": null,
+        "nationalityDocumentUrl": null
+      }
+    ]
+  },
+  {
+    "userId": 999999,
+    "accessTime": "2026-02-18T07:48:35.782Z",
+    "registrations": [
+      {
+        "userId": 999999,
+        "eventId": "evt-1",
+        "fullNameEnglish": "Test User",
+        "sport": "Test Sport",
+        "category": "Test Category",
+        "id": "ATH-20260218-003",
+        "registeredAt": "2026-02-18T07:48:20.378Z",
+        "photoUrl": null,
+        "nationalityDocumentUrl": null
+      },
+      {
+        "userId": 999999,
+        "eventId": "evt-1",
+        "fullNameEnglish": "Test User",
+        "sport": "Test Sport",
+        "category": "Test Category",
+        "id": "ATH-20260218-004",
+        "registeredAt": "2026-02-18T07:48:35.782Z",
+        "photoUrl": null,
+        "nationalityDocumentUrl": null
       }
     ]
   }
