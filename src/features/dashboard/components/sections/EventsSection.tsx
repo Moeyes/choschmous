@@ -3,16 +3,26 @@
 import type { DashboardEvent } from "../types";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, MapPin, Trophy, Plus } from "lucide-react";
+import { Calendar, MapPin, Trophy, Plus, Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 type EventCardProps = {
   event: DashboardEvent;
   onClick?: () => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
   index?: number;
+  mode?: "admin" | "superadmin";
 };
 
-function EventCard({ event, onClick, index = 0 }: EventCardProps) {
+function EventCard({
+  event,
+  onClick,
+  onEdit,
+  onDelete,
+  index = 0,
+  mode = "admin",
+}: EventCardProps) {
   const formatDate = (dateStr?: string) => {
     if (!dateStr) return "TBD";
     const date = new Date(dateStr);
@@ -63,19 +73,48 @@ function EventCard({ event, onClick, index = 0 }: EventCardProps) {
           )}
         </div>
       </div>
+
+      {mode === "superadmin" && (
+        <div className="absolute top-3 right-3 flex gap-2 z-20">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit?.();
+            }}
+            className="h-9 w-9 rounded-lg bg-white border shadow-sm flex items-center justify-center"
+            aria-label="Edit event"
+          >
+            <Pencil className="h-4 w-4 text-slate-600" />
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              if (confirm("តើអ្នកចង់លុបព្រឹត្តិការណ៍នេះដែរឬទេ?")) onDelete?.();
+            }}
+            className="h-9 w-9 rounded-lg bg-white border shadow-sm flex items-center justify-center"
+            aria-label="Delete event"
+          >
+            <Trash2 className="h-4 w-4 text-rose-600" />
+          </button>
+        </div>
+      )}
+
       <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-full -mr-8 -mt-8 opacity-50 group-hover:scale-110 transition-transform" />
     </Card>
   );
 }
 
 type CreateEventDialogProps = {
-  onCreate: (event: DashboardEvent) => void;
+  onCreate?: () => void;
 };
 
 function CreateEventDialog({ onCreate }: CreateEventDialogProps) {
-  // Simple button for now - can be expanded to a full dialog
+  // Triggers parent-provided create flow (open modal or immediate create)
   return (
-    <Button className="bg-[#1a4cd8] hover:bg-blue-700 rounded-xl gap-2 h-11">
+    <Button
+      onClick={() => onCreate?.()}
+      className="bg-[#1a4cd8] hover:bg-blue-700 rounded-xl gap-2 h-11"
+    >
       <Plus className="h-4 w-4" />
       <span>Create Event</span>
     </Button>
@@ -86,16 +125,22 @@ export function EventsSection({
   events,
   onCreate,
   onSelect,
+  onEdit,
+  onDelete,
+  mode = "admin",
 }: {
   events: DashboardEvent[];
-  onCreate: (e: DashboardEvent) => void;
+  onCreate?: () => void;
+  onEdit?: (e: DashboardEvent) => void;
+  onDelete?: (id: string) => void;
   onSelect: (id: string | null) => void;
+  mode?: "admin" | "superadmin";
 }) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-xl font-bold text-slate-800">Events</h3>
-        <CreateEventDialog onCreate={onCreate} />
+        {mode === "superadmin" && <CreateEventDialog onCreate={onCreate} />}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -104,6 +149,9 @@ export function EventsSection({
             key={event.id}
             event={event}
             onClick={() => onSelect(event.id)}
+            onEdit={() => onEdit?.(event)}
+            onDelete={() => onDelete?.(event.id)}
+            mode={mode}
             index={index}
           />
         ))}

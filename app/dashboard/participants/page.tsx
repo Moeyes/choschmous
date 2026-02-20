@@ -61,9 +61,7 @@ export default function ParticipantsPage() {
       <ParticipantsSection
         athletes={filteredParticipants}
         onViewAthlete={(participant) => console.log("View:", participant)}
-        onEditAthlete={(participant) => console.log("Edit:", participant)}
-        onDeleteAthlete={(id) => console.log("Delete:", id)}
-        onCreateAthlete={() => console.log("Create new participant")}
+        mode="admin"
       />
     </div>
   );

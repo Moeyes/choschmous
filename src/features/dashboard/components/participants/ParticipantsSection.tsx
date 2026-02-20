@@ -42,6 +42,7 @@ type ParticipantsSectionProps = {
   onEditAthlete?: (athlete: DashboardAthlete) => void;
   onDeleteAthlete?: (id: string) => void;
   onCreateAthlete?: () => void;
+  mode?: "admin" | "superadmin";
 };
 
 export function ParticipantsSection({
@@ -50,6 +51,7 @@ export function ParticipantsSection({
   onEditAthlete,
   onDeleteAthlete,
   onCreateAthlete,
+  mode = "admin",
 }: ParticipantsSectionProps) {
   const [list, setList] = useState<DashboardAthlete[]>(athletes);
   const [searchQuery, setSearchQuery] = useState("");
@@ -189,6 +191,11 @@ export function ParticipantsSection({
       // Check if photoUrl is a data URL (base64), indicating a new upload
       const isNewPhoto = updatedParticipant.photoUrl?.startsWith("data:");
 
+      const registrationsEndpoint =
+        mode === "superadmin"
+          ? API_ENDPOINTS.superadmin.registrations
+          : API_ENDPOINTS.registrations;
+
       let response;
       if (isNewPhoto) {
         // Create FormData for multipart upload
@@ -204,13 +211,13 @@ export function ParticipantsSection({
         delete (participantData as any).photoUrl; // Remove base64 data, will be replaced with uploaded file path
         formData.append("payload", JSON.stringify(participantData));
 
-        response = await fetch(API_ENDPOINTS.registrations, {
+        response = await fetch(registrationsEndpoint, {
           method: "PUT",
           body: formData,
         });
       } else {
         // No new photo, just send JSON
-        response = await fetch(API_ENDPOINTS.registrations, {
+        response = await fetch(registrationsEndpoint, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -240,13 +247,29 @@ export function ParticipantsSection({
     onEditAthlete?.(updatedParticipant);
   };
 
-  const handleDelete = (id: string) => {
-    if (confirm("តើអ្នកប្រាកដថាចង់លុបអ្នកចូលរួមនេះម៉េនទេ?")) {
-      onDeleteAthlete?.(id);
-      setList((prev) => prev.filter((p) => p.id !== id));
-      if (selectedParticipant?.id === id) {
-        setSelectedParticipant(null);
+  const handleDelete = async (id: string) => {
+    if (!confirm("តើអ្នកប្រាកដថាចង់លុបអ្នកចូលរួមនេះម៉េនទេ?")) return;
+
+    // If superadmin mode, call DELETE API
+    if (mode === "superadmin") {
+      try {
+        const res = await fetch(API_ENDPOINTS.superadmin.registrations, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id }),
+        });
+        if (!res.ok) {
+          console.error("Failed to delete registration");
+        }
+      } catch (err) {
+        console.error("Error deleting registration:", err);
       }
+    }
+
+    onDeleteAthlete?.(id);
+    setList((prev) => prev.filter((p) => p.id !== id));
+    if (selectedParticipant?.id === id) {
+      setSelectedParticipant(null);
     }
   };
 
@@ -257,13 +280,15 @@ export function ParticipantsSection({
         title="ការគ្រប់គ្រងអ្នកចូលរួម"
         subtitle="គ្រប់គ្រងការចុះឈ្មោះ និងគូលមេរីនៃអ្នកចូលរួម"
         actions={
-          <Button
-            onClick={onCreateAthlete}
-            className="bg-linear-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 rounded-xl gap-2 h-11 shadow-lg shadow-indigo-500/30"
-          >
-            <Plus className="h-4 w-4" />
-            ចុះឈ្បោះអ្នកចូលរួម
-          </Button>
+          mode === "superadmin" ? (
+            <Button
+              onClick={onCreateAthlete}
+              className="bg-linear-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 rounded-xl gap-2 h-11 shadow-lg shadow-indigo-500/30"
+            >
+              <Plus className="h-4 w-4" />
+              ចុះឈ្បោះអ្នកចូលរួម
+            </Button>
+          ) : undefined
         }
       />
 
@@ -414,29 +439,33 @@ export function ParticipantsSection({
                     <Eye className="h-3.5 w-3.5 mr-1" />
                     មើល
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="flex-1 h-8 rounded-lg bg-slate-50 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleEditClick(participant);
-                    }}
-                  >
-                    <Pencil className="h-3.5 w-3.5 mr-1" />
-                    កែប្រែ
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 w-8 p-0 rounded-lg bg-slate-50 hover:bg-rose-50 hover:text-rose-600 transition-colors"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDelete(participant.id);
-                    }}
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </Button>
+                  {mode === "superadmin" && (
+                    <>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex-1 h-8 rounded-lg bg-slate-50 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditClick(participant);
+                        }}
+                      >
+                        <Pencil className="h-3.5 w-3.5 mr-1" />
+                        កែប្រែ
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0 rounded-lg bg-slate-50 hover:bg-rose-50 hover:text-rose-600 transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(participant.id);
+                        }}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </>
+                  )}
                 </div>
               </Card>
             ))}

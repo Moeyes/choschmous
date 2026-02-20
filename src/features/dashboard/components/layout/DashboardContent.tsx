@@ -31,6 +31,9 @@ type DashboardContentProps = {
   // Initial view
   initialView?: string;
 
+  // Mode: controls whether CRUD controls are shown (default: admin)
+  mode?: "admin" | "superadmin";
+
   // Callbacks
   onEventSelect?: (eventId: string | null) => void;
   onViewChange?: (view: string) => void;
@@ -43,6 +46,7 @@ export function DashboardContent({
   sports: initialSports = [],
   provinces: initialProvinces = [],
   initialView = "dashboard",
+  mode = "admin",
   onEventSelect,
   onViewChange,
 }: DashboardContentProps) {
@@ -112,8 +116,9 @@ export function DashboardContent({
   );
 
   const handleSelectEvent = (id: string | null) => {
+    const base = mode === "superadmin" ? "/superadmin" : "/dashboard";
     if (id) {
-      router?.push?.(`/dashboard/events/${id}`);
+      router?.push?.(`${base}/events/${id}`);
     } else {
       router?.push?.("/");
     }
@@ -142,8 +147,9 @@ export function DashboardContent({
             <div className="lg:col-span-2 space-y-6">
               <EventsSection
                 events={events}
-                onCreate={handleCreateEvent}
+                onCreate={() => {}}
                 onSelect={handleSelectEvent}
+                mode={mode}
               />
             </div>
             <div className="space-y-6">
@@ -154,13 +160,15 @@ export function DashboardContent({
       )}
 
       {currentView === "participants" && (
-        <ParticipantsSection athletes={currentParticipants} />
+        <ParticipantsSection athletes={currentParticipants} mode={mode} />
       )}
 
-      {currentView === "sports" && <SportsSection sports={sports} />}
+      {currentView === "sports" && (
+        <SportsSection sports={sports} mode={mode} />
+      )}
 
       {currentView === "provinces" && (
-        <ProvincesSection provinces={provinceStats} />
+        <ProvincesSection provinces={provinceStats} mode={mode} />
       )}
     </div>
   );

@@ -34,6 +34,19 @@ export const API_ENDPOINTS = {
   events: "/api/events",
   organizations: "/api/organizations",
   registrations: "/api/registrations",
+  // namespaced admin / superadmin endpoints for CRUD separation
+  admin: {
+    events: "/api/admin/events",
+    registrations: "/api/admin/registrations",
+    sports: "/api/admin/sports",
+    provinces: "/api/admin/provinces",
+  },
+  superadmin: {
+    events: "/api/superadmin/events",
+    registrations: "/api/superadmin/registrations",
+    sports: "/api/superadmin/sports",
+    provinces: "/api/superadmin/provinces",
+  },
 } as const;
 
 /** Default values */

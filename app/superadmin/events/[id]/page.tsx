@@ -74,7 +74,7 @@ export default function EventDetailPage({ params }: Props) {
       <div className="p-6">
         <Button
           variant="ghost"
-          onClick={() => router.push("/dashboard/events")}
+          onClick={() => router.push("/superadmin/events")}
           className="gap-2 mb-4"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -125,7 +125,7 @@ export default function EventDetailPage({ params }: Props) {
       {/* Back button */}
       <Button
         variant="ghost"
-        onClick={() => router.push("/dashboard/events")}
+        onClick={() => router.push("/superadmin/events")}
         className="gap-2 mb-4"
       >
         <ArrowLeft className="h-4 w-4" />

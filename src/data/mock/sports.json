@@ -1,0 +1,30 @@
+[
+  {
+    "id": "athletics",
+    "name": "អត្តពលកម្ម",
+    "category": "Track & Field",
+    "participants": 42,
+    "status": "upcoming"
+  },
+  {
+    "id": "football",
+    "name": "បាល់ទាត់",
+    "category": "Team",
+    "participants": 24,
+    "status": "upcoming"
+  },
+  {
+    "id": "boxing",
+    "name": "ប្រដាល់សកល",
+    "category": "Combat",
+    "participants": 18,
+    "status": "upcoming"
+  },
+  {
+    "id": "swimming",
+    "name": "ហែលទឹក",
+    "category": "Aquatics",
+    "participants": 30,
+    "status": "upcoming"
+  }
+]

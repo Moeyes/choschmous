@@ -20,6 +20,7 @@ type SportsSectionProps = {
   onCreateSport?: () => void;
   onEditSport?: (sport: DashboardSport) => void;
   onDeleteSport?: (id: string) => void;
+  mode?: "admin" | "superadmin";
 };
 
 export function SportsSection({
@@ -27,6 +28,7 @@ export function SportsSection({
   onCreateSport,
   onEditSport,
   onDeleteSport,
+  mode = "admin",
 }: SportsSectionProps) {
   const [list, setList] = useState<DashboardSport[]>(sports);
 
@@ -60,13 +62,15 @@ export function SportsSection({
             </p>
           </div>
         </div>
-        <Button
-          onClick={onCreateSport}
-          className="bg-[#1a4cd8] hover:bg-blue-700 rounded-xl gap-2 h-11"
-        >
-          <Plus className="h-4 w-4" />
-          Add Sport
-        </Button>
+        {mode === "superadmin" && (
+          <Button
+            onClick={onCreateSport}
+            className="bg-[#1a4cd8] hover:bg-blue-700 rounded-xl gap-2 h-11"
+          >
+            <Plus className="h-4 w-4" />
+            Add Sport
+          </Button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -164,24 +168,28 @@ export function SportsSection({
                   </span>
                 </TableCell>
                 <TableCell>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 rounded-lg bg-slate-50 hover:bg-slate-100"
-                      onClick={() => onEditSport?.(sport)}
-                    >
-                      <Pencil className="h-4 w-4 text-slate-500" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 rounded-lg bg-slate-50 hover:bg-slate-100"
-                      onClick={() => handleDelete(sport.id)}
-                    >
-                      <Trash2 className="h-4 w-4 text-slate-500" />
-                    </Button>
-                  </div>
+                  {mode === "superadmin" ? (
+                    <div className="flex gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 rounded-lg bg-slate-50 hover:bg-slate-100"
+                        onClick={() => onEditSport?.(sport)}
+                      >
+                        <Pencil className="h-4 w-4 text-slate-500" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 rounded-lg bg-slate-50 hover:bg-slate-100"
+                        onClick={() => handleDelete(sport.id)}
+                      >
+                        <Trash2 className="h-4 w-4 text-slate-500" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <span className="text-sm text-muted-foreground">—</span>
+                  )}
                 </TableCell>
               </TableRow>
             ))}

@@ -1,7 +1,11 @@
-"use client"
+"use client";
 
-import { DashboardLayout } from "@/src/features/dashboard/components"
+import { DashboardLayout } from "@/src/features/dashboard/components";
 
-export function DashboardLayoutWrapper({ children }: { children: React.ReactNode }) {
-  return <DashboardLayout>{children}</DashboardLayout>
+export function DashboardLayoutWrapper({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return <DashboardLayout mode="superadmin">{children}</DashboardLayout>;
 }

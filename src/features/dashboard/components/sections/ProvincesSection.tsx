@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, MapPin } from "lucide-react";
+import { Plus, MapPin, Pencil, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import SectionHeader from "../overview/SectionHeader";
 import StatsGrid from "../overview/StatsGrid";
@@ -18,11 +18,17 @@ import type { DashboardProvince } from "../types";
 type ProvincesSectionProps = {
   provinces: DashboardProvince[];
   onCreateProvince?: () => void;
+  onEditProvince?: (province: DashboardProvince) => void;
+  onDeleteProvince?: (name: string) => void;
+  mode?: "admin" | "superadmin";
 };
 
 export function ProvincesSection({
   provinces,
   onCreateProvince,
+  onEditProvince,
+  onDeleteProvince,
+  mode = "admin",
 }: ProvincesSectionProps) {
   const [list, setList] = useState<DashboardProvince[]>(provinces);
 
@@ -45,17 +51,19 @@ export function ProvincesSection({
         title="ស្ថិតិអង្គភាព"
         subtitle="មើលចំណាត់ថ្នាក់ និងចំនួនអ្នកចូលរួមតាមខេត្ត"
         actions={
-          <>
-            <button className="h-11 px-4 rounded-xl border border-blue-600 text-blue-600 font-medium">
-              នាំចេញ
-            </button>
-            <button
-              onClick={onCreateProvince}
-              className="bg-[#1a4cd8] hover:bg-blue-700 rounded-xl gap-2 h-11 inline-flex items-center px-4 text-white font-medium"
-            >
-              <Plus className="h-4 w-4" /> <span>បន្ថែមខេត្ត</span>
-            </button>
-          </>
+          mode === "superadmin" ? (
+            <>
+              <button className="h-11 px-4 rounded-xl border border-blue-600 text-blue-600 font-medium">
+                នាំចេញ
+              </button>
+              <button
+                onClick={onCreateProvince}
+                className="bg-[#1a4cd8] hover:bg-blue-700 rounded-xl gap-2 h-11 inline-flex items-center px-4 text-white font-medium"
+              >
+                <Plus className="h-4 w-4" /> <span>បន្ថែមខេត្ត</span>
+              </button>
+            </>
+          ) : undefined
         }
       />
 
@@ -130,6 +138,9 @@ export function ProvincesSection({
                 <TableHead className="font-bold text-[10px] uppercase text-slate-400">
                   អ្នកចូលរួម
                 </TableHead>
+                <TableHead className="font-bold text-[10px] uppercase text-slate-400">
+                  Actions
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -148,6 +159,26 @@ export function ProvincesSection({
                     </TableCell>
                     <TableCell className="font-bold text-[#1a4cd8]">
                       {province.participants}
+                    </TableCell>
+                    <TableCell>
+                      {mode === "superadmin" ? (
+                        <div className="flex gap-2">
+                          <button
+                            className="h-8 w-8 rounded-lg bg-slate-50 hover:bg-slate-100 flex items-center justify-center"
+                            onClick={() => onEditProvince?.(province)}
+                          >
+                            <Pencil className="h-4 w-4 text-slate-500" />
+                          </button>
+                          <button
+                            className="h-8 w-8 rounded-lg bg-slate-50 hover:bg-slate-100 flex items-center justify-center"
+                            onClick={() => onDeleteProvince?.(province.name)}
+                          >
+                            <Trash2 className="h-4 w-4 text-rose-500" />
+                          </button>
+                        </div>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">—</span>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}

@@ -62,7 +62,7 @@ export default function SportsPage() {
 
   return (
     <div className="p-6">
-      <SportsSection sports={enhancedSports} onDeleteSport={handleDelete} />
+      <SportsSection sports={enhancedSports} mode="admin" />
     </div>
   );
 }
