@@ -1,6 +1,6 @@
-// =====================
-// AUTH DISABLED
-// The following authentication middleware logic is commented out for maintenance or disabling auth.
+// // =====================
+// // AUTH DISABLED
+// // The following authentication middleware logic is commented out for maintenance or disabling auth.
 // import { NextResponse } from "next/server";
 // import type { NextRequest } from "next/server";
 // const protectedRoutes = [
@@ -33,7 +33,7 @@
 // };
 // AUTH DISABLED: No authentication middleware is currently active.
 
-// No-op middleware to satisfy Next.js build requirements
+// // No-op middleware to satisfy Next.js build requirements
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 export function middleware(request: NextRequest) {

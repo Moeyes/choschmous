@@ -5,7 +5,7 @@
  * Currently the app uses JSON mock files for data storage.
  */
 
-import { PrismaClient } from "@/lib/generated/prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;

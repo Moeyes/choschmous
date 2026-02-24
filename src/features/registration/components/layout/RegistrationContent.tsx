@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+
 import { useSearchParams } from "next/navigation";
 import { Card } from "@/src/components/ui/card";
 import { EventSelection } from "@/src/features/registration/components/sections/EventSelection";
@@ -17,7 +19,20 @@ export function RegistrationContent() {
   const step = searchParams.get("step") || REGISTRATION_STEP_PARAMS.event;
   const { formData, setField } = useRegistrationForm();
 
-  // For the success step, get registrationId from sessionStorage
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (
+      step === REGISTRATION_STEP_PARAMS.event ||
+      step === REGISTRATION_STEP_PARAMS.success
+    ) {
+      sessionStorage.removeItem("selectedEventId");
+      sessionStorage.removeItem("selectedOrganization");
+      sessionStorage.removeItem("selectedSport");
+      sessionStorage.removeItem("selectedCategory");
+      sessionStorage.removeItem("registrationId");
+    }
+  }, [step]);
+
   let registrationId: string | undefined = undefined;
   if (
     typeof window !== "undefined" &&

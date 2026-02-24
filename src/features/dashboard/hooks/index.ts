@@ -2,4 +2,4 @@
  * Dashboard Hooks
  */
 
-export * from './useDashboardData';
+export * from "./useDashboardData";

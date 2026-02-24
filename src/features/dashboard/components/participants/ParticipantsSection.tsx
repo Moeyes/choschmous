@@ -528,7 +528,7 @@ export function ParticipantsSection({
 
               {/* Details Grid */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 bg-slate-50 rounded-xl">
+                <div className="p-1 bg-slate-50 rounded-xl">
                   <div className="flex items-center gap-2 text-slate-500 mb-1">
                     <MapPin className="h-4 w-4" />
                     <span className="text-xs font-medium uppercase">
@@ -540,7 +540,7 @@ export function ParticipantsSection({
                   </p>
                 </div>
 
-                <div className="p-4 bg-slate-50 rounded-xl">
+                <div className="p-1 bg-slate-50 rounded-xl">
                   <div className="flex items-center gap-2 text-slate-500 mb-1">
                     <Calendar className="h-4 w-4" />
                     <span className="text-xs font-medium uppercase">
@@ -554,7 +554,7 @@ export function ParticipantsSection({
                   </p>
                 </div>
 
-                <div className="p-4 bg-slate-50 rounded-xl">
+                <div className="p-1 bg-slate-50 rounded-xl">
                   <div className="flex items-center gap-2 text-slate-500 mb-1">
                     <Phone className="h-4 w-4" />
                     <span className="text-xs font-medium uppercase">
@@ -566,7 +566,7 @@ export function ParticipantsSection({
                   </p>
                 </div>
 
-                <div className="p-4 bg-slate-50 rounded-xl">
+                <div className="p-1 bg-slate-50 rounded-xl">
                   <div className="flex items-center gap-2 text-slate-500 mb-1">
                     <span className="text-xs font-medium uppercase">
                       លេខអត្តសញ្ញាណ
@@ -577,7 +577,7 @@ export function ParticipantsSection({
                   </p>
                 </div>
 
-                <div className="p-4 bg-slate-50 rounded-xl">
+                <div className="p-1 bg-slate-50 rounded-xl">
                   <div className="flex items-center gap-2 text-slate-500 mb-1">
                     <Users className="h-4 w-4" />
                     <span className="text-xs font-medium uppercase">ភេទ</span>
@@ -587,7 +587,7 @@ export function ParticipantsSection({
                   </p>
                 </div>
 
-                <div className="p-4 bg-slate-50 rounded-xl">
+                <div className="p-1 bg-slate-50 rounded-xl">
                   <div className="flex items-center gap-2 text-slate-500 mb-1">
                     <Calendar className="h-4 w-4" />
                     <span className="text-xs font-medium uppercase">

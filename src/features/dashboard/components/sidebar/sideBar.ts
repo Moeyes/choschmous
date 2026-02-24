@@ -1,0 +1,18 @@
+export const dropDownRegister = [
+  { label: "ចុះប្រភេទកីឡា", href: "/dashboard/register/events" },
+  { label: "ចុះចំនួនអ្នកចូលរួម", href: "/dashboard/register/participants" },
+  { label: "ចុះឈ្មោះ", href: "/dashboard/register/athletes" },
+] as const;
+
+export const dropDownDashboard = [
+  { label: "coach", href: "/dashboard" },
+  { label: "leader", href: "/dashboard" },
+] as const;
+
+export function dropDownItems(value?: { label: string; href: string }[]) {
+  if (!value) return [];
+  return value.map((item) => ({
+    label: item.label,
+    href: item.href,
+  }));
+}
