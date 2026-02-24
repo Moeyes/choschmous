@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { dropDownDashboard, dropDownItems, dropDownRegister } from "../sidebar/sideBar";
+import { ROUTES } from "@/src/config/constants";
 
 interface SidebarItem {
   label: string;
@@ -29,40 +30,42 @@ export function Sidebar({ mode = "admin" }: { mode?: "admin" | "superadmin" }) {
 
   const base = mode === "superadmin" ? "/superadmin" : "/dashboard";
 
+
   const items: SidebarItem[] = [
     {
       label: "ផ្ទាំងគ្រប់គ្រង",
       icon: <LayoutDashboard className="h-5 w-5" />,
-      children: dropDownItems(dropDownDashboard.slice()),
+      href: ROUTES.dashboard.root,
+      children: dropDownItems([...dropDownDashboard]),
     },
     {
       label: "អ្នកចូលរួម",
       icon: <Users className="h-5 w-5" />,
-      href: `${base}/participants`,
+      href: ROUTES.dashboard.participants,
     },
     {
       label: "ព្រឹត្តិការណ៍",
       icon: <Calendar className="h-5 w-5" />,
-      href: `${base}/events`,
+      href: ROUTES.dashboard.events,
     },
     {
       label: "កីឡា",
       icon: <Trophy className="h-5 w-5" />,
-      href: `${base}/sports`,
+      href: ROUTES.dashboard.sports,
     },
     {
       label: "ខេត្ត/ក្រុង",
       icon: <MapPin className="h-5 w-5" />,
-      href: `${base}/provinces`,
+      href: ROUTES.dashboard.provinces,
     },
     {
       label: "ចុះបញ្ជី",
       icon: <UserPlus className="h-5 w-5" />,
-      children: dropDownItems(dropDownRegister.slice()),
+      href: ROUTES.register,
+      children: dropDownItems([...dropDownRegister]),
     },
   ];
 
-  // Auto-open dropdown if child route is active
   React.useEffect(() => {
     const registerItem = items.find((item) => item.label === "ចុះបញ្ជី");
     if (

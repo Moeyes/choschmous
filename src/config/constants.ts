@@ -3,6 +3,8 @@
  * Centralized constants for the application
  */
 
+import { surveys } from "../data";
+
 /** Validation patterns */
 export const PATTERNS = {
   phone: /^\+?[0-9\s\-()]{7,15}$/,
@@ -183,6 +185,8 @@ export const BUTTON_SIZES = {
 export const ROUTES = {
   home: "/",
   register: "/register",
+  survey: "/survey",
+  category: "/category",
   dashboard: {
     root: "/dashboard",
     participants: "/dashboard/participants",

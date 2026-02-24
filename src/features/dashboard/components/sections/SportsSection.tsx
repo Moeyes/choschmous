@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Trophy, Users, Plus, Pencil, Trash2 } from "lucide-react";
+import { Trophy, Users, Plus, Pencil, Trash2, LayoutGrid } from "lucide-react";
 import type { DashboardSport } from "../types";
 import { useMemo, useState } from "react";
 import StatsGrid from "../overview/StatsGrid";
@@ -97,7 +97,7 @@ export function SportsSection({
             label: "Categories",
             value: String(stats.categories),
             color: "bg-orange-100",
-            icon: <Trophy className="h-6 w-6 text-orange-600" />,
+            icon: <LayoutGrid className="h-6 w-6 text-orange-600" />,
           },
         ].map((s) => (
           <Card

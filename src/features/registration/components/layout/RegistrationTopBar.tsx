@@ -68,8 +68,8 @@ export function RegistrationTopBar() {
   // Top bar links
   const topBarLinks = [
     { label: "ផ្ទាំងគ្រប់គ្រង", route: ROUTES.dashboard.root },
-    { label: "ចុះចំនួនអ្នកចូលរួម", route: ROUTES.register },
-    { label: "ចុះប្រភេទកីឡា", route: ROUTES.home },
+    { label: "ចុះចំនួនអ្នកចូលរួម", route: ROUTES.survey },
+    { label: "ចុះប្រភេទកីឡា", route: ROUTES.category },
     { label: "ចុះឈ្មោះ", route: ROUTES.register },
   ];
 

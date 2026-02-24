@@ -19,11 +19,10 @@ import organizations from "@/src/data/mock/organizations.json";
 import events from "@/src/data/mock/events.json";
 
 // TypeScript types
-type Survey = {
-  sport_id: string;
-  organization_id: string;
-  estimated_participants: number;
-};
+import type { Survey } from "@/src/types/survey";
+
+// previously defined inline, now imported from types
+
 type Organization = {
   id: string;
   name: string;

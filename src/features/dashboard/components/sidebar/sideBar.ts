@@ -1,6 +1,7 @@
+import { ROUTES } from "@/config/constants";
 export const dropDownRegister = [
-  { label: "ចុះប្រភេទកីឡា", href: "/dashboard/register/events" },
-  { label: "ចុះចំនួនអ្នកចូលរួម", href: "/dashboard/register/participants" },
+  { label: "ចុះប្រភេទកីឡា", href: ROUTES.survey, },
+  { label: "ចុះចំនួនអ្នកចូលរួម", href: ROUTES.category, },
   { label: "ចុះឈ្មោះ", href: "/dashboard/register/athletes" },
 ] as const;
 

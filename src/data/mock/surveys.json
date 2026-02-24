@@ -1,1 +1,37 @@
-[]
+[
+  {
+    "sport_id": "football",
+    "organization_id": "m-1",
+    "estimated_participants": 0
+  },
+  {
+    "sport_id": "athletics",
+    "organization_id": "m-1",
+    "estimated_participants": 0
+  },
+  {
+    "sport_id": "badminton",
+    "organization_id": "m-1",
+    "estimated_participants": 0
+  },
+  {
+    "sport_id": "volleyball",
+    "organization_id": "m-1",
+    "estimated_participants": 0
+  },
+  {
+    "sport_id": "wrestling",
+    "organization_id": "m-1",
+    "estimated_participants": 0
+  },
+  {
+    "sport_id": "karate",
+    "organization_id": "m-1",
+    "estimated_participants": 0
+  },
+  {
+    "sport_id": "cycling",
+    "organization_id": "m-1",
+    "estimated_participants": 0
+  }
+]

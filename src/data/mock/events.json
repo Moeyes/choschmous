@@ -37,19 +37,17 @@
         ],
         "status": "upcoming"
       },
-
       {
         "id": "football",
         "name": "បាល់ទាត់",
         "categories": [
-          "បាល់ទាត់ ១១ នាក់ បុរស", 
+          "បាល់ទាត់ ១១ នាក់ បុរស",
           "បាល់ទាត់ ១១ នាក់ នារី",
           "បាល់ទាត់ អាយុក្រោម ១៨ ឆ្នាំ",
           "បាល់ទាត់ ៧ នាក់"
         ],
         "status": "upcoming"
       },
-
       {
         "id": "boxing",
         "name": "ប្រដាល់សកល",
@@ -69,7 +67,6 @@
         ],
         "status": "upcoming"
       },
-
       {
         "id": "swimming",
         "name": "ហែលទឹក",
@@ -88,7 +85,6 @@
         ],
         "status": "upcoming"
       },
-
       {
         "id": "badminton",
         "name": "ប៉ះសី",
@@ -101,7 +97,6 @@
         ],
         "status": "upcoming"
       },
-
       {
         "id": "volleyball",
         "name": "បាល់ទះ",
@@ -113,7 +108,6 @@
         ],
         "status": "upcoming"
       },
-
       {
         "id": "basketball",
         "name": "បាល់បោះ",
@@ -125,7 +119,6 @@
         ],
         "status": "upcoming"
       },
-
       {
         "id": "taekwondo",
         "name": "តេក្វាន់ដូ",
@@ -141,7 +134,6 @@
         ],
         "status": "upcoming"
       },
-
       {
         "id": "karate",
         "name": "ការ៉ាតេ",
@@ -155,7 +147,6 @@
         ],
         "status": "upcoming"
       },
-
       {
         "id": "wrestling",
         "name": "ចំបាប់",
@@ -168,7 +159,6 @@
         ],
         "status": "upcoming"
       },
-
       {
         "id": "weightlifting",
         "name": "លើកទម្ងន់",
@@ -183,7 +173,6 @@
         ],
         "status": "upcoming"
       },
-
       {
         "id": "judo",
         "name": "យូដូ",
@@ -197,21 +186,26 @@
         ],
         "status": "upcoming"
       },
-
       {
         "id": "petanque",
         "name": "ប៉េតង់",
-        "categories": ["ឯកត្តជន", "គូ", "បីនាក់"],
+        "categories": [
+          "ឯកត្តជន",
+          "គូ",
+          "បីនាក់"
+        ],
         "status": "upcoming"
       },
-
       {
         "id": "cycling",
         "name": "ជិះកង់",
-        "categories": ["ប្រណាំងលើផ្លូវ", "ប្រណាំងវាស់ពេល", "ជិះកង់ភ្នំ"],
+        "categories": [
+          "ប្រណាំងលើផ្លូវ",
+          "ប្រណាំងវាស់ពេល",
+          "ជិះកង់ភ្នំ"
+        ],
         "status": "upcoming"
       },
-
       {
         "id": "table-tennis",
         "name": "វាយកូនបាល់លើតុ",
@@ -224,7 +218,6 @@
         ],
         "status": "upcoming"
       },
-
       {
         "id": "kun-khmer",
         "name": "គុនខ្មែរ",
@@ -251,24 +244,32 @@
       {
         "id": "badminton",
         "name": "ប៉ះសី",
-        "categories": ["ឯកត្តជន", "គូ"],
+        "categories": [
+          "ឯកត្តជន",
+          "គូ"
+        ],
         "status": "completed"
       },
       {
         "id": "volleyball",
         "name": "បាល់ទះ",
-        "categories": ["ក្នុងសាល", "ឆ្នេរខ្សាច់"],
+        "categories": [
+          "ក្នុងសាល",
+          "ឆ្នេរខ្សាច់"
+        ],
         "status": "completed"
       },
       {
         "id": "taekwondo",
         "name": "តេក្វាន់ដូ",
-        "categories": ["ពូមសេ", "គ្យូរូគី"],
+        "categories": [
+          "ពូមសេ",
+          "គ្យូរូគី"
+        ],
         "status": "completed"
       }
     ]
   },
-
   {
     "id": "evt-3",
     "name": "កីឡាយុវជនជាតិ ឆ្នាំ២០២៦",
@@ -279,30 +280,41 @@
       {
         "id": "athletics",
         "name": "អត្តពលកម្ម",
-        "categories": ["អាយុក្រោម ១៦ ឆ្នាំ", "អាយុក្រោម ១៨ ឆ្នាំ"],
+        "categories": [
+          "អាយុក្រោម ១៦ ឆ្នាំ",
+          "អាយុក្រោម ១៨ ឆ្នាំ"
+        ],
         "status": "upcoming"
       },
       {
         "id": "football",
         "name": "បាល់ទាត់",
-        "categories": ["អាយុក្រោម ១៦ ឆ្នាំ", "អាយុក្រោម ១៨ ឆ្នាំ"],
+        "categories": [
+          "អាយុក្រោម ១៦ ឆ្នាំ",
+          "អាយុក្រោម ១៨ ឆ្នាំ"
+        ],
         "status": "upcoming"
       },
       {
         "id": "swimming",
         "name": "ហែលទឹក",
-        "categories": ["អាយុក្រោម ១៦ ឆ្នាំ", "អាយុក្រោម ១៨ ឆ្នាំ"],
+        "categories": [
+          "អាយុក្រោម ១៦ ឆ្នាំ",
+          "អាយុក្រោម ១៨ ឆ្នាំ"
+        ],
         "status": "upcoming"
       },
       {
         "id": "basketball",
         "name": "បាល់បោះ",
-        "categories": ["៣ ទល់ ៣ អាយុក្រោម ១៨ ឆ្នាំ", "៥ ទល់ ៥ អាយុក្រោម ១៨ ឆ្នាំ"],
+        "categories": [
+          "៣ ទល់ ៣ អាយុក្រោម ១៨ ឆ្នាំ",
+          "៥ ទល់ ៥ អាយុក្រោម ១៨ ឆ្នាំ"
+        ],
         "status": "upcoming"
       }
     ]
   },
-
   {
     "id": "evt-4",
     "name": "កីឡាសាកលវិទ្យាល័យជាតិ ឆ្នាំ២០២៦",
@@ -313,30 +325,41 @@
       {
         "id": "football",
         "name": "បាល់ទាត់",
-        "categories": ["បុរស", "នារី"],
+        "categories": [
+          "បុរស",
+          "នារី"
+        ],
         "status": "upcoming"
       },
       {
         "id": "volleyball",
         "name": "បាល់ទះ",
-        "categories": ["បុរស", "នារី"],
+        "categories": [
+          "បុរស",
+          "នារី"
+        ],
         "status": "upcoming"
       },
       {
         "id": "basketball",
         "name": "បាល់បោះ",
-        "categories": ["បុរស", "នារី"],
+        "categories": [
+          "បុរស",
+          "នារី"
+        ],
         "status": "upcoming"
       },
       {
         "id": "badminton",
         "name": "ប៉ះសី",
-        "categories": ["ឯកត្តជន", "គូ"],
+        "categories": [
+          "ឯកត្តជន",
+          "គូ"
+        ],
         "status": "upcoming"
       }
     ]
   },
-
   {
     "id": "evt-5",
     "name": "ជើងឯកកីឡាប្រយុទ្ធជាតិកម្ពុជា ឆ្នាំ២០២៦",
@@ -347,25 +370,37 @@
       {
         "id": "boxing",
         "name": "ប្រដាល់សកល",
-        "categories": ["បុរស", "នារី"],
+        "categories": [
+          "បុរស",
+          "នារី"
+        ],
         "status": "upcoming"
       },
       {
         "id": "kun-khmer",
         "name": "គុនខ្មែរ",
-        "categories": ["បុរស", "នារី"],
+        "categories": [
+          "បុរស",
+          "នារី"
+        ],
         "status": "upcoming"
       },
       {
         "id": "taekwondo",
         "name": "តេក្វាន់ដូ",
-        "categories": ["គ្យូរូគី", "ពូមសេ"],
+        "categories": [
+          "គ្យូរូគី",
+          "ពូមសេ"
+        ],
         "status": "upcoming"
       },
       {
         "id": "karate",
         "name": "ការ៉ាតេ",
-        "categories": ["កាតា", "គូមីតេ"],
+        "categories": [
+          "កាតា",
+          "គូមីតេ"
+        ],
         "status": "upcoming"
       }
     ]
