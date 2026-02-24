@@ -13,5 +13,5 @@ export interface SportEntry {
 // Represents a survey response for an organization/pro
 export interface Survey {
   organization_id: string;
-  sports: SportEntry[]; // multiple sports per org/pro
+  sports: SportEntry[];
 }

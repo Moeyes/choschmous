@@ -33,5 +33,29 @@
     "sport_id": "cycling",
     "organization_id": "m-1",
     "estimated_participants": 0
+  },
+  {
+    "organization_id": "m-1",
+    "sports": [
+      {
+        "sport_id": "athletics",
+        "participants": {
+          "male": 12,
+          "female": 12
+        }
+      },
+      {
+        "sport_id": "badminton",
+        "participants": {
+          "male": 0,
+          "female": 0
+        }
+      }
+    ]
+  },
+  {
+    "sport_id": "athletics",
+    "organization_id": "m-1",
+    "estimated_participants": 0
   }
 ]
